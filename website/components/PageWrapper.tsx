@@ -8,9 +8,9 @@ export default function PageWrapper({
   children: React.ReactNode;
 }) {
   return (
-    <div className="container mx-auto py-4 px-12">
+    <div className="flex flex-col min-h-screen container mx-auto py-4 px-12">
       <Header />
-      <div className="py-4">
+      <div className="flex-grow py-4">
         {children}
       </div>
       <Footer />

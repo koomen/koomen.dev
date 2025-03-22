@@ -4,7 +4,7 @@ import Links from "./Links";
 
 export default function Header() {
   return (
-    <header className="flex justify-between items-center py-4">
+    <header className="flex justify-between items-center pt-6 pb-6">
       <KoomenDev />
       <Links />
     </header>
