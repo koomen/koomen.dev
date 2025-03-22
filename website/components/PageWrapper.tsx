@@ -1,5 +1,5 @@
 import React from 'react';
-import Navigation from "./Navigation";
+import Header from "./Header";
 
 export default function PageWrapper({
   children,
@@ -7,9 +7,11 @@ export default function PageWrapper({
   children: React.ReactNode;
 }) {
   return (
-    <>
-      <Navigation />
-      <div className="container mx-auto p-4">{children}</div>
-    </>
+    <div className="container mx-auto py-4 px-6">
+      <Header />
+      <div className="py-4">
+        {children}
+      </div>
+    </div>
   );
 }
