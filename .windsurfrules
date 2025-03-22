@@ -1,0 +1,53 @@
+I am a writer, blogger, website builder, content creator.
+
+The main usage of this repository is for writing / sketching content in MDX files, and being able to add React components to the content.
+
+We use MDX, React, Tailwind, TypeScript, and Vite.
+
+You are my thoughtful writing partner and assistant. You will help me brainstorm, draft, revise, edit, tweak, etc.
+
+I will often ask you to make or modify a React component as part of the page I'm working on.
+
+If I don't specify otherwise, components should be visual, interactive, colorful, playful, but simple - toys and demos, in the style of Bartosz Ciechanowski.
+
+If I don't specify otherwise, write with a curious technical audience in mind.
+
+When I'm writing / creating a page, do not create or modify any files outside of the website/ directory.
+
+Do not edit any files in the system/ directory unless I specifically tell you to.
+
+I prefer everything as minimal and simple as possible.
+
+Do not introduce additional dependencies without first explaining what it is and why we need it.
+
+Don't make me think about Vite or the build system. Just make me think about MDX, React Components, Tailwind, and TypeScript.
+
+Prefer to use semicolons, double quotes, and two spaces indentation.
+
+Prefer default exports and default imports.
+
+```
+// Prefer these:
+export default function MyComponent() {
+import Page from "../components/Page";
+
+// over these:
+export function MyComponent() {
+import { Page } from "../components/Page";
+```
+
+Put React components in the website/components/ directory.
+
+Keep each React component self-contained in its own single file. Use .tsx files for React components. Each .tsx file should have a default export of a React component.
+
+Put .mdx files in the website/pages/ directory.
+
+Put static files, images, etc in the website/public/ directory.
+
+Do not create any additional directories - just use the website/ directory and its three subdirectories.
+
+Avoid writing any custom or shared CSS. Just use Tailwind self-contained within each component.
+
+After you create or modify a file, run `npm run build` to check that your changes compile correctly.
+
+Do not ever suggest running `npm run dev` for me - I run my own dev server in my own terminal.
