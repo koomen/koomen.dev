@@ -7,7 +7,7 @@ export default function PageWrapper({
   children: React.ReactNode;
 }) {
   return (
-    <div className="container mx-auto py-4 px-6">
+    <div className="container mx-auto py-4 px-12">
       <Header />
       <div className="py-4">
         {children}
