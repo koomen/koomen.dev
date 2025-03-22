@@ -35,7 +35,7 @@ debugLog({ normPath, mdxModulePath, mdxModule });
 const MDXContent = mdxModule.default;
 
 // Import all components to make them available to MDX files
-const componentModules = import.meta.glob("../website/components/*.tsx", {
+const componentModules = import.meta.glob("../website/components/**/*.tsx", {
   eager: true,
 });
 const components: Record<string, React.ComponentType<any>> = {};
