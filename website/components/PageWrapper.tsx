@@ -8,12 +8,14 @@ export default function PageWrapper({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-col min-h-screen mx-auto px-4 pt-4 sm:px-8 sm:pt-8 md:px-12 md:pt-12 lg:px-48 lg:pt-16 xl:px-60 xl:pt-16 font-sans text-gray-800 antialiased">
-      <Header />
-      <div className="flex-grow py-4 leading-relaxed text-lg">
-        {children}
+    <div className="flex flex-col min-h-screen font-sans text-gray-800 antialiased">
+      <div className="max-w-[760px] mx-auto w-full px-4 pt-8 flex flex-col flex-grow">
+        <Header />
+        <div className="flex-grow py-4 leading-relaxed text-lg">
+          {children}
+        </div>
+        <Footer />
       </div>
-      <Footer />
     </div>
   );
 }
