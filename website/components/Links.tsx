@@ -5,7 +5,7 @@ export default function Links() {
     <div className="flex items-center space-x-4">
       {/* X (Twitter) Icon */}
       <a 
-        href="https://x.com" 
+        href="https://x.com/koomen" 
         target="_blank" 
         rel="noopener noreferrer"
         className="text-gray-700 hover:text-gray-900 transition-colors"
