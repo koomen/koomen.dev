@@ -12,7 +12,14 @@ function debugLog(...args: any[]) {
 debugLog("main.tsx");
 debugLog(window.location.pathname);
 
-const mdxModules = import.meta.glob("../website/pages/**/*.mdx", {
+// Define a type for MDX modules
+interface MDXModule {
+  default: React.ComponentType<{
+    components?: Record<string, React.ComponentType<any>>;
+  }>;
+}
+
+const mdxModules = import.meta.glob<MDXModule>("../website/pages/**/*.mdx", {
   eager: true,
 });
 debugLog(mdxModules);
@@ -32,10 +39,16 @@ const mdxModule =
   mdxModules["../website/pages/index.mdx"];
 debugLog({ normPath, mdxModulePath, mdxModule });
 
-const MDXContent = mdxModule.default;
+// Make sure we have a valid MDX module, otherwise use a fallback component
+const MDXContent = mdxModule ? mdxModule.default : () => <div>Page not found</div>;
 
 // Import all components to make them available to MDX files
-const componentModules = import.meta.glob("../website/components/**/*.tsx", {
+// Define a type for component modules
+interface ComponentModule {
+  default: React.ComponentType<any>;
+}
+
+const componentModules = import.meta.glob<ComponentModule>("../website/components/**/*.tsx", {
   eager: true,
 });
 const components: Record<string, React.ComponentType<any>> = {};
@@ -49,7 +62,7 @@ Object.entries(componentModules).forEach(([path, module]) => {
       ?.replace(/\.tsx$/, "") || "";
   
   if (componentName && "default" in module) {
-    components[componentName] = (module as any).default;
+    components[componentName] = module.default;
   }
 });
 
