@@ -47,11 +47,13 @@ Object.entries(componentModules).forEach(([path, module]) => {
       .split("/")
       .pop()
       ?.replace(/\.tsx$/, "") || "";
+  
   if (componentName && "default" in module) {
     components[componentName] = (module as any).default;
   }
 });
 
+// Log the components for debugging
 debugLog(components);
 
 // we might want to eventually react-router-ify this
