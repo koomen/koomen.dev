@@ -9,7 +9,7 @@ export default function PageWrapper({
 }) {
   return (
     <div className="flex flex-col min-h-screen font-sans text-gray-800 antialiased">
-      <div className="max-w-[760px] mx-auto w-full px-4 pt-8 flex flex-col flex-grow">
+      <div className="max-w-[900px] mx-auto w-full px-4 pt-8 flex flex-col flex-grow">
         <Header />
         <div className="flex-grow py-4 leading-relaxed text-lg">
           {children}
