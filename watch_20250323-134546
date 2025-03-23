@@ -1,0 +1,66 @@
+Every 2.0s: git diff --color=always                       Peters-Mac-Studio.local: 13:45:45
+                                                                              in 0.043s (0)
+diff --git a/website/components/Footer.tsx b/website/components/Footer.tsx                 
+index 0c5d79c..dca9ef6 100644                                                              
+--- a/website/components/Footer.tsx                                                        
++++ b/website/components/Footer.tsx                                                        
+@@ -5,8 +5,7 @@ export default function Footer() {                                         
+                                                                                           
+   return (                                                                                
+     <footer className="py-6 mt-8 text-center text-sm text-gray-500">                      
+-      <p>© {currentYear} Pete Koomen</p>                                                  
+-      <p>Built with <a href="https://scratch.dev">Scratch</a></p>                         
++      <p>&copy; {currentYear} Pete Koomen. Built from <a href="https://scratch.dev" classN
+ame="text-gray-700 hover:underline cursor-pointer">scratch</a></p>                         
+     </footer>                                                                             
+   );                                                                                      
+ }                                                                                         
+diff --git a/website/pages/essays/horseless-carriages.mdx b/website/pages/essays/horseless-
+carriages.mdx                                                                              
+index d5a3c8b..812dc9e 100644                                                              
+--- a/website/pages/essays/horseless-carriages.mdx                                         
++++ b/website/pages/essays/horseless-carriages.mdx                                         
+@@ -1,4 +1,4 @@                                                                            
+-<PageWrapper title="Horseless Carriages | Pete Koomen">                                   
++<PageWrapper title="Horseless Carriages | koomen.dev">                                    
+                                                                                           
+ # AI Horseless Carriages                                                                  
+                                                                                           
+                                                                                           
+                                                                                           
+                                                                                           
+                                                                                           
+                                                                                           
+                                                                                           
+                                                                                           
+                                                                                           
+                                                                                           
+                                                                                           
+                                                                                           
+                                                                                           
+                                                                                           
+                                                                                           
+                                                                                           
+                                                                                           
+                                                                                           
+                                                                                           
+                                                                                           
+                                                                                           
+                                                                                           
+                                                                                           
+                                                                                           
+                                                                                           
+                                                                                           
+                                                                                           
+                                                                                           
+                                                                                           
+                                                                                           
+                                                                                           
+                                                                                           
+                                                                                           
+                                                                                           
+                                                                                           
+                                                                                           
+                                                                                           
+                                                                                           
+                                                                                           
