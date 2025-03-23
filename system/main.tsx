@@ -62,8 +62,8 @@ Object.entries(componentModules).forEach(([path, module]) => {
       ?.replace(/\.tsx$/, "") || "";
   
   if (componentName && "default" in module) {
-    components[componentName] = module.default;
-  }
+      components[componentName] = module.default;
+    }
 });
 
 // Log the components for debugging
