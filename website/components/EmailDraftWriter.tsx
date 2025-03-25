@@ -2,8 +2,17 @@ import React, { useState, useRef, useEffect } from 'react';
 import OpenAI from 'openai';
 import { getOpenAIKey } from './OpenAIKeyInput';
 
+type SystemPromptOption = {
+  label: string;
+  text: string;
+};
+
+type SystemPromptMap = {
+  [key: string]: string;
+};
+
 interface EmailDraftWriterProps {
-  defaultSystemPrompt?: string;
+  defaultSystemPrompt?: string | SystemPromptMap;
   defaultUserPrompt?: string;
 }
 
@@ -11,11 +20,49 @@ const EmailDraftWriter: React.FC<EmailDraftWriterProps> = ({
   defaultSystemPrompt = 'You are an expert email writer. Write a professional, concise, and effective email based on the user\'s request.',
   defaultUserPrompt = ''
 }) => {
-  const [systemPrompt, setSystemPrompt] = useState(defaultSystemPrompt);
+  // Process system prompts
+  const [promptOptions, setPromptOptions] = useState<SystemPromptOption[]>([]);
+  const [selectedPromptKey, setSelectedPromptKey] = useState<string>('default');
+  const [systemPrompt, setSystemPrompt] = useState('');
   const [userPrompt, setUserPrompt] = useState(defaultUserPrompt);
   const [emailDraft, setEmailDraft] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  
+  // Initialize system prompts
+  useEffect(() => {
+    if (typeof defaultSystemPrompt === 'string') {
+      setSystemPrompt(defaultSystemPrompt);
+      setPromptOptions([{ label: 'Default', text: defaultSystemPrompt }]);
+    } else {
+      const options: SystemPromptOption[] = [];
+      for (const [key, value] of Object.entries(defaultSystemPrompt)) {
+        options.push({
+          label: key.charAt(0).toUpperCase() + key.slice(1), // Capitalize first letter
+          text: value
+        });
+      }
+      
+      if (options.length > 0) {
+        setPromptOptions(options);
+        setSelectedPromptKey(Object.keys(defaultSystemPrompt)[0]);
+        setSystemPrompt(options[0].text);
+      } else {
+        const defaultText = 'You are an expert email writer. Write a professional, concise, and effective email based on the user\'s request.';
+        setPromptOptions([{ label: 'Default', text: defaultText }]);
+        setSystemPrompt(defaultText);
+      }
+    }
+  }, [defaultSystemPrompt]);
+  
+  // Handle prompt selection
+  const selectPrompt = (optionLabel: string) => {
+    const option = promptOptions.find(opt => opt.label === optionLabel);
+    if (option) {
+      setSelectedPromptKey(optionLabel.toLowerCase());
+      setSystemPrompt(option.text);
+    }
+  };
   
   const openaiClient = useRef<OpenAI | null>(null);
   
@@ -82,7 +129,26 @@ const EmailDraftWriter: React.FC<EmailDraftWriterProps> = ({
           <div className="flex flex-col h-full">
             {/* System Prompt */}
             <div className="mb-2 flex-grow">
-              <label className="block font-medium text-sm mb-1">System Prompt</label>
+              <div className="flex justify-between items-center mb-1">
+                <label className="block font-medium text-sm">System Prompt</label>
+                {promptOptions.length > 1 && (
+                  <div className="flex gap-2 text-xs">
+                    {promptOptions.map((option) => (
+                      <button
+                        key={option.label}
+                        onClick={() => selectPrompt(option.label)}
+                        className={`px-2 py-0.5 rounded ${
+                          selectedPromptKey === option.label.toLowerCase()
+                            ? 'bg-blue-600 text-white'
+                            : 'bg-gray-200 hover:bg-gray-300'
+                        }`}
+                      >
+                        {option.label}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
               <textarea
                 value={systemPrompt}
                 onChange={(e) => setSystemPrompt(e.target.value)}
