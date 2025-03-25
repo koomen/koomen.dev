@@ -126,5 +126,46 @@ The horseless carriage metaphor is powerful because this pattern repeats itself 
 
 Whenenver a powerful new technology emerges, there's always a brief window in time when its potential is hidden because we haven't figured out the right way to build tools with it.
 
+## Old world thinking
+
+As long as we've had a software industry, developers' jobs have looked something like this:
+
+1. Talk to lots users and figure out what they want
+2. Build software that does enough of what most of them want
+3. Sell it to enough of them to make a profit
+
+In this world, the developer acts as a middelman between between users and their objectives. 
+
+Of course, we needed these middlemen because writing code is hard. It's hard enough that I'd rather pay a few dollars for an off-the-shelf app than spend the time it would take to build one myself. It's even hard enough that many big companies would rather pay millions of dollars to Salesforce than spend the money it would take to build their own CRM.
+
+Software is incredibly powerful, and every year humans rely on it more and more to achieve their objectives. As entrenched middlemen between humanity and its collective desires, software developers have done pretty well for themselves over the last 50 years.
+
+The result of this dynamic is that most software is written for large groups of people. These people all have different needs, of course, and developers can't satisfy them all (because coding is hard) so developers hire Product Managers whose job it is to compress the needs of many users into a simplified amalgam that software engineers can build for.
+
+This "average user" is exactly who the gmail team wrote their system prompt for. That's why it's so terrible.
+
+This approach makes perfect sense in the old world. In the old world it’s the developers’ job to gather requirements, translate them into code, and abstract that code away underneath a friendly UI. In the old world a System Prompt is just code that governs how the system will write emails, so it should be secured and abstracted away just like the rest of the code.
+
+But I don’t want some anonymous Googler to decide how Gemini should write my emails. They’re my emails, goddamnit, and I want to make that decision for myself. And the beauty of LLMs is that for the first time in the history of software, I can actually do this.
+
+How? By writing my own System Prompt.
+
+## The Pete System Prompt
+
+If, instead of forcing me to use their one-size-fits-all System Prompt, Gmail allowed me to write my own, it would look something like this:
+
+<CaptionedText
+    caption="The Pete System Prompt"s
+    size="large"
+>
+You are a 43 year old husband, father, programmer, and YC Partner. You're very busy and so is everyone you correspond with, so you do your best to keep your emails as short as possible and to the point. You avoid all unnecessary words and you often omit punctuation or leave misspellings unaddressed because it's not a big deal and you'd rather save the time. Do your best to be kind.
+</CaptionedText>
+
+Intuitively, you can see what's going on here: when I write my own system prompt I'm teaching the LLM to write emails the way that I would. Does it work? Let's give it a try.
+
+Here's a little widget you can use to connect this essay with an LLM. It will be stored your browser and won't leave your computer, which you can verify yourself by reading through the [source code for this website](https://github.com/koomen/koomen.dev).
+
+<OpenAIKeyInput />
+
 
 </PageWrapper>
