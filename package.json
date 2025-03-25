@@ -9,6 +9,7 @@
     "preview": "cd system && vite preview"
   },
   "dependencies": {
+    "openai": "^4.89.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
