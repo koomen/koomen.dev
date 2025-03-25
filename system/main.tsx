@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import "./global.css";
 
-const debug = false;
+const debug = true;
 function debugLog(...args: any[]) {
   if (debug) {
     console.log(...args);
