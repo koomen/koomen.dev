@@ -78,51 +78,55 @@ const EmailDraftWriter: React.FC<EmailDraftWriterProps> = ({
     <div className="mx-auto max-w-6xl p-4">
       <div className="border rounded-lg p-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* System Prompt Column */}
-          <div>
-            <label className="block font-medium text-sm mb-1">System Prompt</label>
-            <textarea
-              value={systemPrompt}
-              onChange={(e) => setSystemPrompt(e.target.value)}
-              className="w-full h-64 p-2 border rounded-lg text-sm"
-              placeholder="Enter your system prompt here..."
-            />
-          </div>
-
-          {/* Email Draft Column */}
-          <div className="flex flex-col">
-            <label className="block font-medium text-sm mb-1">Email Draft</label>
-            
-            {/* Draft Output Area */}
-            <div 
-              className="flex-grow min-h-[16rem] p-2 border rounded-lg mb-3 whitespace-pre-wrap text-sm"
-              style={{ backgroundColor: '#f9f9f9' }}
-            >
-              {emailDraft || <span className="text-gray-400">Your generated email will appear here...</span>}
+          {/* Left Column: System Prompt, User Prompt, and Generate Button */}
+          <div className="flex flex-col h-full">
+            {/* System Prompt */}
+            <div className="mb-2 flex-grow">
+              <label className="block font-medium text-sm mb-1">System Prompt</label>
+              <textarea
+                value={systemPrompt}
+                onChange={(e) => setSystemPrompt(e.target.value)}
+                className="w-full h-60 p-2 border rounded-lg text-sm"
+                placeholder="Enter your system prompt here..."
+              />
             </div>
             
-            {/* User Prompt and Generate Button */}
-            <div>
+            {/* User Prompt */}
+            <div className="mb-2">
               <label className="block font-medium text-sm mb-1">User Prompt</label>
               <textarea
                 value={userPrompt}
                 onChange={(e) => setUserPrompt(e.target.value)}
-                className="w-full p-2 border rounded-lg mb-2 text-sm"
+                className="w-full p-2 border rounded-lg mb-1 text-sm"
                 placeholder="Example: Write an email to my boss asking for time off next Friday"
-                rows={3}
+                rows={5}
               />
+            </div>
+            
+            {/* Generate Button */}
+            <div className="mb-1">
+              <button
+                onClick={generateDraft}
+                disabled={isGenerating}
+                className="px-3 py-1.5 bg-blue-600 text-white rounded-lg disabled:bg-blue-300 text-sm"
+              >
+                {isGenerating ? 'Generating...' : 'Generate Draft'}
+              </button>
               
-              <div className="flex justify-between items-center">
-                <button
-                  onClick={generateDraft}
-                  disabled={isGenerating}
-                  className="px-3 py-1.5 bg-blue-600 text-white rounded-lg disabled:bg-blue-300 text-sm"
-                >
-                  {isGenerating ? 'Generating...' : 'Generate Draft'}
-                </button>
-                
-                {error && <p className="text-red-500 text-xs">{error}</p>}
-              </div>
+              {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
+            </div>
+          </div>
+
+          {/* Right Column: Email Draft */}
+          <div className="flex flex-col h-full">
+            <label className="block font-medium text-sm mb-1">Email Draft</label>
+            
+            {/* Draft Output Area */}
+            <div 
+              className="flex-grow min-h-[28rem] p-2 border rounded-lg whitespace-pre-wrap text-sm"
+              style={{ backgroundColor: '#f9f9f9' }}
+            >
+              {emailDraft || <span className="text-gray-400">Your generated email will appear here...</span>}
             </div>
           </div>
         </div>
