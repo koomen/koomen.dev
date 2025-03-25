@@ -43,7 +43,7 @@ const OpenAIKeyInput: React.FC = () => {
   };
 
   return (
-    <div className="my-4 p-4 border rounded-lg">
+    <div className="my-4 mx-auto max-w-2xl p-4 border rounded-lg">
       <label className="block mb-2 font-medium">
         OpenAI API Key
       </label>
@@ -74,6 +74,13 @@ const OpenAIKeyInput: React.FC = () => {
       {isSaved && (
         <p className="mt-2 text-sm text-green-600">API key saved to local storage</p>
       )}
+      
+      <div className="mt-4 text-sm text-gray-600 p-3 bg-gray-50 rounded-lg">
+        <p className="font-medium mb-1">Security Notice:</p>
+        <p>Your API key is stored only in your browser's local storage and is not transmitted to this website's servers. 
+        It will only be sent directly to OpenAI when making API requests.</p>
+        <p className="mt-2">⚠️ Always be cautious about entering API keys on websites you don't fully trust.</p>
+      </div>
     </div>
   );
 };
