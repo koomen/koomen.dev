@@ -152,7 +152,7 @@ const EmailDraftWriter: React.FC<EmailDraftWriterProps> = ({
               <textarea
                 value={systemPrompt}
                 onChange={(e) => setSystemPrompt(e.target.value)}
-                className="w-full h-60 p-2 border rounded-lg text-sm"
+                className="w-full h-80 p-2 border rounded-lg text-sm"
                 placeholder="Enter your system prompt here..."
               />
             </div>
@@ -163,7 +163,7 @@ const EmailDraftWriter: React.FC<EmailDraftWriterProps> = ({
               <textarea
                 value={userPrompt}
                 onChange={(e) => setUserPrompt(e.target.value)}
-                className="w-full p-2 border rounded-lg mb-1 text-sm"
+                className="w-full h-20 p-2 border rounded-lg mb-1 text-sm"
                 placeholder="Example: Write an email to my boss asking for time off next Friday"
                 rows={5}
               />
