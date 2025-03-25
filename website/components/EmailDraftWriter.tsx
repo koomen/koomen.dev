@@ -14,11 +14,13 @@ type SystemPromptMap = {
 interface EmailDraftWriterProps {
   defaultSystemPrompt?: string | SystemPromptMap;
   defaultUserPrompt?: string;
+  showSystemPrompt?: boolean;
 }
 
 const EmailDraftWriter: React.FC<EmailDraftWriterProps> = ({
   defaultSystemPrompt = 'You are an expert email writer. Write a professional, concise, and effective email based on the user\'s request.',
-  defaultUserPrompt = ''
+  defaultUserPrompt = '',
+  showSystemPrompt = true
 }) => {
   // Process system prompts
   const [promptOptions, setPromptOptions] = useState<SystemPromptOption[]>([]);
@@ -124,53 +126,108 @@ const EmailDraftWriter: React.FC<EmailDraftWriterProps> = ({
   return (
     <div className="mx-auto max-w-6xl p-4">
       <div className="border rounded-lg p-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Left Column: System Prompt, User Prompt, and Generate Button */}
-          <div className="flex flex-col h-full">
-            {/* System Prompt */}
-            <div className="mb-2 flex-grow">
-              <div className="flex justify-between items-center mb-1">
-                <label className="block font-medium text-sm">System Prompt</label>
-                {promptOptions.length > 1 && (
-                  <div className="flex gap-2 text-xs">
-                    {promptOptions.map((option) => (
-                      <button
-                        key={option.label}
-                        onClick={() => selectPrompt(option.label)}
-                        className={`px-2 py-0.5 rounded ${
-                          selectedPromptKey === option.label.toLowerCase()
-                            ? 'bg-blue-600 text-white'
-                            : 'bg-gray-200 hover:bg-gray-300'
-                        }`}
-                      >
-                        {option.label}
-                      </button>
-                    ))}
-                  </div>
-                )}
+        {showSystemPrompt ? (
+          /* Two-column layout with system prompt */
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Left Column: System Prompt, User Prompt, and Generate Button */}
+            <div className="flex flex-col h-full">
+              {/* System Prompt */}
+              <div className="mb-2 flex-grow">
+                <div className="flex justify-between items-center mb-1">
+                  <label className="block font-medium text-sm">System Prompt</label>
+                  {promptOptions.length > 1 && (
+                    <div className="flex gap-2 text-xs">
+                      {promptOptions.map((option) => (
+                        <button
+                          key={option.label}
+                          onClick={() => selectPrompt(option.label)}
+                          className={`px-2 py-0.5 rounded ${
+                            selectedPromptKey === option.label.toLowerCase()
+                              ? 'bg-blue-600 text-white'
+                              : 'bg-gray-200 hover:bg-gray-300'
+                          }`}
+                        >
+                          {option.label}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                <textarea
+                  value={systemPrompt}
+                  onChange={(e) => setSystemPrompt(e.target.value)}
+                  className="w-full h-80 p-2 border rounded-lg text-sm"
+                  placeholder="Enter your system prompt here..."
+                />
               </div>
-              <textarea
-                value={systemPrompt}
-                onChange={(e) => setSystemPrompt(e.target.value)}
-                className="w-full h-80 p-2 border rounded-lg text-sm"
-                placeholder="Enter your system prompt here..."
-              />
+              
+              {/* User Prompt */}
+              <div className="mb-2">
+                <label className="block font-medium text-sm mb-1">User Prompt</label>
+                <textarea
+                  value={userPrompt}
+                  onChange={(e) => setUserPrompt(e.target.value)}
+                  className="w-full h-20 p-2 border rounded-lg mb-1 text-sm"
+                  placeholder="Example: Write an email to my boss asking for time off next Friday"
+                  rows={5}
+                />
+              </div>
+              
+              {/* Generate Button */}
+              <div className="mb-1">
+                <button
+                  onClick={generateDraft}
+                  disabled={isGenerating}
+                  className="px-3 py-1.5 bg-blue-600 text-white rounded-lg disabled:bg-blue-300 text-sm"
+                >
+                  {isGenerating ? 'Generating...' : 'Generate Draft'}
+                </button>
+                
+                {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
+              </div>
+            </div>
+
+            {/* Right Column: Email Draft */}
+            <div className="flex flex-col h-full">
+              <label className="block font-medium text-sm mb-1">Email Draft</label>
+              
+              {/* Draft Output Area */}
+              <div 
+                className="flex-grow min-h-[28rem] p-2 border rounded-lg whitespace-pre-wrap text-sm"
+                style={{ backgroundColor: '#f9f9f9' }}
+              >
+                {emailDraft || <span className="text-gray-400">Your generated email will appear here...</span>}
+              </div>
+            </div>
+          </div>
+        ) : (
+          /* Single-column layout without system prompt */
+          <div className="flex flex-col w-full max-w-3xl mx-auto">
+            {/* Email Draft */}
+            <div className="mb-4">
+              <label className="block font-medium text-sm mb-1">Email Draft</label>
+              <div 
+                className="w-full min-h-[24rem] p-2 border rounded-lg whitespace-pre-wrap text-sm"
+                style={{ backgroundColor: '#f9f9f9' }}
+              >
+                {emailDraft || <span className="text-gray-400">Your generated email will appear here...</span>}
+              </div>
             </div>
             
             {/* User Prompt */}
-            <div className="mb-2">
-              <label className="block font-medium text-sm mb-1">User Prompt</label>
+            <div className="mb-3">
+              <label className="block font-medium text-sm mb-1">Your Request</label>
               <textarea
                 value={userPrompt}
                 onChange={(e) => setUserPrompt(e.target.value)}
-                className="w-full h-20 p-2 border rounded-lg mb-1 text-sm"
+                className="w-full p-2 border rounded-lg mb-1 text-sm"
                 placeholder="Example: Write an email to my boss asking for time off next Friday"
-                rows={5}
+                rows={3}
               />
             </div>
             
             {/* Generate Button */}
-            <div className="mb-1">
+            <div>
               <button
                 onClick={generateDraft}
                 disabled={isGenerating}
@@ -182,20 +239,7 @@ const EmailDraftWriter: React.FC<EmailDraftWriterProps> = ({
               {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
             </div>
           </div>
-
-          {/* Right Column: Email Draft */}
-          <div className="flex flex-col h-full">
-            <label className="block font-medium text-sm mb-1">Email Draft</label>
-            
-            {/* Draft Output Area */}
-            <div 
-              className="flex-grow min-h-[28rem] p-2 border rounded-lg whitespace-pre-wrap text-sm"
-              style={{ backgroundColor: '#f9f9f9' }}
-            >
-              {emailDraft || <span className="text-gray-400">Your generated email will appear here...</span>}
-            </div>
-          </div>
-        </div>
+        )}
       </div>
     </div>
   );
