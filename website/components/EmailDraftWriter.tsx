@@ -46,7 +46,7 @@ const EmailDraftWriter: React.FC = () => {
 
     try {
       const stream = await openaiClient.current.chat.completions.create({
-        model: 'gpt-4',
+        model: 'gpt-4o-mini',
         messages: [
           { role: 'system', content: systemPrompt },
           { role: 'user', content: userPrompt }
@@ -95,7 +95,7 @@ const EmailDraftWriter: React.FC = () => {
             
             {/* User Prompt and Generate Button */}
             <div>
-              <label className="block font-medium mb-2">Your Request</label>
+              <label className="block font-medium mb-2">User Prompt</label>
               <textarea
                 value={userPrompt}
                 onChange={(e) => setUserPrompt(e.target.value)}
