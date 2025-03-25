@@ -49,7 +49,7 @@ const OpenAIKeyInput: React.FC = () => {
       </label>
       <div className="flex gap-2">
         <input
-          type="password"
+          type="text"
           value={apiKey}
           onChange={handleChange}
           placeholder="Enter your OpenAI API key"
