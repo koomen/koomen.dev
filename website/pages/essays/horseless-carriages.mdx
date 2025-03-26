@@ -68,11 +68,9 @@ Here's a little example implementation of Gmail's email draft writer you can use
     }}
 />
 
-
-
 But this is obviously dumb. Writing these instructions took longer than it would have taken me to write the email myself in the first place. Remarkably, the Gmail team has shipped a product that perfectly captures the experience of managing an underperforming employee. The AI in Gmail is braindead.
 
-Why would the Gmail team ship something so obviously bad? To understand this we need to look under the hood:
+Why would they ship something so obviously bad? To understand this we need to look under the hood:
 
 ## System Prompts and User Prompts
 
@@ -89,12 +87,9 @@ In my original example, the User Prompt was
 <CaptionedText
     size="large"
     caption="My original User Prompt"
->
-Let my boss Garry know that my daughter woke up with the flu this morning and that I won't be able to come in to the office today.
-</CaptionedText>
+>Let my boss Garry know that my daughter woke up with the flu this morning and that I won't be able to come in to the office today.</CaptionedText>
 
-Google keeps the system prompt a secret, but given the output we've all gotten from these things you can imagine what it looks like:
-
+Google keeps the system prompt a secret, but given the output we've all gotten from these things we can imagine what it looks like:
 
 <CaptionedText
     size="large"
@@ -107,7 +102,7 @@ Oh, and I can’t stress this enough, please don’t embarrass our company by su
 Also, equivocate constantly and use annoying phrases like "complex and multifaceted".
 </CaptionedText>
 
-And here we have our answer: Gmail's AI is braindead because _they programmed it to be braindead_. It is braindead by design.
+And here we have our answer: Gmail's AI is braindead because _they prompted it to be braindead_. It is braindead by design.
 
 Why would the Gmail team design their app this way? 
 
