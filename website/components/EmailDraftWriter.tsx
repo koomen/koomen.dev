@@ -13,7 +13,7 @@ type SystemPromptMap = {
 
 interface EmailDraftWriterProps {
   defaultSystemPrompt?: string | SystemPromptMap;
-  defaultUserPrompt?: string;
+  defaultUserPrompt?: string | SystemPromptMap;
   showSystemPrompt?: boolean;
 }
 
@@ -23,10 +23,15 @@ const EmailDraftWriter: React.FC<EmailDraftWriterProps> = ({
   showSystemPrompt = true
 }) => {
   // Process system prompts
-  const [promptOptions, setPromptOptions] = useState<SystemPromptOption[]>([]);
-  const [selectedPromptKey, setSelectedPromptKey] = useState<string>('default');
+  const [systemPromptOptions, setSystemPromptOptions] = useState<SystemPromptOption[]>([]);
+  const [selectedSystemPromptKey, setSelectedSystemPromptKey] = useState<string>('default');
   const [systemPrompt, setSystemPrompt] = useState('');
-  const [userPrompt, setUserPrompt] = useState(defaultUserPrompt);
+  
+  // Process user prompts
+  const [userPromptOptions, setUserPromptOptions] = useState<SystemPromptOption[]>([]);
+  const [selectedUserPromptKey, setSelectedUserPromptKey] = useState<string>('default');
+  const [userPrompt, setUserPrompt] = useState('');
+  
   const [emailDraft, setEmailDraft] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -35,7 +40,7 @@ const EmailDraftWriter: React.FC<EmailDraftWriterProps> = ({
   useEffect(() => {
     if (typeof defaultSystemPrompt === 'string') {
       setSystemPrompt(defaultSystemPrompt);
-      setPromptOptions([{ label: 'Default', text: defaultSystemPrompt }]);
+      setSystemPromptOptions([{ label: 'Default', text: defaultSystemPrompt }]);
     } else {
       const options: SystemPromptOption[] = [];
       for (const [key, value] of Object.entries(defaultSystemPrompt)) {
@@ -46,23 +51,57 @@ const EmailDraftWriter: React.FC<EmailDraftWriterProps> = ({
       }
       
       if (options.length > 0) {
-        setPromptOptions(options);
-        setSelectedPromptKey(Object.keys(defaultSystemPrompt)[0]);
+        setSystemPromptOptions(options);
+        setSelectedSystemPromptKey(Object.keys(defaultSystemPrompt)[0]);
         setSystemPrompt(options[0].text);
       } else {
         const defaultText = 'You are an expert email writer. Write a professional, concise, and effective email based on the user\'s request.';
-        setPromptOptions([{ label: 'Default', text: defaultText }]);
+        setSystemPromptOptions([{ label: 'Default', text: defaultText }]);
         setSystemPrompt(defaultText);
       }
     }
   }, [defaultSystemPrompt]);
   
-  // Handle prompt selection
-  const selectPrompt = (optionLabel: string) => {
-    const option = promptOptions.find(opt => opt.label === optionLabel);
+  // Initialize user prompts
+  useEffect(() => {
+    if (typeof defaultUserPrompt === 'string') {
+      setUserPrompt(defaultUserPrompt);
+      setUserPromptOptions([{ label: 'Default', text: defaultUserPrompt }]);
+    } else {
+      const options: SystemPromptOption[] = [];
+      for (const [key, value] of Object.entries(defaultUserPrompt)) {
+        options.push({
+          label: key.charAt(0).toUpperCase() + key.slice(1), // Capitalize first letter
+          text: value
+        });
+      }
+      
+      if (options.length > 0) {
+        setUserPromptOptions(options);
+        setSelectedUserPromptKey(Object.keys(defaultUserPrompt)[0]);
+        setUserPrompt(options[0].text);
+      } else {
+        setUserPromptOptions([{ label: 'Default', text: '' }]);
+        setUserPrompt('');
+      }
+    }
+  }, [defaultUserPrompt]);
+  
+  // Handle system prompt selection
+  const selectSystemPrompt = (optionLabel: string) => {
+    const option = systemPromptOptions.find(opt => opt.label === optionLabel);
     if (option) {
-      setSelectedPromptKey(optionLabel.toLowerCase());
+      setSelectedSystemPromptKey(optionLabel.toLowerCase());
       setSystemPrompt(option.text);
+    }
+  };
+  
+  // Handle user prompt selection
+  const selectUserPrompt = (optionLabel: string) => {
+    const option = userPromptOptions.find(opt => opt.label === optionLabel);
+    if (option) {
+      setSelectedUserPromptKey(optionLabel.toLowerCase());
+      setUserPrompt(option.text);
     }
   };
   
@@ -133,16 +172,16 @@ const EmailDraftWriter: React.FC<EmailDraftWriterProps> = ({
             <div className="flex flex-col h-full">
               {/* System Prompt */}
               <div className="mb-2 flex-grow">
-                <div className="flex justify-between items-center mb-1">
-                  <label className="block font-medium text-sm">System Prompt</label>
-                  {promptOptions.length > 1 && (
-                    <div className="flex gap-2 text-xs">
-                      {promptOptions.map((option) => (
+                <div className="flex items-center mb-1">
+                  <label className="font-medium text-sm mr-2">System Prompt</label>
+                  {systemPromptOptions.length > 1 && (
+                    <div className="flex gap-1 text-xs">
+                      {systemPromptOptions.map((option) => (
                         <button
                           key={option.label}
-                          onClick={() => selectPrompt(option.label)}
+                          onClick={() => selectSystemPrompt(option.label)}
                           className={`px-2 py-0.5 rounded ${
-                            selectedPromptKey === option.label.toLowerCase()
+                            selectedSystemPromptKey === option.label.toLowerCase()
                               ? 'bg-blue-600 text-white'
                               : 'bg-gray-200 hover:bg-gray-300'
                           }`}
@@ -163,7 +202,26 @@ const EmailDraftWriter: React.FC<EmailDraftWriterProps> = ({
               
               {/* User Prompt */}
               <div className="mb-2">
-                <label className="block font-medium text-sm mb-1">User Prompt</label>
+                <div className="flex items-center mb-1">
+                  <label className="font-medium text-sm mr-2">User Prompt</label>
+                  {userPromptOptions.length > 1 && (
+                    <div className="flex gap-1 text-xs">
+                      {userPromptOptions.map((option) => (
+                        <button
+                          key={option.label}
+                          onClick={() => selectUserPrompt(option.label)}
+                          className={`px-2 py-0.5 rounded ${
+                            selectedUserPromptKey === option.label.toLowerCase()
+                              ? 'bg-blue-600 text-white'
+                              : 'bg-gray-200 hover:bg-gray-300'
+                          }`}
+                        >
+                          {option.label}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
                 <textarea
                   value={userPrompt}
                   onChange={(e) => setUserPrompt(e.target.value)}
@@ -216,7 +274,26 @@ const EmailDraftWriter: React.FC<EmailDraftWriterProps> = ({
             
             {/* User Prompt */}
             <div className="mb-3">
-              <label className="block font-medium text-sm mb-1">Your Request</label>
+              <div className="flex items-center mb-1">
+                <label className="font-medium text-sm mr-2">Your Request</label>
+                {userPromptOptions.length > 1 && (
+                  <div className="flex gap-1 text-xs">
+                    {userPromptOptions.map((option) => (
+                      <button
+                        key={option.label}
+                        onClick={() => selectUserPrompt(option.label)}
+                        className={`px-2 py-0.5 rounded ${
+                          selectedUserPromptKey === option.label.toLowerCase()
+                            ? 'bg-blue-600 text-white'
+                            : 'bg-gray-200 hover:bg-gray-300'
+                        }`}
+                      >
+                        {option.label}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
               <textarea
                 value={userPrompt}
                 onChange={(e) => setUserPrompt(e.target.value)}
