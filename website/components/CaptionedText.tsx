@@ -17,7 +17,7 @@ const CaptionedText: React.FC<CaptionedTextProps> = ({ caption, size = 'medium',
   return (
     <figure className="my-8">
       <div 
-        className={`${sizeClasses[size]} ${color} rounded-lg mx-auto p-4`}
+        className={`${sizeClasses[size]} ${color} rounded-lg mx-auto p-4 font-light`}
       >
         {children}
       </div>
