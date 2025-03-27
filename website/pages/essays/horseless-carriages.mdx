@@ -149,14 +149,12 @@ Not only is the output better for **this** email, it's going to be better for **
 
 And the best part of all? Teaching a model like this is surprisingly FUN. I encourage you to try it out by spending a few minutes thinking about how YOU write email. Try writing a "You System Prompt" and see what happens. If the output doesn't look right, try to imagine what you left out of your explanation and try it again. Repeat that a few times until the output starts to feel right to you.
 
-Better yet, try it with a few other User Prompts:
+Better yet, try it with a few other User Prompts, for example:
 
 <CaptionedText
     size="large"
     caption={"Customer support request User Prompt"}
->
-Write an email to comcast customer service explaining that they accidentally double billed you.
-</CaptionedText>
+>Write an email to comcast customer service explaining that they accidentally double billed you.</CaptionedText>
 
 Are you a polite, kill-em with kindess kind of person? Great, add the following to your system prompt and give it a go:
 
@@ -181,7 +179,7 @@ Maybe you're a short tempered pound-your-fist-on-the-table kind of person. Try t
 If you're communicating with customer service, you're a short tempered pound-your-fist-on-the-table kind of person. You're pissed off and you're not afraid to show it. You know it's not their fault but you've had a hell of a day and you've had it just about up to here. No matter what the problem is, demand to speak with a manager. That always works.
 </CaptionedText>
 
-There's something magical about teaching an LLM to solve a problem the same way you would and watching it succeed. Interestingly it's actually _easier_ than teaching a human because, unlike a human, an LLM will give you instantaneous, honest feedback about whether your explanation was good enough or not.
+There's something magical about teaching an LLM to solve a problem the same way you would and watching it succeed. Surprisingly it's actually _easier_ than teaching a human because, unlike a human, an LLM will give you instantaneous, honest feedback about whether your explanation was good enough or not. 
 
 By exposing the System Prompt and making it editable, we've created a product experience that produces better results and is _actually fun to use_. Why didn't the Gmail team do this in the first place?
 
@@ -227,29 +225,22 @@ Of course, people aren't uniform and in every group you'll find a wide range of 
 
 This imagined "average user" is exactly who the gmail team wrote their system prompt for, that's why it's so terrible. And, of course, in the old world this approach made perfect sense. It's the developer's job to design the system, therefore it's the developer's job to write the system prompt.
 
-But I don’t want some anonymous Googler (and, presumably, a small army of lawyers) to decide how Gemini should write my emails. They’re **my** emails, goddamnit, and I want to make that decision for myself. And the beauty of LLMs is that for the first time in the history of software, I can actually do this myself without writing code.
+But I don’t want some anonymous Googler (and, presumably, a small army of lawyers) to decide how Gemini should write my emails. They’re **my** emails, goddamnit, and I want to make that decision for myself. And the beauty of LLMs is that for the first time in the history of software, I can actually do this without writing code.
 
 I can, that is, as soon as the developer gets out of the way.
 
+## Good AI Apps
+
+This is the idea that I think will underpin software development in the age of AI: it's no longer the developer's job to compress the needs of many into a single point-and-click UI that the "average user" can use to tell a computer what to do. Instead, the developer's job is to get out of the way so that the user can teach a model how to act on his or her behalf. 
+
+We can use this idea to infer a lot about what good, "AI-native" software will look like. Let's use our email example to do that.
 
 
 
 
 
 
----
-
-
-
-Computers are powerful tools, and every year humans rely on them more and more. As entrenched middlemen between humanity and its collective objectives, software devs have done pretty well for themselves over the last fifty years. Writing code is not only hard, it's _expensive_.
-
-
-
-
-
-
-
-
+Earlier in this essay I used a "Pete System Prompt" to teach an LLM to write emails the way that I do. 
 
 
 
@@ -257,31 +248,26 @@ Computers are powerful tools, and every year humans rely on them more and more. 
 
 
 
+Let's use our email example to explore what this means 
 
 
-In the modern software industry, developers play the role of middleman between humans and computers. We needed middlemen because for as long as we've had computers 
 
-As long as we've had a software industry, developers' jobs have looked something like this:
 
-1. Talk to lots users and figure out what they want
-2. Build software that does enough of what most of them want
-3. Sell it to enough of them to make a profit
 
-In this world, the developer acts as a middleman between between users and computers. 
 
-Of course, we needed these middlemen because writing code is hard. It's hard enough that I'd rather pay a few dollars for an off-the-shelf app than spend the time it would take to build one myself. It's even hard enough that many big companies would rather pay millions of dollars to Salesforce than spend the money it would take to build their own CRM.
 
-Software is incredibly powerful, and every year humans rely on it more and more to achieve their objectives. As entrenched middlemen between humanity and its collective desires, software developers have done pretty well for themselves over the last 50 years.
 
-The result of this dynamic is that most software is written for large groups of people. These people all have different needs, of course, and developers can't satisfy them all (because coding is hard) so developers hire Product Managers whose job it is to compress the needs of many users into a simplified amalgam that software engineers can build for.
+We can use this idea to infer a lot about what good software will look like in the age of AI.
 
-This "average user" is exactly who the gmail team wrote their system prompt for. That's why it's so terrible.
 
-This approach makes perfect sense in the old world. In the old world it’s the developers’ job to gather requirements, translate them into code, and abstract that code away underneath a friendly UI. In the old world a System Prompt is just code that governs how the system will write emails, so it should be secured and abstracted away just like the rest of the code.
 
-But I don’t want some anonymous Googler to decide how Gemini should write my emails. They’re my emails, goddamnit, and I want to make that decision for myself. And the beauty of LLMs is that for the first time in the history of software, I can actually do this.
 
-How? By writing my own System Prompt.
+
+
+
+
+Does this mean we'll all need to write all of our prompts from scratch? I doubt it. There are plenty of tools the Gmail team could give me to help me write good prompts. For example, they can use an LLM to read through the thousands of emails I've sent over the years and produce a plausible first draft on my behalf. They could let me select "canonical Pete emails" to serve as examples right there in the prompt. They could use an LLM to help me teach 
+
 
 </PageWrapper>
 
