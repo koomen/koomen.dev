@@ -1,6 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
-import OpenAI from 'openai';
-import { getOpenAIKey } from './OpenAIKeyInput';
+import React, { useState, useEffect } from 'react';
 
 type SystemPromptOption = {
   label: string;
@@ -104,19 +102,8 @@ const EmailDraftWriter: React.FC<EmailDraftWriterProps> = ({
       setUserPrompt(option.text);
     }
   };
-  
-  const openaiClient = useRef<OpenAI | null>(null);
 
   const generateDraft = async () => {
-
-    if (!openaiClient.current) {
-      openaiClient.current = new OpenAI({
-        apiKey: "NOTUSED",
-        baseURL: "https://llm.koomen.dev",
-        dangerouslyAllowBrowser: true
-      });
-    }
-
     if (!userPrompt.trim()) {
       setError('Please enter a user prompt.');
       return;
@@ -127,23 +114,66 @@ const EmailDraftWriter: React.FC<EmailDraftWriterProps> = ({
     setEmailDraft('');
 
     try {
-      const stream = await openaiClient.current.chat.completions.create({
-        model: 'gpt-4o-mini',
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: userPrompt }
-        ],
-        stream: true,
+      const response = await fetch('https://llm.koomen.dev/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'gpt-4o-mini',
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: userPrompt }
+          ],
+          stream: true,
+        }),
       });
 
-      for await (const chunk of stream) {
-        const content = chunk.choices[0]?.delta?.content || '';
-        setEmailDraft((prev) => prev + content);
+      if (!response.ok) {
+        throw new Error(`API request failed with status ${response.status}`);
       }
+
+      const reader = response.body?.getReader();
+      if (!reader) {
+        throw new Error('Response body is not readable');
+      }
+
+      const decoder = new TextDecoder();
+      let draftText = '';
+
+      // Process the stream
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        
+        const chunk = decoder.decode(value, { stream: true });
+        const lines = chunk.split('\n').filter(line => line.trim() !== '');
+        
+        for (const line of lines) {
+          // Skip the initial "data: [DONE]" message
+          if (line === 'data: [DONE]') continue;
+          
+          // Remove the "data: " prefix
+          const jsonData = line.replace(/^data: /, '');
+          
+          try {
+            const data = JSON.parse(jsonData);
+            const content = data.choices[0]?.delta?.content || '';
+            if (content) {
+              draftText += content;
+              setEmailDraft(draftText);
+            }
+          } catch (e) {
+            // Skip json parse errors for non-data lines
+            console.error("JSON parse error:", e);
+          }
+        }
+      }
+      
+      setIsGenerating(false);
     } catch (err) {
-      console.error('Error generating email draft:', err);
-      setError('Error generating email draft. Please check your API key and try again.');
-    } finally {
+      console.error('Error generating draft:', err);
+      setError(err instanceof Error ? err.message : 'An unknown error occurred');
       setIsGenerating(false);
     }
   };
