@@ -106,27 +106,13 @@ const EmailDraftWriter: React.FC<EmailDraftWriterProps> = ({
   };
   
   const openaiClient = useRef<OpenAI | null>(null);
-  
-  useEffect(() => {
-    const apiKey = getOpenAIKey();
-    if (apiKey) {
-      openaiClient.current = new OpenAI({
-        apiKey: apiKey,
-        dangerouslyAllowBrowser: true // Needed for client-side usage
-      });
-    }
-  }, []);
 
   const generateDraft = async () => {
-    const apiKey = getOpenAIKey();
-    if (!apiKey) {
-      setError('OpenAI API key not found. Please add your API key first.');
-      return;
-    }
 
     if (!openaiClient.current) {
       openaiClient.current = new OpenAI({
-        apiKey,
+        apiKey: "NOTUSED",
+        baseURL: "https://llm.koomen.dev",
         dangerouslyAllowBrowser: true
       });
     }
