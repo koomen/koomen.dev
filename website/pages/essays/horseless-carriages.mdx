@@ -200,8 +200,6 @@ The brokenness of this design was invisible to everyone at the time and laughabl
 
 I suspect we are living through a similar period with AI applications. Many of them are infuriatingly useless in the same way that Gmail's Gemini integration is. They're useless not because the technology they're built with is useless, but because we haven't yet figured out how to build good tools with this technology.
 
-We're still building apps with _old world thinking_.
-
 ## Old world thinking
 
 Up until very recently, if you wanted a computer to do something you had two options for making that happen:
@@ -209,19 +207,70 @@ Up until very recently, if you wanted a computer to do something you had two opt
 1. Write a program
 2. Use a program written by someone else
 
-Programming is hard, and for that reason most of us choose option 2 most of the time. 
+Programming computers is hard, so most of us choose option 2 most of the time. It's why I'd rather pay a few dollars for an off-the-shelf app than build it myself, and why big companies would rather pay millions of dollars to Salesforce than build their own CRM. 
 
-This simple fact underpins the modern software industry, in which software developers act as middlemen between users and computers. It's the reason I'd rather pay a few dollars for an off-the-shelf app than spend the time it would take me to build one myself. It's the reason most big companies would rather pay millions of dollars to Salesforce than spend the money it would take to build their own CRM.
+The modern software industry is built on the idea that we need developers to act as middelmen between us and computers. They translate our desires into code and abstract it away from us behind simple interfaces we can understand. 
 
-And because writing code is hard, it's also expensive. It's expensive enough that in most cases the only way to do it profitably is to build one piece of software for a large group of users. As a consequence, most developers' jobs look something like this:
+And of course in most cases the only way to do this profitably is to build one piece of software for a large group of users. 
+
+
+
+This arrangement has worked out pretty well for developers; programming is hard enough that they can charge a lot of money to do it.
+
+Because programming is hard, it's also expensive. It's expensive enough that in most cases the only way to do it profitably is to build one piece of software for a large group of users. In every group you'll find a wide range of desires. Developers can't satisfy all of them, so they hire Product Managers whose job it is to compress the needs of many users into a simplifed "average user" amalgam that developers can build for.
+
+
+
+
+This imagined "average user" is exactly who the Gmail team wrote their system prompt for; that's why it's so terrible.
+
+
+
 
 1. Talk to lots users and figure out what they want
 2. Build software that does enough of what most of them want
 3. Sell it to enough of them to make a profit
 
-Of course, people aren't uniform and in every group you'll find a wide range of desires. Developers can't satisfy all of them, so they hire Product Managers whose job it is to compress the needs of many users into a simplifed "average user" amalgam that developers can build for.
 
-This imagined "average user" is exactly who the Gmail team wrote their system prompt for; that's why it's so terrible. And, of course, in the old world this approach made perfect sense. It's the developer's job to design the system, therefore it's the developer's job to write the system prompt.
+
+We rely on developers to act as middlemen between us and computers. And of course because programming is h
+
+
+
+
+
+
+
+
+Of course, people aren't uniform and 
+
+
+
+
+
+This is exactly the "old world thinking" I'm referring to:
+- The system prompt is part of the "system" and should be written by the developer
+- The developer should write a single one-size-fits-all prompt for the "average user"
+- The system prompt is part of the source code and should be hidden from the user the same way source code is 
+
+
+
+
+
+
+
+
+
+
+the idea that a single system prompt should be written by an app developer for the "average" user. 
+
+
+is part of the source code and should be written by an app developer 
+
+
+
+
+And, of course, in the old world this approach made perfect sense. It's the developer's job to design the system, therefore it's the developer's job to write the system prompt.
 
 But I don't want some anonymous Googler (and, presumably, a small army of lawyers) to decide how Gemini should write my emails. They're **my** emails, and I want to make that decision for myself. Thanks to Large Language Models, for the first time in the history of software, I can actually do this without writing code.
 
