@@ -84,6 +84,8 @@ As an aside: I'm leaving some details out and of course today's models can input
 
 LLM providers like OpenAI and Anthropic have adopted a convention to help make prompt writing easier: they split the prompt into two components: a **System Prompt** and a **User Prompt**, so named because in many API applications the app developers write the System Prompt and the user writes the User Prompt.
 
+<SystemAndUserPromptDiagram />
+
 In my original example, the User Prompt was 
 
 <CaptionedText
@@ -225,11 +227,20 @@ But in the Gmail case, this AI assistant is supposed to represent _me_. These ar
 
 In the old world I'd have to accept the one-size-fits-all version because the only alternative was to write my own program, and writing programs is hard.
 
-In the new world, however, I don't need a middleman tell a computer what to do anymore. I just need to be able to write my own System Prompt, and writing System Prompts is easy!
+In the new world I don't need a middleman tell a computer what to do anymore. I just need to be able to write my own System Prompt, and writing System Prompts is easy!
 
 ## Good AI apps
 
-My core contention in this essay is that AI applications that do work my behalf should allow me to see and edit the entire prompt, including the System Prompt. The Prompt is part of the 
+My core contention is this: when an LLM agent is acting on my behalf I, as the world's foremost expert on me, should be allowed to teach it how to do that.
+
+The System and User prompt components are useful abstractions, but not for dividing work between the developer and the user. The System Prompt is not code, is the user interface for teaching an AI "agent" (or "assistant") who it is and how it operates in the general case. The User Prompt is the .  
+
+In the email-writing case, the System Prompt teaches the agent 
+
+
+
+My core contention in this essay is that AI applications that do work my behalf should allow me to see and edit the entire prompt, including the System Prompt. 
+
 
 
 
