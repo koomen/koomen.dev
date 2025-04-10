@@ -211,17 +211,25 @@ Programming computers is hard, so most of us choose option 2 most of the time. I
 
 The modern software industry is built on the idea that we need developers to act as middlemen between us and computers. They translate our desires into code and abstract it away from us behind simple interfaces we can understand. 
 
-And of course in most cases the only way to do this profitably is to build one piece of software for a large group of users. Devlopers are used to building one-size-fits-all software, and we're using to _using_ one-size-fits-all software. 
+And of course in most cases the only way to do this profitably is to build one piece of software for a large group of users. Devlopers are used to building one-size-fits-all software, and we're using to _using_ one-size-fits-all software.
 
-This is the "old world thinking" that I think led the Gmail team to design their AI assistant this way: _it's the developer's job to build the software, and the System Prompt is part of the software, so it must be the developer's job to write the System Prompt too._ Looking back at the way we've always build software, this is a perfectly reasonable assumption.
+In the old world, the division of responsibility between developers and users is clear. The developer writes code, which governs how the software behaves in the general case. The user provides input, which governs how the software behaves in the specific case. 
 
-But these are _my emails_, and this AI assistant is supposed to represent _me_. I want them written in _my_ voice, not the one-size-fits-all voice designed by a committee of Google product managers and lawyers. In the old world I'd have to accept the one-size-fits-all version because the only alternative was to write my own code, and writing code is hard.
+The code is where rules and boundaries are enforced. The code creates a little sandbox for the user to play in and (hopefully) prevents the user from harming themselves in the process.
+
+By splitting the prompt into System and User components, we've created analogs that map cleanly onto these old world domains. The System Prompt governs how the LLM behaves in the general case. It is responsible for enforcing rules and boundaries and (hopefully) preventing the user from harming themselves (or Google's reputation). It creates a little sandbox where the User Prompt, which governs how the LLM behaves in the specific case, lives.
+
+When you think about the prompt this way, it's only natural to assume that it's the developer's job to write the System Prompt and the user's job to write the User Prompt. That's how we've always built software.
+
+But in the Gmail case, this AI assistant is supposed to represent _me_. These are _my emails_. I want them written in _my_ voice, not the one-size-fits-all slop voice designed by a committee of Google product managers and lawyers. 
+
+In the old world I'd have to accept the one-size-fits-all version because the only alternative was to write my own program, and writing programs is hard.
 
 In the new world, however, I don't need a middleman tell a computer what to do anymore. I just need to be able to write my own System Prompt, and writing System Prompts is easy!
 
 ## Good AI apps
 
-My core contention in this essay is that AI applications that do work on my behalf should allow me to edit the whole prompt. 
+My core contention in this essay is that AI applications that do work my behalf should allow me to see and edit the entire prompt, including the System Prompt. The Prompt is part of the 
 
 
 
