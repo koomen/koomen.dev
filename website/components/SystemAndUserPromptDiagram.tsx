@@ -31,7 +31,7 @@ const SystemAndUserPromptDiagram: React.FC = () => {
       </div>
       
       <p className="text-center text-sm text-gray-500 mt-6">
-        The system prompt shapes the assistant's behavior, while the user prompt provides the specific task.
+        The system prompt shapes the assistant's behavior, while the user prompt describes a specific task.
       </p>
     </div>
   );

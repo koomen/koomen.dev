@@ -120,7 +120,7 @@ You're Pete, a 43 year old husband, father, programmer, and YC Partner.
 
 You're very busy and so is everyone you correspond with, so you do your best to keep your emails as short as possible and to the point. You avoid all unnecessary words and you often omit punctuation or leave misspellings unaddressed because it's not a big deal and you'd rather save the time. You prefer one-line emails.
 
-Do your best to be kind, and don't be so informal that it comes across as rude."
+Do your best to be kind, and don't be so informal that it comes across as rude.
 </CaptionedText>
 
 Intuitively, you can see what's going on here: when I write my own system prompt I'm teaching the LLM to write emails the way that I would. Does it work? Let's give it a try.
@@ -219,11 +219,11 @@ In the old world, the division of responsibility between developers and users is
 
 The code is where rules and boundaries are enforced. The code creates a little sandbox for the user to play in and (hopefully) prevents the user from harming themselves in the process.
 
-By splitting the prompt into System and User components, we've created analogs that map cleanly onto these old world domains. The System Prompt governs how the LLM behaves in the general case. It is responsible for enforcing rules and boundaries and (hopefully) preventing the user from harming themselves (or Google's reputation). It creates a little sandbox where the User Prompt, which governs how the LLM behaves in the specific case, lives.
+By splitting the prompt into System and User components, we've created analogs that map cleanly onto these old world domains. The System Prompt governs how the LLM behaves in the general case. It is responsible for enforcing rules and boundaries and (hopefully) preventing the user from "harming themselves" (read: harming Google's reputation). It creates a little sandbox where the User Prompt, which governs how the LLM behaves in the specific case, lives.
 
 When you think about the prompt this way, it's only natural to assume that it's the developer's job to write the System Prompt and the user's job to write the User Prompt. That's how we've always built software.
 
-But in the Gmail case, this AI assistant is supposed to represent _me_. These are _my emails_. I want them written in _my_ voice, not the one-size-fits-all slop voice designed by a committee of Google product managers and lawyers. 
+But in Gmail's case, this AI assistant is supposed to represent _me_. These are _my emails_. I want them written in _my_ voice, not the one-size-fits-all voice designed by a committee of Google product managers and lawyers. 
 
 In the old world I'd have to accept the one-size-fits-all version because the only alternative was to write my own program, and writing programs is hard.
 
@@ -231,11 +231,21 @@ In the new world I don't need a middleman tell a computer what to do anymore. I 
 
 ## Render unto the developer...
 
-My core contention is this: when an LLM agent is acting on my behalf I, as the world's foremost expert on me, should be allowed to teach it how to do that.
+My core contention in this essay is this: when an LLM agent is acting on my behalf I, as the world's foremost expert on me, should be allowed to teach it how to do that.
 
-The System and User prompt components are useful abstractions, but not for dividing work between the developer and the user. The System Prompt is not code, is the interface for teaching an AI "agent" (or "assistant") who it is and how it operates in the general case. The User Prompt is the interface for describing a specific task. 
+The System and User prompt components are useful abstractions, but not for dividing work between the developer and the user. The System Prompt is not code, it is the interface for teaching an AI "agent" (or "assistant") who it is and how it operates in the general case. The User Prompt is the interface for describing a specific task to be accomplished. 
+
+
+
+
+
+
+
+
 
 In the email-writing case, I want to use the System Prompt to teach the LLM how I write emails. If I want help writing an email draft from scratch I'd use the User Prompt to do that, but if I just want help responding to an incoming email, I shouldn't even need to write the User Prompt--it's just the email I'd like a response written for.
+
+
 
 
 
