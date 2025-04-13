@@ -243,7 +243,13 @@ This means that in most AI apps System Prompts should be written by the user, no
 
 If developers aren't writing the context, what are they doing? They're building the agent-builder UI, obviously, and they're building _agent tools_. 
 
-Tools are the mechanism by which agents interact with the outside world. They are 
+Tools are the mechanism by which agents act on the outside world. My email-writing agent needs a tool to submit a draft for my review. It might use another tool to send an email without my review (if I'm feeling confident enough to allow that) or to search my inbox for previous emails from a particular email address or to check YC's founder directory to see if an email came from a YC founder.
+
+Tools are also the security layer for agents. Whether an agent can or cannot do a particular thing is determined by which tools it has access to. This is of course a more natural place for a security layer than trying to build one between the System and User Prompts. 
+
+
+
+Much more can (and has) been written about agent tools, but while we're talking about 
 
 
 
