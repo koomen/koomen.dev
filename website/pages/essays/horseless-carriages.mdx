@@ -229,13 +229,21 @@ In the old world I'd have to accept the one-size-fits-all version because the on
 
 In the new world I don't need a middleman tell a computer what to do anymore. I just need to be able to write my own System Prompt, and writing System Prompts is easy!
 
-## Render unto the developer...
+## Render unto the user...
 
-My core contention in this essay is this: when an LLM agent is acting on my behalf I, as the world's foremost expert on me, should be allowed to teach it how to do that.
+The System and User prompt components are useful abstractions, but not for dividing work between the developer and the user. The System Prompt is not code, it is the interface for teaching an AI "agent" (or "assistant") who it is and how it operates in the general case. It is the _context_ an agent needs in order to do its job. The User Prompt is the interface for describing a specific task to be accomplished.
 
-The System and User prompt components are useful abstractions, but not for dividing work between the developer and the user. The System Prompt is not code, it is the interface for teaching an AI "agent" (or "assistant") who it is and how it operates in the general case. The User Prompt is the interface for describing a specific task to be accomplished. 
+When you think about it that way, "System" and "User" are terrible names. For the rest of this essay, I'll occasionally swap "System Prompt" and "User Prompt" with "Context" and "Task", which both feel more appropriate. 
 
+My core contention in this essay is this: when an LLM agent is acting on my behalf I should be allowed to teach it how to do that. More generally: **the context an agent needs in order to do X should be written by an expert in X**.
 
+For most interesting instances of X, expertise is context-specific. It is specific to a particular domain (e.g. email-writing) and also to a particular environment (e.g. my corporate email account). This is true for many other disciplines: just like I am the world's foremost expert on how I write emails, YC's accounting team are the world's foremost expert on how accounting is done at YC. Just like I want to write my own email-writing prompt, I think most accountants are going to want to write their own accounting prompts.
+
+This means that in most AI apps System Prompts should be written by the user, not the software developer or even a domain expert hired by the developer. Most AI apps should be _agent builders_.
+
+If developers aren't writing the context, what are they doing? They're building the agent-builder UI, obviously, and they're building _agent tools_. 
+
+Tools are the mechanism by which agents interact with the outside world. They are 
 
 
 
