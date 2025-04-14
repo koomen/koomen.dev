@@ -1,5 +1,21 @@
 import React, { useState } from 'react';
 
+const DEFAULT_PROMPT = `You are an email labeling assistant. For each email, analyze it and respond ONLY with a JSON object containing:
+1. "label": A concise 1-2 word category for the email (e.g., "urgent", "newsletter", "spam", "personal", etc.)
+2. "color": A CSS color name or hex code that represents this category (e.g., "red", "green", "blue", "#FF5733")
+
+Your response must be valid JSON and contain nothing else - no explanations, no additional text.
+Example response: {"label": "urgent", "color": "red"}
+
+Here are the labels I'd like you to use. Use ONLY these labels, don't invent your own:
+
+If it's from my boss Garry: important, red
+If it's from anyone else @yc.com: YC, orange
+If it's from my wife Sumana: Personal, pink
+If it's a tech-related email, e.g. a forum digest: Tech, gray
+If it's someone trying to sell me something: Spam, black
+`;
+
 interface Label {
   label: string;
   color: string;
@@ -100,7 +116,7 @@ const generateEmails = (): Email[] => {
 };
 
 const EmailLabeler: React.FC = () => {
-  const [prompt, setPrompt] = useState<string>('');
+  const [prompt, setPrompt] = useState<string>(DEFAULT_PROMPT);
   const [emails, setEmails] = useState<Email[]>(generateEmails());
   const [expandedEmailId, setExpandedEmailId] = useState<number | null>(null);
   const [isLabeling, setIsLabeling] = useState<boolean>(false);
@@ -129,7 +145,7 @@ const EmailLabeler: React.FC = () => {
       const email = updatedEmails[i];
       
       try {
-        // Construct the prompt with email content
+        // Construct the email content
         const emailContent = `
 From: ${email.sender}
 To: ${email.receiver}
@@ -138,22 +154,49 @@ Subject: ${email.subject}
 ${email.body}
         `;
         
-        const fullPrompt = `${prompt}\n\n${emailContent}`;
-        
-        // Make a call to the llm.koomen.dev API
-        const response = await fetch('https://llm.koomen.dev', {
+        // Make a call to the llm.koomen.dev API using ChatGPT format
+        const response = await fetch('https://llm.koomen.dev/v1/chat/completions', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            prompt: fullPrompt,
+            model: 'gpt-4o-mini',
+            messages: [
+              { 
+                role: 'system', 
+                content: `${prompt}
+
+You are an email labeling assistant. For each email, analyze it and respond ONLY with a JSON object containing:
+1. "label": A concise 1-2 word category for the email (e.g., "urgent", "newsletter", "spam", "personal", etc.)
+2. "color": A CSS color name or hex code that represents this category (e.g., "red", "green", "blue", "#FF5733")
+
+Your response must be valid JSON and contain nothing else - no explanations, no additional text.
+Example response: {"label": "urgent", "color": "red"}`
+              },
+              { 
+                role: 'user', 
+                content: emailContent 
+              }
+            ],
+            stream: false,
           }),
         });
         
         if (response.ok) {
-          const result: Label = await response.json();
-          updatedEmails[i] = { ...email, label: result };
+          const result = await response.json();
+          // Extract the content from the response
+          const content = result.choices[0]?.message?.content;
+          
+          if (content) {
+            try {
+              // Parse the content as JSON
+              const labelData: Label = JSON.parse(content);
+              updatedEmails[i] = { ...email, label: labelData };
+            } catch (jsonError) {
+              console.error('Error parsing JSON response:', jsonError);
+            }
+          }
         }
       } catch (error) {
         console.error('Error labeling email:', error);
