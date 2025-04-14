@@ -1,5 +1,10 @@
 import React, { useState } from 'react';
 
+interface Label {
+  label: string;
+  color: string;
+}
+
 interface Email {
   id: number;
   sender: string;
@@ -7,6 +12,7 @@ interface Email {
   receiver: string;
   body: string;
   type: 'newsletter' | 'sales' | 'boss' | 'colleague' | 'personal';
+  label?: Label;
 }
 
 const generateEmails = (): Email[] => {
@@ -95,8 +101,10 @@ const generateEmails = (): Email[] => {
 
 const EmailLabeler: React.FC = () => {
   const [prompt, setPrompt] = useState<string>('');
-  const [emails] = useState<Email[]>(generateEmails());
+  const [emails, setEmails] = useState<Email[]>(generateEmails());
   const [expandedEmailId, setExpandedEmailId] = useState<number | null>(null);
+  const [isLabeling, setIsLabeling] = useState<boolean>(false);
+  const [labelingProgress, setLabelingProgress] = useState<number>(0);
   
   const handleEmailClick = (id: number) => {
     setExpandedEmailId(expandedEmailId === id ? null : id);
@@ -104,6 +112,59 @@ const EmailLabeler: React.FC = () => {
   
   const truncateText = (text: string, maxLength: number = 40) => {
     return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
+  };
+  
+  const labelEmails = async () => {
+    if (!prompt.trim()) {
+      alert('Please enter a prompt for the email reading agent.');
+      return;
+    }
+    
+    setIsLabeling(true);
+    setLabelingProgress(0);
+    
+    const updatedEmails = [...emails];
+    
+    for (let i = 0; i < updatedEmails.length; i++) {
+      const email = updatedEmails[i];
+      
+      try {
+        // Construct the prompt with email content
+        const emailContent = `
+From: ${email.sender}
+To: ${email.receiver}
+Subject: ${email.subject}
+
+${email.body}
+        `;
+        
+        const fullPrompt = `${prompt}\n\n${emailContent}`;
+        
+        // Make a call to the llm.koomen.dev API
+        const response = await fetch('https://llm.koomen.dev', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            prompt: fullPrompt,
+          }),
+        });
+        
+        if (response.ok) {
+          const result: Label = await response.json();
+          updatedEmails[i] = { ...email, label: result };
+        }
+      } catch (error) {
+        console.error('Error labeling email:', error);
+      }
+      
+      // Update progress
+      setLabelingProgress((i + 1) / updatedEmails.length * 100);
+    }
+    
+    setEmails(updatedEmails);
+    setIsLabeling(false);
   };
   
   return (
@@ -117,7 +178,32 @@ const EmailLabeler: React.FC = () => {
           value={prompt}
           onChange={(e) => setPrompt(e.target.value)}
           placeholder="Enter your prompt for the email reading agent..."
+          disabled={isLabeling}
         />
+        
+        <div className="mt-4">
+          <button
+            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
+            onClick={labelEmails}
+            disabled={isLabeling}
+          >
+            {isLabeling ? 'Labeling Emails...' : 'Label Emails'}
+          </button>
+          
+          {isLabeling && (
+            <div className="mt-2">
+              <div className="w-full bg-gray-200 rounded-full h-2.5">
+                <div 
+                  className="bg-blue-600 h-2.5 rounded-full" 
+                  style={{ width: `${labelingProgress}%` }}
+                ></div>
+              </div>
+              <p className="text-sm text-gray-600 mt-1">
+                {Math.round(labelingProgress)}% complete
+              </p>
+            </div>
+          )}
+        </div>
       </div>
       
       <div className="md:w-1/2">
@@ -129,11 +215,24 @@ const EmailLabeler: React.FC = () => {
                 className="p-3 cursor-pointer hover:bg-gray-50 flex justify-between items-center"
                 onClick={() => handleEmailClick(email.id)}
               >
-                <div>
+                <div className="flex-1">
                   <span className="font-medium">{email.sender}</span>
-                  <p className="text-sm text-gray-600">{truncateText(email.subject)}</p>
+                  <div className="flex items-center">
+                    <p className="text-sm text-gray-600 mr-2">{truncateText(email.subject)}</p>
+                    {email.label && (
+                      <span 
+                        className="px-2 py-1 text-xs rounded-full" 
+                        style={{ 
+                          backgroundColor: email.label.color,
+                          color: ['white', 'yellow', 'lime', 'cyan'].includes(email.label.color) ? 'black' : 'white'
+                        }}
+                      >
+                        {email.label.label}
+                      </span>
+                    )}
+                  </div>
                 </div>
-                <div className="text-gray-400">
+                <div className="text-gray-400 ml-2">
                   {expandedEmailId === email.id ? '▼' : '▶'}
                 </div>
               </div>
