@@ -10,9 +10,9 @@ Example response: {"label": "urgent", "color": "red", "priority": 9}
 
 Here are the labels I'd like you to use. Use ONLY these labels, don't invent your own:
 
-If it's from my boss Garry: important, red, priority 8-10
+If it's from my boss Garry: important, red, priority 8-9
 If it's from anyone else @yc.com: YC, orange, priority 6-7
-If it's from my wife Sumana: Personal, pink, priority 7-9
+If it's from my wife Sumana: Personal, pink, priority 10
 If it's a tech-related email, e.g. a forum digest: Tech, gray, priority 3-5
 If it's someone trying to sell me something: Spam, black, priority 1-2
 
@@ -237,7 +237,7 @@ ${email.body}
           Email Reading Agent Prompt
         </h3>
         <textarea
-          className="w-full p-2 border rounded-md flex-grow font-mono text-sm min-h-[400px]"
+          className="w-full p-2 border rounded-md flex-grow font-mono text-xs min-h-[350px]"
           value={prompt}
           onChange={(e) => setPrompt(e.target.value)}
           placeholder="Enter your prompt for the email reading agent..."
@@ -275,16 +275,16 @@ ${email.body}
           {sortedEmails.map((email) => (
             <div key={email.id} className="border-b last:border-b-0">
               <div 
-                className="p-3 cursor-pointer hover:bg-gray-50 flex justify-between items-center"
+                className="py-1.5 px-2 cursor-pointer hover:bg-gray-50 flex justify-between items-center"
                 onClick={() => handleEmailClick(email.id)}
               >
                 <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="font-medium">{email.sender}</span>
+                  <div className="flex items-center gap-2 mb-0.5">
+                    <span className="font-medium text-sm">{email.sender}</span>
                     {email.label && (
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-1">
                         <span 
-                          className="px-2 py-0.5 text-xs rounded-full" 
+                          className="px-1.5 py-0.5 text-xs rounded-full text-xs" 
                           style={{ 
                             backgroundColor: email.label.color,
                             color: ['white', 'yellow', 'lime', 'cyan'].includes(email.label.color) ? 'black' : 'white'
@@ -298,21 +298,21 @@ ${email.body}
                       </div>
                     )}
                   </div>
-                  <p className="text-sm text-gray-600">{truncateText(email.subject)}</p>
+                  <p className="text-xs text-gray-600">{truncateText(email.subject)}</p>
                 </div>
-                <div className="text-gray-400 ml-2">
+                <div className="text-gray-400 ml-2 text-xs">
                   {expandedEmailId === email.id ? '▼' : '▶'}
                 </div>
               </div>
               
               {expandedEmailId === email.id && (
-                <div className="p-3 bg-gray-50 border-t">
-                  <div className="mb-2">
+                <div className="py-2 px-3 bg-gray-50 border-t text-xs">
+                  <div className="mb-1">
                     <p><strong>From:</strong> {email.sender}</p>
                     <p><strong>To:</strong> {email.receiver}</p>
                     <p><strong>Subject:</strong> {email.subject}</p>
                   </div>
-                  <div className="border-t pt-2 mt-2">
+                  <div className="border-t pt-1 mt-1">
                     <p className="whitespace-pre-line">{email.body}</p>
                   </div>
                 </div>
