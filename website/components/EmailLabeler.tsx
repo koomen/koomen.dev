@@ -3,22 +3,30 @@ import React, { useState } from 'react';
 const DEFAULT_PROMPT = `You are an email labeling assistant. For each email, analyze it and respond ONLY with a JSON object containing:
 1. "label": A concise 1-2 word category for the email (e.g., "urgent", "newsletter", "spam", "personal", etc.)
 2. "color": A CSS color name or hex code that represents this category (e.g., "red", "green", "blue", "#FF5733")
+3. "priority": A number from 1-10 indicating how important this email is (10 being highest priority)
 
 Your response must be valid JSON and contain nothing else - no explanations, no additional text.
-Example response: {"label": "urgent", "color": "red"}
+Example response: {"label": "urgent", "color": "red", "priority": 9}
 
 Here are the labels I'd like you to use. Use ONLY these labels, don't invent your own:
 
-If it's from my boss Garry: important, red
-If it's from anyone else @yc.com: YC, orange
-If it's from my wife Sumana: Personal, pink
-If it's a tech-related email, e.g. a forum digest: Tech, gray
-If it's someone trying to sell me something: Spam, black
+If it's from my boss Garry: important, red, priority 8-10
+If it's from anyone else @yc.com: YC, orange, priority 6-7
+If it's from my wife Sumana: Personal, pink, priority 7-9
+If it's a tech-related email, e.g. a forum digest: Tech, gray, priority 3-5
+If it's someone trying to sell me something: Spam, black, priority 1-2
+
+Assign priority based on:
+- Sender relationship to me (boss, colleague, wife, etc.)
+- Urgency of the content
+- Time sensitivity of any action needed
+- Value of the information to me
 `;
 
 interface Label {
   label: string;
   color: string;
+  priority: number;
 }
 
 interface Email {
@@ -207,6 +215,21 @@ ${email.body}
     setIsLabeling(false);
   };
   
+  // Sort emails by priority (labeled emails first, then by priority value)
+  const sortedEmails = [...emails].sort((a, b) => {
+    // Put labeled emails above unlabeled emails
+    if (a.label && !b.label) return -1;
+    if (!a.label && b.label) return 1;
+    
+    // If both emails have labels, sort by priority (highest first)
+    if (a.label && b.label) {
+      return b.label.priority - a.label.priority;
+    }
+    
+    // If neither have labels, maintain original order
+    return 0;
+  });
+
   return (
     <div className="flex flex-col md:flex-row gap-6 my-6 border rounded-lg p-4">
       <div className="md:w-1/2 flex flex-col">
@@ -249,7 +272,7 @@ ${email.body}
       <div className="md:w-1/2">
         <h3 className="text-lg font-medium mb-3">Email Inbox (10)</h3>
         <div className="border rounded-md overflow-hidden">
-          {emails.map((email) => (
+          {sortedEmails.map((email) => (
             <div key={email.id} className="border-b last:border-b-0">
               <div 
                 className="p-3 cursor-pointer hover:bg-gray-50 flex justify-between items-center"
@@ -260,15 +283,20 @@ ${email.body}
                   <div className="flex items-center">
                     <p className="text-sm text-gray-600 mr-2">{truncateText(email.subject)}</p>
                     {email.label && (
-                      <span 
-                        className="px-2 py-1 text-xs rounded-full" 
-                        style={{ 
-                          backgroundColor: email.label.color,
-                          color: ['white', 'yellow', 'lime', 'cyan'].includes(email.label.color) ? 'black' : 'white'
-                        }}
-                      >
-                        {email.label.label}
-                      </span>
+                      <div className="flex items-center gap-2">
+                        <span 
+                          className="px-2 py-1 text-xs rounded-full" 
+                          style={{ 
+                            backgroundColor: email.label.color,
+                            color: ['white', 'yellow', 'lime', 'cyan'].includes(email.label.color) ? 'black' : 'white'
+                          }}
+                        >
+                          {email.label.label}
+                        </span>
+                        <span className="text-xs text-gray-500">
+                          Priority: {email.label.priority}
+                        </span>
+                      </div>
                     )}
                   </div>
                 </div>
