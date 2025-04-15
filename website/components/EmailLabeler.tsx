@@ -85,9 +85,9 @@ const generateEmails = (): Email[] => {
   emails.push({
     id: emails.length,
     sender: 'Garry Tan',
-    subject: 'Quarterly Review Meeting',
+    subject: 'Reschedule 1on1',
     receiver: 'pete@yc.com',
-    body: 'Pete, let\'s schedule the quarterly review for next week. I\'d like to go over our progress on the new initiatives and discuss resource allocation for the upcoming projects. Please come prepared with the latest metrics and team performance reports. Looking forward to seeing where we stand.',
+    body: 'Pete, let\'s move our 1on1 to wednesday next week. Maybe we can use the time to go for a walk?',
     type: 'boss'
   });
   
@@ -97,7 +97,7 @@ const generateEmails = (): Email[] => {
     sender: 'Gustaf Alströmer',
     subject: 'Feedback on the product roadmap',
     receiver: 'pete@yc.com',
-    body: 'Hey Pete, I\'ve reviewed the product roadmap and have a few thoughts on the prioritization. I think we should consider moving up the API improvements given the feedback from our enterprise customers. Could we discuss this before the team meeting on Thursday? I\'ve also added some comments directly to the document.',
+    body: "Hey Pete, I\'m working with a couple founders this batch that I think you\'d enjoy meeting. Can I make an intro?",
     type: 'colleague'
   });
   
