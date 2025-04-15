@@ -139,10 +139,9 @@ const EmailLabeler: React.FC = () => {
     setIsLabeling(true);
     setLabelingProgress(0);
     
-    const updatedEmails = [...emails];
-    
-    for (let i = 0; i < updatedEmails.length; i++) {
-      const email = updatedEmails[i];
+    // Process emails one by one and update the UI immediately when each receives its label
+    for (let i = 0; i < emails.length; i++) {
+      const email = emails[i];
       
       try {
         // Construct the email content
@@ -165,14 +164,7 @@ ${email.body}
             messages: [
               { 
                 role: 'system', 
-                content: `${prompt}
-
-You are an email labeling assistant. For each email, analyze it and respond ONLY with a JSON object containing:
-1. "label": A concise 1-2 word category for the email (e.g., "urgent", "newsletter", "spam", "personal", etc.)
-2. "color": A CSS color name or hex code that represents this category (e.g., "red", "green", "blue", "#FF5733")
-
-Your response must be valid JSON and contain nothing else - no explanations, no additional text.
-Example response: {"label": "urgent", "color": "red"}`
+                content: prompt
               },
               { 
                 role: 'user', 
@@ -192,7 +184,13 @@ Example response: {"label": "urgent", "color": "red"}`
             try {
               // Parse the content as JSON
               const labelData: Label = JSON.parse(content);
-              updatedEmails[i] = { ...email, label: labelData };
+              
+              // Update this specific email with its label immediately
+              setEmails(currentEmails => {
+                const updatedEmails = [...currentEmails];
+                updatedEmails[i] = { ...updatedEmails[i], label: labelData };
+                return updatedEmails;
+              });
             } catch (jsonError) {
               console.error('Error parsing JSON response:', jsonError);
             }
@@ -202,11 +200,10 @@ Example response: {"label": "urgent", "color": "red"}`
         console.error('Error labeling email:', error);
       }
       
-      // Update progress
-      setLabelingProgress((i + 1) / updatedEmails.length * 100);
+      // Update progress after each email
+      setLabelingProgress(((i + 1) / emails.length) * 100);
     }
     
-    setEmails(updatedEmails);
     setIsLabeling(false);
   };
   
