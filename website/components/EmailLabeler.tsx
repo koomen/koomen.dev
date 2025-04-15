@@ -10,7 +10,7 @@ Example response: {"label": "urgent", "color": "red", "priority": 9}
 
 Here are the labels I'd like you to use. Use ONLY these labels, don't invent your own:
 
-If it's from my boss Garry: important, red, priority 8-9
+If it's from my boss Garry: YC, orange, priority 8-9
 If it's from anyone else @yc.com: YC, orange, priority 6-7
 If it's from my wife Sumana: Personal, pink, priority 10
 If it's a tech-related email, e.g. a forum digest: Tech, gray, priority 3-5
