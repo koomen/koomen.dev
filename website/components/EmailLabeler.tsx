@@ -210,9 +210,9 @@ ${email.body}
   return (
     <div className="flex flex-col md:flex-row gap-6 my-6 border rounded-lg p-4">
       <div className="md:w-1/2 flex flex-col">
-        <label className="block text-sm font-medium mb-2">
+        <h3 className="text-lg font-medium mb-3">
           Email Reading Agent Prompt
-        </label>
+        </h3>
         <textarea
           className="w-full p-2 border rounded-md flex-grow font-mono text-sm min-h-[400px]"
           value={prompt}
