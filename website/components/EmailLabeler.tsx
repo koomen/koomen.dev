@@ -5,22 +5,18 @@ const DEFAULT_PROMPT = `You are an email labeling assistant. For each email, ana
 2. "color": A CSS color name or hex code that represents this category (e.g., "red", "green", "blue", "#FF5733")
 3. "priority": A number from 1-10 indicating how important this email is (10 being highest priority)
 
+Here are the labels & priorities I'd like you to use. Use ONLY these labels, don't invent your own:
+
+If it's:
+- from my boss Garry: YC, orange, priority 8-9
+- from anyone else with a @yc.com address: YC, orange, priority 6-7
+- from a startup founder (NOT a @yc.com email address) asking for advice: Founder, blue, priority 7-8
+- from my wife Sumana: Personal, pink, priority 10
+- a tech-related email, e.g. a forum digest: Tech, gray, priority 3-5
+- someone trying to sell me something: Spam, black, priority 1-2
+
 Your response must be valid JSON and contain nothing else - no explanations, no additional text.
 Example response: {"label": "urgent", "color": "red", "priority": 9}
-
-Here are the labels I'd like you to use. Use ONLY these labels, don't invent your own:
-
-If it's from my boss Garry: YC, orange, priority 8-9
-If it's from anyone else @yc.com: YC, orange, priority 6-7
-If it's from my wife Sumana: Personal, pink, priority 10
-If it's a tech-related email, e.g. a forum digest: Tech, gray, priority 3-5
-If it's someone trying to sell me something: Spam, black, priority 1-2
-
-Assign priority based on:
-- Sender relationship to me (boss, colleague, wife, etc.)
-- Urgency of the content
-- Time sensitivity of any action needed
-- Value of the information to me
 `;
 
 interface Label {
@@ -32,6 +28,7 @@ interface Label {
 interface Email {
   id: number;
   sender: string;
+  senderEmail: string;
   subject: string;
   receiver: string;
   body: string;
@@ -47,6 +44,7 @@ const generateEmails = (): Email[] => {
     emails.push({
       id: emails.length,
       sender: ['TechCrunch Weekly', 'HackerNews Digest', 'The Verge Updates'][i],
+      senderEmail: ['newsletter@techcrunch.com', 'digest@hackernews.com', 'updates@theverge.com'][i],
       subject: [
         'This Week in Tech: AI Developments and Market Trends',
         'Top Stories: New Programming Languages on the Rise',
@@ -72,6 +70,12 @@ const generateEmails = (): Email[] => {
         'DevOps Pro Team',
         'DataAnalytics Plus'
       ][i],
+      senderEmail: [
+        'sarah@saassolutions.com',
+        'mark@enterprisetools.com',
+        'team@devopspro.io',
+        'sales@dataanalytics.com'
+      ][i],
       subject: [
         'Exclusive Offer for New Customers',
         'Transform Your Workflow with Our Platform',
@@ -93,6 +97,7 @@ const generateEmails = (): Email[] => {
   emails.push({
     id: emails.length,
     sender: 'Garry Tan',
+    senderEmail: 'garry@yc.com',
     subject: 'reschedule',
     receiver: 'pete@yc.com',
     body: 'Pete, let\'s move our 1on1 to wednesday next week. Maybe we can use the time to go for a walk?',
@@ -103,6 +108,7 @@ const generateEmails = (): Email[] => {
   emails.push({
     id: emails.length,
     sender: 'Gustaf Alströmer',
+    senderEmail: 'gustaf@yc.com',
     subject: 'founder intro?',
     receiver: 'pete@yc.com',
     body: "Hey Pete, I\'m working with a couple founders this batch that I think you\'d enjoy meeting. Can I make an intro?",
@@ -113,12 +119,34 @@ const generateEmails = (): Email[] => {
   emails.push({
     id: emails.length,
     sender: 'Sumana',
+    senderEmail: 'sumana@gmail.com',
     subject: 'dinner tonight',
     receiver: 'pete@yc.com',
     body: 'Hi love, just checking if we\'re still on for dinner at that new place tonight? Also, my parents confirmed they can visit next weekend. We should plan some activities - maybe that hiking trail we talked about? Let me know when you\'ll be home today. Love you!',
     type: 'personal'
   });
   
+  // Founder emails
+  emails.push({
+    id: emails.length,
+    sender: 'Alex Chen',
+    senderEmail: 'alex@neuralstack.ai',
+    subject: 'advice on fundraising',
+    receiver: 'pete@yc.com',
+    body: 'Hi Pete, Hope you\'re doing well! We\'re preparing for our Series A, and I wanted to get your thoughts on our fundraising strategy. Our AI platform for code generation has strong traction with 140% MoM growth, but we\'re debating whether to focus on scaling enterprise customers or expanding our developer tools first. Could we chat briefly this week? Thanks, Alex',
+    type: 'colleague'
+  });
+
+  emails.push({
+    id: emails.length,
+    sender: 'Maya Rodriguez',
+    senderEmail: 'maya@carbo.earth',
+    subject: 'Technical co-founder?',
+    receiver: 'pete@yc.com',
+    body: 'Hey Pete, I\'m struggling to find the right technical co-founder for my climate tech startup. We\'re building carbon capture technology that\'s showing promising early results in our lab tests. Gustaf mentioned you might know some engineers with hardware experience who could be interested. Would you be open to making some introductions? I can share more details about what we\'re looking for. Thanks! Maya',
+    type: 'colleague'
+  });
+
   // Shuffle the emails
   return emails.sort(() => Math.random() - 0.5);
 };
@@ -154,7 +182,7 @@ const EmailLabeler: React.FC = () => {
       try {
         // Construct the email content
         const emailContent = `
-From: ${email.sender}
+From: ${email.sender} <${email.senderEmail}>
 To: ${email.receiver}
 Subject: ${email.subject}
 
@@ -270,7 +298,7 @@ ${email.body}
       </div>
       
       <div className="md:w-1/2">
-        <h3 className="text-lg font-medium mb-3">Email Inbox (10)</h3>
+        <h3 className="text-lg font-medium mb-3">Email Inbox (12)</h3>
         <div className="border rounded-md overflow-hidden">
           {sortedEmails.map((email) => (
             <div key={email.id} className="border-b last:border-b-0">
@@ -280,7 +308,10 @@ ${email.body}
               >
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-0.5">
-                    <span className="font-medium text-sm">{email.sender}</span>
+                    <div>
+                      <span className="font-medium text-sm">{email.sender}</span>
+                      <span className="text-xs text-gray-500 ml-1">&lt;{truncateText(email.senderEmail, 20)}&gt;</span>
+                    </div>
                     {email.label && (
                       <div className="flex items-center gap-1">
                         <span 
@@ -308,7 +339,7 @@ ${email.body}
               {expandedEmailId === email.id && (
                 <div className="py-2 px-3 bg-gray-50 border-t text-xs">
                   <div className="mb-1">
-                    <p><strong>From:</strong> {email.sender}</p>
+                    <p><strong>From:</strong> {email.sender} &lt;{email.senderEmail}&gt;</p>
                     <p><strong>To:</strong> {email.receiver}</p>
                     <p><strong>Subject:</strong> {email.subject}</p>
                   </div>
