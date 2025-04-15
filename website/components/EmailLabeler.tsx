@@ -279,13 +279,12 @@ ${email.body}
                 onClick={() => handleEmailClick(email.id)}
               >
                 <div className="flex-1">
-                  <span className="font-medium">{email.sender}</span>
-                  <div className="flex items-center">
-                    <p className="text-sm text-gray-600 mr-2">{truncateText(email.subject)}</p>
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="font-medium">{email.sender}</span>
                     {email.label && (
                       <div className="flex items-center gap-2">
                         <span 
-                          className="px-2 py-1 text-xs rounded-full" 
+                          className="px-2 py-0.5 text-xs rounded-full" 
                           style={{ 
                             backgroundColor: email.label.color,
                             color: ['white', 'yellow', 'lime', 'cyan'].includes(email.label.color) ? 'black' : 'white'
@@ -294,11 +293,12 @@ ${email.body}
                           {email.label.label}
                         </span>
                         <span className="text-xs text-gray-500">
-                          Priority: {email.label.priority}
+                          P{email.label.priority}
                         </span>
                       </div>
                     )}
                   </div>
+                  <p className="text-sm text-gray-600">{truncateText(email.subject)}</p>
                 </div>
                 <div className="text-gray-400 ml-2">
                   {expandedEmailId === email.id ? '▼' : '▶'}
