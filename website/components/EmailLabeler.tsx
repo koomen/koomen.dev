@@ -85,7 +85,7 @@ const generateEmails = (): Email[] => {
   emails.push({
     id: emails.length,
     sender: 'Garry Tan',
-    subject: 'Reschedule 1on1',
+    subject: 'reschedule',
     receiver: 'pete@yc.com',
     body: 'Pete, let\'s move our 1on1 to wednesday next week. Maybe we can use the time to go for a walk?',
     type: 'boss'
@@ -95,7 +95,7 @@ const generateEmails = (): Email[] => {
   emails.push({
     id: emails.length,
     sender: 'Gustaf Alströmer',
-    subject: 'Feedback on the product roadmap',
+    subject: 'founder intro?',
     receiver: 'pete@yc.com',
     body: "Hey Pete, I\'m working with a couple founders this batch that I think you\'d enjoy meeting. Can I make an intro?",
     type: 'colleague'
@@ -105,7 +105,7 @@ const generateEmails = (): Email[] => {
   emails.push({
     id: emails.length,
     sender: 'Sumana',
-    subject: 'Weekend plans and dinner tonight',
+    subject: 'dinner tonight',
     receiver: 'pete@yc.com',
     body: 'Hi love, just checking if we\'re still on for dinner at that new place tonight? Also, my parents confirmed they can visit next weekend. We should plan some activities - maybe that hiking trail we talked about? Let me know when you\'ll be home today. Love you!',
     type: 'personal'
