@@ -209,19 +209,19 @@ ${email.body}
   
   return (
     <div className="flex flex-col md:flex-row gap-6 my-6 border rounded-lg p-4">
-      <div className="md:w-1/2">
+      <div className="md:w-1/2 flex flex-col">
         <label className="block text-sm font-medium mb-2">
           Email Reading Agent Prompt
         </label>
         <textarea
-          className="w-full p-2 border rounded-md h-64 font-mono text-sm"
+          className="w-full p-2 border rounded-md flex-grow font-mono text-sm min-h-[400px]"
           value={prompt}
           onChange={(e) => setPrompt(e.target.value)}
           placeholder="Enter your prompt for the email reading agent..."
           disabled={isLabeling}
         />
         
-        <div className="mt-4">
+        <div className="mt-auto pt-4">
           <button
             className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
             onClick={labelEmails}
