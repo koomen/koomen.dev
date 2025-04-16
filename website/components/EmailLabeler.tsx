@@ -179,6 +179,8 @@ const EmailLabeler: React.FC = () => {
     
     setIsLabeling(true);
     setLabelingProgress(0);
+    // Clear existing labels from inbox view when labeling starts
+    setEmails(currentEmails => currentEmails.map(email => ({ ...email, label: undefined })));
     
     // Process emails one by one and update the UI immediately when each receives its label
     for (let i = 0; i < emails.length; i++) {
