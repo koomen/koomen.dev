@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 
 const DEFAULT_PROMPT = `You are an email labeling assistant. For each email, analyze it and respond ONLY with a JSON object containing:
-1. "label": A concise 1-2 word category for the email (e.g., "urgent", "newsletter", "spam", "personal", etc.)
+1. "label": A concise 1-2 word category for the emai
 2. "color": A CSS color name or hex code that represents this category (e.g., "red", "green", "blue", "#FF5733")
-3. "priority": A number from 1-5 indicating how important this email is (10 being highest priority)
+3. "priority": A number from 1-5 indicating how important this email is
 
 Here are the labels & priorities I'd like you to use. Use ONLY these labels, don't invent your own:
 
@@ -16,7 +16,7 @@ If it's:
 - someone trying to sell me something: Spam, black, priority 1
 
 Your response must be valid JSON and contain nothing else - no explanations, no additional text.
-Example response: {"label": "urgent", "color": "red", "priority": 9}
+Example response: {"label": "urgent", "color": "red", "priority": 5}
 `;
 
 interface Label {
@@ -310,7 +310,6 @@ ${email.body}
                   <div className="flex items-center gap-2 mb-0.5">
                     <div>
                       <span className="font-medium text-sm">{email.sender}</span>
-                      <span className="text-xs text-gray-500 ml-1">&lt;{truncateText(email.senderEmail, 20)}&gt;</span>
                     </div>
                     {email.label && (
                       <div className="flex items-center gap-1">
