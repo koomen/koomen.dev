@@ -24,7 +24,7 @@ export default function Links() {
       
       {/* LinkedIn Icon */}
       <a 
-        href="https://linkedin.com" 
+        href="https://www.linkedin.com/in/petekoomen/" 
         target="_blank" 
         rel="noopener noreferrer"
         className="text-gray-700 hover:text-gray-900 transition-colors"
