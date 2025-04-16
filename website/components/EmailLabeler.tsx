@@ -3,17 +3,17 @@ import React, { useState } from 'react';
 const DEFAULT_PROMPT = `You are an email labeling assistant. For each email, analyze it and respond ONLY with a JSON object containing:
 1. "label": A concise 1-2 word category for the email (e.g., "urgent", "newsletter", "spam", "personal", etc.)
 2. "color": A CSS color name or hex code that represents this category (e.g., "red", "green", "blue", "#FF5733")
-3. "priority": A number from 1-10 indicating how important this email is (10 being highest priority)
+3. "priority": A number from 1-5 indicating how important this email is (10 being highest priority)
 
 Here are the labels & priorities I'd like you to use. Use ONLY these labels, don't invent your own:
 
 If it's:
-- from my boss Garry: YC, orange, priority 8-9
-- from anyone else with a @yc.com address: YC, orange, priority 6-7
-- from a startup founder (NOT a @yc.com email address) asking for advice: Founder, blue, priority 7-8
-- from my wife Sumana: Personal, pink, priority 10
-- a tech-related email, e.g. a forum digest: Tech, gray, priority 3-5
-- someone trying to sell me something: Spam, black, priority 1-2
+- from my wife Sumana: Personal, pink, priority 5
+- from my boss Garry: YC, orange, priority 4
+- from anyone else with a @yc.com address: YC, orange, priority 3
+- from a startup founder (NOT a @yc.com email address) asking for advice: Founder, blue, priority 3
+- a tech-related email, e.g. a forum digest: Tech, gray, priority 2
+- someone trying to sell me something: Spam, black, priority 1
 
 Your response must be valid JSON and contain nothing else - no explanations, no additional text.
 Example response: {"label": "urgent", "color": "red", "priority": 9}
