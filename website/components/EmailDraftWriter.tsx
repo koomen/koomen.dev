@@ -50,8 +50,16 @@ const EmailDraftWriter: React.FC<EmailDraftWriterProps> = ({
       
       if (options.length > 0) {
         setSystemPromptOptions(options);
-        setSelectedSystemPromptKey(Object.keys(defaultSystemPrompt)[0]);
-        setSystemPrompt(options[0].text);
+        
+        // Check if "Original" exists in the options and select it by default
+        const originalOption = options.find(opt => opt.label === 'Original');
+        if (originalOption) {
+          setSelectedSystemPromptKey('original');
+          setSystemPrompt(originalOption.text);
+        } else {
+          setSelectedSystemPromptKey(Object.keys(defaultSystemPrompt)[0].toLowerCase());
+          setSystemPrompt(options[0].text);
+        }
       } else {
         const defaultText = 'You are an expert email writer. Write a professional, concise, and effective email based on the user\'s request.';
         setSystemPromptOptions([{ label: 'Default', text: defaultText }]);
@@ -205,7 +213,8 @@ const EmailDraftWriter: React.FC<EmailDraftWriterProps> = ({
                           key={option.label}
                           onClick={() => selectSystemPrompt(option.label)}
                           className={`px-2 py-0.5 rounded transition-colors ${
-                            selectedSystemPromptKey === option.label.toLowerCase()
+                            selectedSystemPromptKey === option.label.toLowerCase() ||
+                            (option.label === 'Original' && selectedSystemPromptKey === 'default')
                               ? 'bg-blue-600 text-white shadow-sm'
                               : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
                           }`}
