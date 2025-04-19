@@ -310,25 +310,26 @@ const EmailDraftWriter: React.FC<EmailDraftWriterProps> = ({
                 )}
               </div>
               
-              {/* User Prompt and Generate Button in a flex container */}
-              <div className="flex gap-2">
+              {/* User Prompt */}
+              <div className="mb-2">
                 <textarea
                   value={userPrompt}
                   onChange={(e) => setUserPrompt(e.target.value)}
-                  className="flex-grow p-2 border rounded-lg text-sm"
+                  className="w-full p-2 border rounded-lg text-sm"
                   placeholder="Example: Write an email to my boss asking for time off next Friday"
                   rows={3}
                 />
-                
-                <div className="flex-shrink-0 flex flex-col justify-end">
-                  <button
-                    onClick={generateDraft}
-                    disabled={isGenerating}
-                    className="px-3 py-1.5 bg-blue-600 text-white rounded-lg disabled:bg-blue-300 text-sm whitespace-nowrap"
-                  >
-                    {isGenerating ? 'Generating...' : 'Generate Draft'}
-                  </button>
-                </div>
+              </div>
+              
+              {/* Generate Button */}
+              <div>
+                <button
+                  onClick={generateDraft}
+                  disabled={isGenerating}
+                  className="px-3 py-1.5 bg-blue-600 text-white rounded-lg disabled:bg-blue-300 text-sm"
+                >
+                  {isGenerating ? 'Generating...' : 'Generate Draft'}
+                </button>
               </div>
               
               {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
