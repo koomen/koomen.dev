@@ -76,8 +76,16 @@ const EmailDraftWriter: React.FC<EmailDraftWriterProps> = ({
       
       if (options.length > 0) {
         setUserPromptOptions(options);
-        setSelectedUserPromptKey(Object.keys(defaultUserPrompt)[0]);
-        setUserPrompt(options[0].text);
+        
+        // Check if "Original" exists in the options and select it by default
+        const originalOption = options.find(opt => opt.label === 'Original');
+        if (originalOption) {
+          setSelectedUserPromptKey('original');
+          setUserPrompt(originalOption.text);
+        } else {
+          setSelectedUserPromptKey(Object.keys(defaultUserPrompt)[0].toLowerCase());
+          setUserPrompt(options[0].text);
+        }
       } else {
         setUserPromptOptions([{ label: 'Default', text: '' }]);
         setUserPrompt('');
@@ -227,7 +235,8 @@ const EmailDraftWriter: React.FC<EmailDraftWriterProps> = ({
                           key={option.label}
                           onClick={() => selectUserPrompt(option.label)}
                           className={`px-2 py-0.5 rounded ${
-                            selectedUserPromptKey === option.label.toLowerCase()
+                            selectedUserPromptKey === option.label.toLowerCase() || 
+                            (option.label === 'Original' && selectedUserPromptKey === 'default')
                               ? 'bg-blue-600 text-white'
                               : 'bg-gray-200 hover:bg-gray-300'
                           }`}
@@ -277,19 +286,8 @@ const EmailDraftWriter: React.FC<EmailDraftWriterProps> = ({
         ) : (
           /* Single-column layout without system prompt */
           <div className="flex flex-col w-full max-w-3xl mx-auto">
-            {/* Email Draft */}
             <div className="mb-4">
-              <label className="block font-medium text-sm mb-1">Email Draft</label>
-              <div 
-                className="w-full min-h-[24rem] p-2 border rounded-lg whitespace-pre-wrap text-sm"
-                style={{ backgroundColor: '#f9f9f9' }}
-              >
-                {emailDraft || <span className="text-gray-400">Your generated email will appear here...</span>}
-              </div>
-            </div>
-            
-            {/* User Prompt */}
-            <div className="mb-3">
+              {/* User Prompt Header */}
               <div className="flex items-center mb-1">
                 <label className="font-medium text-sm mr-2">Your Request</label>
                 {userPromptOptions.length > 1 && (
@@ -299,7 +297,8 @@ const EmailDraftWriter: React.FC<EmailDraftWriterProps> = ({
                         key={option.label}
                         onClick={() => selectUserPrompt(option.label)}
                         className={`px-2 py-0.5 rounded ${
-                          selectedUserPromptKey === option.label.toLowerCase()
+                          selectedUserPromptKey === option.label.toLowerCase() ||
+                          (option.label === 'Original' && selectedUserPromptKey === 'default')
                             ? 'bg-blue-600 text-white'
                             : 'bg-gray-200 hover:bg-gray-300'
                         }`}
@@ -310,26 +309,40 @@ const EmailDraftWriter: React.FC<EmailDraftWriterProps> = ({
                   </div>
                 )}
               </div>
-              <textarea
-                value={userPrompt}
-                onChange={(e) => setUserPrompt(e.target.value)}
-                className="w-full p-2 border rounded-lg mb-1 text-sm"
-                placeholder="Example: Write an email to my boss asking for time off next Friday"
-                rows={3}
-              />
-            </div>
-            
-            {/* Generate Button */}
-            <div>
-              <button
-                onClick={generateDraft}
-                disabled={isGenerating}
-                className="px-3 py-1.5 bg-blue-600 text-white rounded-lg disabled:bg-blue-300 text-sm"
-              >
-                {isGenerating ? 'Generating...' : 'Generate Draft'}
-              </button>
+              
+              {/* User Prompt and Generate Button in a flex container */}
+              <div className="flex gap-2">
+                <textarea
+                  value={userPrompt}
+                  onChange={(e) => setUserPrompt(e.target.value)}
+                  className="flex-grow p-2 border rounded-lg text-sm"
+                  placeholder="Example: Write an email to my boss asking for time off next Friday"
+                  rows={3}
+                />
+                
+                <div className="flex-shrink-0 flex flex-col justify-end">
+                  <button
+                    onClick={generateDraft}
+                    disabled={isGenerating}
+                    className="px-3 py-1.5 bg-blue-600 text-white rounded-lg disabled:bg-blue-300 text-sm whitespace-nowrap"
+                  >
+                    {isGenerating ? 'Generating...' : 'Generate Draft'}
+                  </button>
+                </div>
+              </div>
               
               {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
+            </div>
+            
+            {/* Email Draft */}
+            <div className="mb-4">
+              <label className="block font-medium text-sm mb-1">Email Draft</label>
+              <div 
+                className="w-full min-h-[24rem] p-2 border rounded-lg whitespace-pre-wrap text-sm"
+                style={{ backgroundColor: '#f9f9f9' }}
+              >
+                {emailDraft || <span className="text-gray-400">Your generated email will appear here...</span>}
+              </div>
             </div>
           </div>
         )}
