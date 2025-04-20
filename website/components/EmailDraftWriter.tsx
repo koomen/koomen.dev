@@ -50,8 +50,16 @@ const EmailDraftWriter: React.FC<EmailDraftWriterProps> = ({
       
       if (options.length > 0) {
         setSystemPromptOptions(options);
-        setSelectedSystemPromptKey(Object.keys(defaultSystemPrompt)[0]);
-        setSystemPrompt(options[0].text);
+        
+        // Check if "Original" exists in the options and select it by default
+        const originalOption = options.find(opt => opt.label === 'Original');
+        if (originalOption) {
+          setSelectedSystemPromptKey('original');
+          setSystemPrompt(originalOption.text);
+        } else {
+          setSelectedSystemPromptKey(Object.keys(defaultSystemPrompt)[0].toLowerCase());
+          setSystemPrompt(options[0].text);
+        }
       } else {
         const defaultText = 'You are an expert email writer. Write a professional, concise, and effective email based on the user\'s request.';
         setSystemPromptOptions([{ label: 'Default', text: defaultText }]);
@@ -76,8 +84,16 @@ const EmailDraftWriter: React.FC<EmailDraftWriterProps> = ({
       
       if (options.length > 0) {
         setUserPromptOptions(options);
-        setSelectedUserPromptKey(Object.keys(defaultUserPrompt)[0]);
-        setUserPrompt(options[0].text);
+        
+        // Check if "Original" exists in the options and select it by default
+        const originalOption = options.find(opt => opt.label === 'Original');
+        if (originalOption) {
+          setSelectedUserPromptKey('original');
+          setUserPrompt(originalOption.text);
+        } else {
+          setSelectedUserPromptKey(Object.keys(defaultUserPrompt)[0].toLowerCase());
+          setUserPrompt(options[0].text);
+        }
       } else {
         setUserPromptOptions([{ label: 'Default', text: '' }]);
         setUserPrompt('');
@@ -180,26 +196,27 @@ const EmailDraftWriter: React.FC<EmailDraftWriterProps> = ({
 
   return (
     <div className="mx-auto max-w-6xl p-4">
-      <div className="border rounded-lg p-6">
+      <div className="border rounded-lg p-6 shadow-sm bg-white">
         {showSystemPrompt ? (
           /* Two-column layout with system prompt */
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Left Column: System Prompt, User Prompt, and Generate Button */}
             <div className="flex flex-col h-full">
               {/* System Prompt */}
-              <div className="mb-2 flex-grow">
-                <div className="flex items-center mb-1">
-                  <label className="font-medium text-sm mr-2">System Prompt</label>
+              <div className="mb-4 flex-grow">
+                <div className="flex items-center mb-2">
+                  <label className="font-semibold text-sm text-gray-700 mr-2">System Prompt</label>
                   {systemPromptOptions.length > 1 && (
                     <div className="flex gap-1 text-xs">
                       {systemPromptOptions.map((option) => (
                         <button
                           key={option.label}
                           onClick={() => selectSystemPrompt(option.label)}
-                          className={`px-2 py-0.5 rounded ${
-                            selectedSystemPromptKey === option.label.toLowerCase()
-                              ? 'bg-blue-600 text-white'
-                              : 'bg-gray-200 hover:bg-gray-300'
+                          className={`px-2 py-0.5 rounded transition-colors ${
+                            selectedSystemPromptKey === option.label.toLowerCase() ||
+                            (option.label === 'Original' && selectedSystemPromptKey === 'default')
+                              ? 'bg-blue-600 text-white shadow-sm'
+                              : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
                           }`}
                         >
                           {option.label}
@@ -211,25 +228,26 @@ const EmailDraftWriter: React.FC<EmailDraftWriterProps> = ({
                 <textarea
                   value={systemPrompt}
                   onChange={(e) => setSystemPrompt(e.target.value)}
-                  className="w-full h-80 p-2 border rounded-lg text-sm"
+                  className="w-full h-80 p-3 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                   placeholder="Enter your system prompt here..."
                 />
               </div>
               
               {/* User Prompt */}
-              <div className="mb-2">
-                <div className="flex items-center mb-1">
-                  <label className="font-medium text-sm mr-2">User Prompt</label>
+              <div className="mb-4">
+                <div className="flex items-center mb-2">
+                  <label className="font-semibold text-sm text-gray-700 mr-2">User Prompt</label>
                   {userPromptOptions.length > 1 && (
                     <div className="flex gap-1 text-xs">
                       {userPromptOptions.map((option) => (
                         <button
                           key={option.label}
                           onClick={() => selectUserPrompt(option.label)}
-                          className={`px-2 py-0.5 rounded ${
-                            selectedUserPromptKey === option.label.toLowerCase()
-                              ? 'bg-blue-600 text-white'
-                              : 'bg-gray-200 hover:bg-gray-300'
+                          className={`px-2 py-0.5 rounded transition-colors ${
+                            selectedUserPromptKey === option.label.toLowerCase() || 
+                            (option.label === 'Original' && selectedUserPromptKey === 'default')
+                              ? 'bg-blue-600 text-white shadow-sm'
+                              : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
                           }`}
                         >
                           {option.label}
@@ -241,67 +259,64 @@ const EmailDraftWriter: React.FC<EmailDraftWriterProps> = ({
                 <textarea
                   value={userPrompt}
                   onChange={(e) => setUserPrompt(e.target.value)}
-                  className="w-full h-20 p-2 border rounded-lg mb-1 text-sm"
+                  className="w-full p-3 border border-gray-300 rounded-lg mb-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                   placeholder="Example: Write an email to my boss asking for time off next Friday"
                   rows={5}
                 />
               </div>
               
               {/* Generate Button */}
-              <div className="mb-1">
+              <div className="mb-2">
                 <button
                   onClick={generateDraft}
                   disabled={isGenerating}
-                  className="px-3 py-1.5 bg-blue-600 text-white rounded-lg disabled:bg-blue-300 text-sm"
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg disabled:bg-blue-300 text-sm font-medium hover:bg-blue-700 transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
                 >
-                  {isGenerating ? 'Generating...' : 'Generate Draft'}
+                  {isGenerating ? (
+                    <span className="flex items-center">
+                      <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Generating...
+                    </span>
+                  ) : 'Generate Draft'}
                 </button>
                 
-                {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
+                {error && <p className="text-red-500 text-xs mt-2">{error}</p>}
               </div>
             </div>
 
             {/* Right Column: Email Draft */}
             <div className="flex flex-col h-full">
-              <label className="block font-medium text-sm mb-1">Email Draft</label>
+              <label className="block font-semibold text-sm text-gray-700 mb-2">Email Draft</label>
               
               {/* Draft Output Area */}
               <div 
-                className="flex-grow min-h-[28rem] p-2 border rounded-lg whitespace-pre-wrap text-sm"
-                style={{ backgroundColor: '#f9f9f9' }}
+                className="flex-grow min-h-[28rem] p-4 border border-gray-300 rounded-lg whitespace-pre-wrap text-sm shadow-inner bg-gray-50"
               >
-                {emailDraft || <span className="text-gray-400">Your generated email will appear here...</span>}
+                {emailDraft || <span className="text-gray-400 italic">Your generated email will appear here...</span>}
               </div>
             </div>
           </div>
         ) : (
           /* Single-column layout without system prompt */
           <div className="flex flex-col w-full max-w-3xl mx-auto">
-            {/* Email Draft */}
-            <div className="mb-4">
-              <label className="block font-medium text-sm mb-1">Email Draft</label>
-              <div 
-                className="w-full min-h-[24rem] p-2 border rounded-lg whitespace-pre-wrap text-sm"
-                style={{ backgroundColor: '#f9f9f9' }}
-              >
-                {emailDraft || <span className="text-gray-400">Your generated email will appear here...</span>}
-              </div>
-            </div>
-            
-            {/* User Prompt */}
-            <div className="mb-3">
-              <div className="flex items-center mb-1">
-                <label className="font-medium text-sm mr-2">Your Request</label>
+            <div className="mb-5">
+              {/* User Prompt Header */}
+              <div className="flex items-center mb-2">
+                <label className="font-semibold text-sm text-gray-700 mr-2">Your Request</label>
                 {userPromptOptions.length > 1 && (
                   <div className="flex gap-1 text-xs">
                     {userPromptOptions.map((option) => (
                       <button
                         key={option.label}
                         onClick={() => selectUserPrompt(option.label)}
-                        className={`px-2 py-0.5 rounded ${
-                          selectedUserPromptKey === option.label.toLowerCase()
-                            ? 'bg-blue-600 text-white'
-                            : 'bg-gray-200 hover:bg-gray-300'
+                        className={`px-2 py-0.5 rounded transition-colors ${
+                          selectedUserPromptKey === option.label.toLowerCase() ||
+                          (option.label === 'Original' && selectedUserPromptKey === 'default')
+                            ? 'bg-blue-600 text-white shadow-sm'
+                            : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
                         }`}
                       >
                         {option.label}
@@ -310,26 +325,48 @@ const EmailDraftWriter: React.FC<EmailDraftWriterProps> = ({
                   </div>
                 )}
               </div>
-              <textarea
-                value={userPrompt}
-                onChange={(e) => setUserPrompt(e.target.value)}
-                className="w-full p-2 border rounded-lg mb-1 text-sm"
-                placeholder="Example: Write an email to my boss asking for time off next Friday"
-                rows={3}
-              />
+              
+              {/* User Prompt */}
+              <div className="mb-3">
+                <textarea
+                  value={userPrompt}
+                  onChange={(e) => setUserPrompt(e.target.value)}
+                  className="w-full p-3 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all shadow-sm"
+                  placeholder="Example: Write an email to my boss asking for time off next Friday"
+                  rows={3}
+                />
+              </div>
+              
+              {/* Generate Button */}
+              <div>
+                <button
+                  onClick={generateDraft}
+                  disabled={isGenerating}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg disabled:bg-blue-300 text-sm font-medium hover:bg-blue-700 transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+                >
+                  {isGenerating ? (
+                    <span className="flex items-center">
+                      <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Generating...
+                    </span>
+                  ) : 'Generate Draft'}
+                </button>
+                
+                {error && <p className="text-red-500 text-xs mt-2">{error}</p>}
+              </div>
             </div>
             
-            {/* Generate Button */}
-            <div>
-              <button
-                onClick={generateDraft}
-                disabled={isGenerating}
-                className="px-3 py-1.5 bg-blue-600 text-white rounded-lg disabled:bg-blue-300 text-sm"
+            {/* Email Draft */}
+            <div className="mb-4">
+              <label className="block font-semibold text-sm text-gray-700 mb-2">Email Draft</label>
+              <div 
+                className="w-full min-h-[24rem] p-4 border border-gray-300 rounded-lg whitespace-pre-wrap text-sm shadow-inner bg-gray-50"
               >
-                {isGenerating ? 'Generating...' : 'Generate Draft'}
-              </button>
-              
-              {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
+                {emailDraft || <span className="text-gray-400 italic">Your generated email will appear here...</span>}
+              </div>
             </div>
           </div>
         )}
