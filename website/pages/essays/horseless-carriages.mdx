@@ -178,14 +178,17 @@ Whenever a new technology is invented, the first tools built with it inevitably 
     size="large"
 />
 
-
 The brokenness of this design was invisible to everyone at the time and laughably obvious after the fact.
 
 Imagine living in 1806 and riding on one of these for the first time. Even if the wooden frame held together long enough to get you where you were going, the wooden seats and lack of suspension would have made the ride unbearable.
 
-You'd probably think "there's no way I'd choose an engine over a horse". And you'd have been right for a little while, at least until the automobile was invented. The horseless carriage was carriage with an engine jammed in, whereas the automobile was designed from the ground up to take full advantage of the engine's potential.
+You'd probably think "there's no way I'd choose an engine over a horse". And you'd have been right, at least until the automobile was invented. 
 
-I suspect we are living through a similar period with AI applications. Many of them are infuriatingly useless in the same way that Gmail's Gemini integration is. They're useless not because AI is useless, but because we're only just starting to figure out how to build tools that take full advantage of its potential.
+I suspect we are living through a similar period with AI applications. Many of them are infuriatingly useless in the same way that Gmail's Gemini integration is. 
+
+The "old world thinking" that gave us the original horseless carriage was swapping a horse out for an engine without redesigning the vehicle to handle higher speeds.
+
+What is the old world thinking constraining these AI apps?
 
 ## Old world thinking
 
@@ -194,19 +197,17 @@ Up until very recently, if you wanted a computer to do something you had two opt
 1. Write a program
 2. Use a program written by someone else
 
-Programming computers is hard, so most of us choose option 2 most of the time. It's why I'd rather pay a few dollars for an off-the-shelf app than build it myself, and why big companies would rather pay millions of dollars to Salesforce than build their own CRM. 
+Programming is hard, so most of us choose option 2 most of the time. It's why I'd rather pay a few dollars for an off-the-shelf app than build it myself, and why big companies would rather pay millions of dollars to Salesforce than build their own CRM. 
 
-The modern software industry is built on the idea that we need developers to act as middlemen between us and computers. They translate our desires into code and abstract it away from us behind simple interfaces we can understand. 
+The modern software industry is built on the assumption that we need developers to act as middlemen between us and computers. They translate our desires into code and abstract it away from us behind simple interfaces we can understand. 
 
-And of course in most cases the only way to do this profitably is to build one piece of software for a large group of users. Developers are used to building one-size-fits-all software, and we're used to _using_ one-size-fits-all software.
+And of course in most cases the only way for developers to do this profitably is to build one piece of software for a large group of users. Developers are used to building one-size-fits-all software, and we're used to _using_ one-size-fits-all software.
 
-In the old world, the division of responsibility between developers and users is clear. The developer writes code, which governs how the software behaves in the general case. The user provides input, which governs how the software behaves in the specific case. 
+In the old world, the division of responsibility between developers and users was clear. The developer writes code, which governs how software behaves in the general case. The user provides input, which determines how the software behaves in the specific case. 
 
-The code is where rules and boundaries are enforced. The code creates a little sandbox for the user to play in and (hopefully) prevents the user from harming themselves in the process.
+By splitting the prompt into System and User components, we've created analogs that map cleanly onto these old world domains. The System Prompt governs how the LLM behaves in the general case and the User Prompt determines how the LLM behaves in the specific case. 
 
-By splitting the prompt into System and User components, we've created analogs that map cleanly onto these old world domains. The System Prompt governs how the LLM behaves in the general case. It is responsible for enforcing rules and boundaries and (hopefully) preventing the user from "harming themselves" (read: harming Google's reputation). It creates a little sandbox where the User Prompt, which governs how the LLM behaves in the specific case, lives.
-
-When you think about the prompt this way, it's only natural to assume that it's the developer's job to write the System Prompt and the user's job to write the User Prompt. That's how we've always built software.
+With this framing, it's only natural to assume that it's the developer's job to write the System Prompt and the user's job to write the User Prompt. That's how we've always built software.
 
 But in Gmail's case, this AI assistant is supposed to represent _me_. These are _my emails_. I want them written in _my_ voice, not the one-size-fits-all voice designed by a committee of Google product managers and lawyers. 
 
@@ -216,11 +217,16 @@ In the new world I don't need a middleman tell a computer what to do anymore. I 
 
 ## Render unto the user what is the user's
 
-The System and User prompt components are useful abstractions, but not for dividing work between the developer and the user. The System Prompt is not code, it is the interface for teaching an AI "agent" (or "assistant") who it is and how it operates in the general case. It is the _context_ an agent needs in order to do its job. The User Prompt is the interface for describing a specific task to be accomplished.
+The System and User prompt components are useful abstractions, but not for dividing work between the developer and the user. The System Prompt is not code, it is the interface for teaching an AI "agent" who it is and how it operates in the general case. It is the _context_ an agent needs in order to do its job. The User Prompt is the interface for describing a specific task to be accomplished by the agent.
 
 When you think about it that way, "System" and "User" are terrible names. For the rest of this essay, I'll occasionally swap "System Prompt" and "User Prompt" with "Context" and "Task", both of which feel more appropriate. 
 
-My core contention in this essay is this: when an LLM agent is acting on my behalf I should be allowed to teach it how to do that. More generally: **the context an agent needs in order to do X should be written by an expert in X**.
+My core contention in this essay is this: when an LLM agent is acting on my behalf I should be allowed to teach it how to do that. 
+
+
+
+
+More generally: **the context an agent needs in order to do X should be written by an expert in X**.
 
 For most interesting instances of X, expertise is context-specific. It is specific to a particular domain (e.g. email-writing) and also to a particular environment (e.g. my corporate email account). This is true for many other disciplines: just like I am the world's foremost expert on how I write emails, YC's accounting team are the world's foremost expert on how accounting is done at YC. Just like I want to write my own email-writing prompt, I think most accountants are going to want to write their own accounting prompts.
 
