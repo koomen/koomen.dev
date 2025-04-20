@@ -203,7 +203,7 @@ The modern software industry is built on the assumption that we need developers 
 
 And of course in most cases the only way for developers to do this profitably is to build one piece of software for a large group of users. Developers are used to building one-size-fits-all software, and we're used to _using_ one-size-fits-all software.
 
-In the old world, the division of responsibility between developers and users was clear. The developer writes code, which governs how software behaves in the general case. The user provides input, which determines how the software behaves in the specific case. 
+In the old world, the division of responsibility between developers and users was clear. The developer writes code, which governs how software behaves in the general case. The user provides input, which determines how the software behaves in the specific case.
 
 By splitting the prompt into System and User components, we've created analogs that map cleanly onto these old world domains. The System Prompt governs how the LLM behaves in the general case and the User Prompt determines how the LLM behaves in the specific case. 
 
@@ -217,26 +217,33 @@ In the new world I don't need a middleman tell a computer what to do anymore. I 
 
 ## Render unto the user what is the user's
 
-The System and User prompt components are useful abstractions, but not for dividing work between the developer and the user. The System Prompt is not code, it is the interface for teaching an AI "agent" who it is and how it operates in the general case. It is the _context_ an agent needs in order to do its job. The User Prompt is the interface for describing a specific task to be accomplished by the agent.
-
-When you think about it that way, "System" and "User" are terrible names. For the rest of this essay, I'll occasionally swap "System Prompt" and "User Prompt" with "Context" and "Task", both of which feel more appropriate. 
-
 My core contention in this essay is this: when an LLM agent is acting on my behalf I should be allowed to teach it how to do that. 
 
+More generally: **the System Prompt for an AI agent that does X should be written by an expert in X**.
 
+For most interesting instances of X, expertise is context-specific. It is specific to a particular domain (like email-writing) and also to a particular environment (like my company email account). This is true for many other disciplines: just like I am the world's foremost expert on how I write emails, YC's finance team are experts on how accounting works at YC, our legal team are experts on how we read and write legal docs, and so on.
 
+And just like I want to write my own email-writing prompt, I think most accountants and lawyers are going to want to write their own accounting and lawyering prompts. 
 
-More generally: **the context an agent needs in order to do X should be written by an expert in X**.
+This means that in most AI apps System Prompts should be written by the user, not the software developer or even a domain expert hired by the developer. 
 
-For most interesting instances of X, expertise is context-specific. It is specific to a particular domain (e.g. email-writing) and also to a particular environment (e.g. my corporate email account). This is true for many other disciplines: just like I am the world's foremost expert on how I write emails, YC's accounting team are the world's foremost expert on how accounting is done at YC. Just like I want to write my own email-writing prompt, I think most accountants are going to want to write their own accounting prompts.
+Most AI apps should not be agents, they should be _agent builders_.
 
-This means that in most AI apps System Prompts should be written by the user, not the software developer or even a domain expert hired by the developer. Most AI apps should be _agent builders_.
+## ...and unto the developer what is the developer's
 
-If developers aren't writing the context, what are they doing? They're building the agent-builder UI, obviously, and they're building _agent tools_. 
+If developers aren't writing prompts, what will they do? 
+
+Well for one, they'll creates UIs for building agents that operate in a particular domain, like an email inbox or a general ledger. 
+
+Most people probably won't want to write every prompt from scratch, and good agent builders won't force them to. Developers will provide templates and prompt-writing agents that help users bootstrap their own agents.
+
+Users also need an interface for reviewing an agent's work and iterating on their prompts, similar to little dummy email agent builder I included above. This interafce gives the user the fast feedback loop they need to train an agent to perform a task reliably. 
+
+Developers will also build _agent tools_. 
 
 Tools are the mechanism by which agents act on the outside world. My email-writing agent needs a tool to submit a draft for my review. It might use another tool to send an email without my review (if I'm feeling confident enough to allow that) or to search my inbox for previous emails from a particular email address or to check YC's founder directory to see if an email came from a YC founder.
 
-Tools are also the security layer for agents. Whether or not an agent can do a particular thing is determined by which tools it has access to. This is of course a more natural place for a security layer than trying to build one between the System and User Prompts. I suspect that in the future we'll look back and laugh at the idea that a "prompt injection" was something to be concerned about.
+Tools provide the security layer for agents. Whether or not an agent can do a particular thing is determined by which tools it has access to. It is much easier to enforce boundaries with than it is to enforce boundaries between the System and User Prompts. I suspect that in the future we'll look back and laugh at the idea that a "prompt injection" was something to be concerned about.
 
 ## Agents are better for reading
 
