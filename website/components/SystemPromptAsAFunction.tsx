@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 
 const SystemPromptAsAFunction: React.FC = () => {
-  const [systemPrompt, setSystemPrompt] = useState('double this number:');
-  const [userPrompt, setUserPrompt] = useState('four');
+  const [systemPrompt, setSystemPrompt] = useState('triple this number:');
+  const [userPrompt, setUserPrompt] = useState('eighty-six');
   const [response, setResponse] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -92,10 +92,11 @@ const SystemPromptAsAFunction: React.FC = () => {
             <label className="block font-semibold text-sm text-gray-700 mb-2">
               System Prompt (function)
             </label>
-            <textarea
+            <input
+              type="text"
               value={systemPrompt}
               onChange={(e) => setSystemPrompt(e.target.value)}
-              className="w-full h-40 p-3 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all shadow-sm"
+              className="w-full p-3 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all shadow-sm"
               placeholder="Enter system prompt..."
             />
           </div>
@@ -105,10 +106,11 @@ const SystemPromptAsAFunction: React.FC = () => {
             <label className="block font-semibold text-sm text-gray-700 mb-2">
               User Prompt (input)
             </label>
-            <textarea
+            <input
+              type="text"
               value={userPrompt}
               onChange={(e) => setUserPrompt(e.target.value)}
-              className="w-full h-40 p-3 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all shadow-sm"
+              className="w-full p-3 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all shadow-sm"
               placeholder="Enter user prompt..."
             />
           </div>
@@ -118,11 +120,13 @@ const SystemPromptAsAFunction: React.FC = () => {
             <label className="block font-semibold text-sm text-gray-700 mb-2">
               Response (output)
             </label>
-            <div 
-              className="w-full h-40 p-3 border border-gray-300 rounded-lg text-sm shadow-inner bg-gray-50 overflow-auto"
-            >
-              {response || <span className="text-gray-400 italic">Response will appear here...</span>}
-            </div>
+            <input
+              type="text"
+              value={response}
+              readOnly
+              className="w-full p-3 border border-gray-300 rounded-lg text-sm shadow-inner bg-gray-50"
+              placeholder="Response will appear here..."
+            />
           </div>
         </div>
         
