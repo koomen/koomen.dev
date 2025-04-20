@@ -145,7 +145,7 @@ const SystemPromptAsAFunction: React.FC = () => {
                 </svg>
                 Generating...
               </span>
-            ) : 'Generate'}
+            ) : 'Generate Output'}
           </button>
         </div>
         
