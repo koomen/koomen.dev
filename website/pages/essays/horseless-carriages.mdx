@@ -8,11 +8,11 @@ When I build with AI I feel like I can accomplish almost anything I can imagine 
 
 Most AI apps don't feel like that, though. They rarely do things the way that I want them done, and fixing that is often more work than just doing the thing myself. Using these apps feels like managing an underperforming employee.
 
-I am beginning to suspect that many of these apps are the "horseless carriages" of the AI era. They're bad because they mimic old ways of building software that unnecesarily constrain the power of the incredible AI models under the hood. As a result they've made it easy for a lot of people to dismiss AI.
+I am beginning to suspect that many of these apps are the "horseless carriages" of the AI era. They're bad because they mimic old ways of building software that unnecessarily constrain the power of the incredible AI models under the hood. As a result they've made it easy for a lot of people to dismiss AI.
 
 To illustrate what I mean by that, I'll start with an example of a badly designed AI app.
 
-## Gmail's AI draft writer
+## Gmail's AI assistant
 
 A little while ago, the Gmail team released a new feature giving users the ability to generate email drafts from scratch using Google's flagship AI model, Gemini. This is what it looks like:
 
@@ -48,7 +48,7 @@ Everyone who has used an LLM app to do any writing has had this experience. It�
     caption="Prompt hacking our way to success"
 >let my boss garry know that my daughter woke up with the flu and that I won't be able to come in to the office today. Use no more than one line for the entire email body. Make it friendly but really concise. Don't worry about punctuation or capitalization. Sign off with “Pete” or “pete” and not “Best Regards, Pete” and certainly not “Love, Pete”</CaptionedText>
 
-Here's a dummy version of Gmail's email draft writer that uses OpenAI's 4o-mini model to write emails:
+Here's a dummy version of Gmail's email draft writer that uses OpenAI's gpt-4o-mini model to write emails:
 
 <EmailDraftWriter 
     showSystemPrompt={false}
@@ -245,11 +245,11 @@ Tools are the mechanism by which agents act on the outside world. My email-writi
 
 Tools provide the security layer for agents. Whether or not an agent can do a particular thing is determined by which tools it has access to. It is much easier to enforce boundaries with than it is to enforce boundaries between the System and User Prompts. I suspect that in the future we'll look back and laugh at the idea that a "prompt injection" was something to be concerned about.
 
-## Agents are better for reading
+## An agent for _reading_ my email
 
-There's another big problem with the Gmail AI assistant: AI agents aren't very helpful in generating email drafts from scratch.
+I've been glossing over a bigger problem with Gmail's draft-writing agent: even with a good System Prompt it won't save me much time on writing emails from scratch.
 
-Even in a world where I could write my own system prompt, it's unlikely that an email-drafting agent would save me much time by writing an email to my boss. The reason, of course, is that I prefer my emails to be as short as possible, which means any email written in my voice will be roughly the same length as the User Prompt that describes it. 
+The reason, of course, is that I prefer my emails to be as short as possible, which means any email written in my voice will be roughly the same length as the User Prompt that describes it. 
 
 What I'd really like to use an agent for is _reading_ my email. An agent that can read emails could categorize emails by assigning arbitrary labels, and prioritize them by assigning importance levels. Take a look at the following demo:
 
@@ -259,21 +259,19 @@ It's not hard to imagine how much time an email-reading agent like this could sa
 
 Hell, with access a few additional tools it could unsubscribe from lists, schedule appointments, and pay my bills too, all without my having to lift a finger.
 
-The thing I really want from an AI-native email client is to spend as little time using it as possible.
+This is what I really want from an AI-native email client: the ability to automate mundane work so that I can spend less time doing email.
 
-## Most AI apps should be agent builders
+## AI-native software
 
 This is what AI's "killer app" will look like for many of us: the ability to teach a computer how to do things that we don't like doing so that we can spend our time on things we do. 
 
-One of the reasons I wanted to include real, working mini-apps in this essay was to demonstrate that large language models are already good enough to do this kind of work on our behalf. In fact they're more than good enough in most cases. It's not a lack of AI smarts that is keeping us from the future I described in the previous section, it's app design.
+One of the reasons I wanted to include working demos in this essay was to show that large language models are already good enough to do this kind of work on our behalf. In fact they're more than good enough in most cases. It's not a lack of AI smarts that is keeping us from the future I described in the previous section, it's app design.
 
-In Gmail's case I imagine the team set out to add AI to the Gmail client they already had, rather than asking themselves what an email client would look like if it were designed from ground up to use AI. This is what makes their first attempt a horseless carriage: it's a little bit of AI jammed into an app designed for mundane human labor rather than an app designed for automating mundane labor.
- 
-The purpose of an AI-native email client is to minimize the effort I spend on email. The purpose of an AI-native code editor is to maximize the amount of software I can create in an hour. The purpose of AI-native accounting software is to minimize the time an accountant spends keeping the books. The purpose of AI-native sales software is to maximize the amount of revenue an AE can close each month.
+The Gmail team built a horseless carriage because set out to add AI to the email client they already had, rather than ask what an email client would look like if it were designed from ground up with AI. Their app is a little bit of AI jammed into an interface designed for mundane human labor rather than an interace designed for automating mundane labor.
 
-The purpose of an AI-native app is to give its users _leverage_.
+AI-native software should maximize a user's leverage in a specific domain. An AI-native email client should minimize the time I have to spend on email. An AI-native code editor should maximize the amount of software a developer can create in an hour. AI-native accounting software should minimize the time an accountant spends keeping the books. AI-native sales software should maximize the revenue an AE can close each month.
 
-This is what makes me so excited about a future with AI. It's a world where I don't have to spend time doing mundane work because an AI agent does it for me. Where I can focus only on the things I think are important because an AI agent handles everything else. Where I am more productive in the work I love doing because an AI agent is helping me do it.
+This is what makes me so excited about a future with AI. It's a world where I don't have to spend time doing mundane work because agents do it for me. Where I'll focus only on things I think are important because agents handle everything else. Where I am more productive in the work I love doing because agents help me do it.
 
 I can't wait.
 
