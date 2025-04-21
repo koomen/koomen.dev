@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 
 const SystemPromptAsAFunction: React.FC = () => {
-  const [systemPrompt, setSystemPrompt] = useState('triple this number');
+  const [systemPrompt, setSystemPrompt] = useState('quadruple this number:');
+  // A tool for rendering the response. Didn't end up using this.
   const [tools, setTools] = useState(`
     You have access to the following tool. Use ONLY this tool to return your response.
 
@@ -35,7 +36,8 @@ const SystemPromptAsAFunction: React.FC = () => {
         body: JSON.stringify({
           model: 'gpt-4o-mini',
           messages: [
-            { role: 'system', content: `${systemPrompt}\n\n${tools}`},
+            /*{ role: 'system', content: `${systemPrompt}\n\n${tools}`},*/
+            { role: 'system', content: `${systemPrompt}`},
             { role: 'user', content: userPrompt }
           ],
           stream: true,
@@ -109,7 +111,7 @@ const SystemPromptAsAFunction: React.FC = () => {
   };
 
   return (
-    <div className="mx-auto max-w-6xl p-4">
+    <figure className="mx-auto max-w-6xl p-4">
       <div className="border rounded-lg p-6 shadow-sm bg-white">
         {/* Responsive grid - 3 columns on desktop, 1 column on mobile */}
         {/* Hidden Tool Definition field - not shown in UI but still used */}
@@ -190,7 +192,10 @@ const SystemPromptAsAFunction: React.FC = () => {
           </div>
         )}
       </div>
-    </div>
+      <figcaption className="text-center text-sm text-gray-500 mt-2">
+        A simple demonstration of the system/user prompt relationship using gpt-4o-mini
+      </figcaption>
+    </figure>
   );
 };
 
