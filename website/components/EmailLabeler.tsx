@@ -24,17 +24,22 @@ Arguments: { "label": string, "color": string, "priority": number }
 archiveEmail: Use this tool to archive an email that doesn't need to be labeled.
 Arguments: None
 
+draftReply: Use this tool to draft a reply to the email.
+Arguments: { "body": string }
+
 You MUST respond using only these tools. Do not respond with plain text or explanations.
-You can use one or both tools in your response.
+You can use any combination of these tools in your response.
 
 Example usage for a single tool:
 <tool>labelEmail({"label": "Personal", "color": "red", "priority": 0})</tool>
 OR
 <tool>archiveEmail()</tool>
+OR
+<tool>draftReply({"body": "Thanks for letting me know. I'll be there on Wednesday."})</tool>
 
 Example usage for multiple tools:
 <tool>labelEmail({"label": "YC", "color": "orange", "priority": 1})</tool>
-<tool>archiveEmail()</tool>
+<tool>draftReply({"body": "Hi Garry, Wednesday works for me. Looking forward to our walk."})</tool>
 `;
 
 interface Label {
@@ -53,6 +58,7 @@ interface Email {
   type: 'newsletter' | 'sales' | 'boss' | 'colleague' | 'personal';
   label?: Label;
   archived?: boolean;
+  draftReply?: string;
 }
 
 const generateEmails = (): Email[] => {
@@ -243,14 +249,15 @@ ${email.body}
               // Find all tool calls in the response
               const labelEmailRegex = /<tool>labelEmail\((.*?)\)<\/tool>/g;
               const archiveEmailRegex = /<tool>archiveEmail\(\)<\/tool>/g;
+              const draftReplyRegex = /<tool>draftReply\((.*?)\)<\/tool>/g;
               
-              // Extract all label email tool calls
+              // Extract all tool calls
               const labelMatches = [...content.matchAll(labelEmailRegex)];
-              // Check for archive email tool call
               const archiveMatch = content.match(archiveEmailRegex);
+              const draftReplyMatches = [...content.matchAll(draftReplyRegex)];
               
               // Handle multiple tool calls
-              if (labelMatches.length > 0 || archiveMatch) {
+              if (labelMatches.length > 0 || archiveMatch || draftReplyMatches.length > 0) {
                 // Start with the email as is
                 let updatedEmail = { ...emails[i] };
                 
@@ -267,6 +274,18 @@ ${email.body}
                 // Apply archive if present
                 if (archiveMatch) {
                   updatedEmail = { ...updatedEmail, archived: true };
+                }
+                
+                // Apply draft reply if present (use the first draft if multiple are provided)
+                if (draftReplyMatches.length > 0 && draftReplyMatches[0][1]) {
+                  try {
+                    const draftData = JSON.parse(draftReplyMatches[0][1]);
+                    if (draftData && draftData.body) {
+                      updatedEmail = { ...updatedEmail, draftReply: draftData.body };
+                    }
+                  } catch (draftError) {
+                    console.error('Error parsing draft reply data:', draftError);
+                  }
                 }
                 
                 // Update the email with all changes
@@ -336,9 +355,18 @@ ${email.body}
               <div className="space-y-2">
                 <div className="p-3 border border-gray-200 rounded-lg bg-gray-50">
                   <code className="text-sm text-gray-800 font-mono">labelEmail(label, color, priority)</code>
+                  <p className="text-xs text-gray-600 mt-1">Label an email with a specific category, color, and priority level.</p>
                 </div>
                 <div className="p-3 border border-gray-200 rounded-lg bg-gray-50">
                   <code className="text-sm text-gray-800 font-mono">archiveEmail()</code>
+                  <p className="text-xs text-gray-600 mt-1">Archive an email that doesn't need to be labeled.</p>
+                </div>
+                <div className="p-3 border border-gray-200 rounded-lg bg-gray-50">
+                  <code className="text-sm text-gray-800 font-mono">draftReply(body)</code>
+                  <p className="text-xs text-gray-600 mt-1">Create a draft reply to the email.</p>
+                </div>
+                <div className="p-2 border border-gray-200 rounded-lg bg-gray-50/50">
+                  <p className="text-xs text-gray-600">You can use any combination of these tools in your response.</p>
                 </div>
               </div>
               {/* Hidden Tools Configuration */}
@@ -402,22 +430,29 @@ ${email.body}
                         <div>
                           <span className="font-medium text-sm">{email.sender}</span>
                         </div>
-                        {email.label && (
-                          <div className="flex items-center gap-1">
-                            <span 
-                              className="px-1.5 py-0.5 text-xs rounded-full text-xs shadow-sm" 
-                              style={{ 
-                                backgroundColor: email.label.color,
-                                color: ['white', 'yellow', 'lime', 'cyan'].includes(email.label.color) ? 'black' : 'white'
-                              }}
-                            >
-                              {email.label.label}
+                        <div className="flex items-center gap-1">
+                          {email.label && (
+                            <>
+                              <span 
+                                className="px-1.5 py-0.5 text-xs rounded-full text-xs shadow-sm" 
+                                style={{ 
+                                  backgroundColor: email.label.color,
+                                  color: ['white', 'yellow', 'lime', 'cyan'].includes(email.label.color) ? 'black' : 'white'
+                                }}
+                              >
+                                {email.label.label}
+                              </span>
+                              <span className="text-xs text-gray-500">
+                                P{email.label.priority}
+                              </span>
+                            </>
+                          )}
+                          {email.draftReply && (
+                            <span className="text-xs font-medium text-red-500 ml-1">
+                              draft
                             </span>
-                            <span className="text-xs text-gray-500">
-                              P{email.label.priority}
-                            </span>
-                          </div>
-                        )}
+                          )}
+                        </div>
                       </div>
                       <p className="text-xs text-gray-600">{truncateText(email.subject)}</p>
                     </div>
@@ -436,6 +471,17 @@ ${email.body}
                       <div className="border-t pt-1 mt-1">
                         <p className="whitespace-pre-line">{email.body}</p>
                       </div>
+                      
+                      {email.draftReply && (
+                        <div className="mt-3 pt-3 border-t border-dashed border-gray-300">
+                          <div className="flex items-center mb-1">
+                            <span className="text-xs font-medium bg-red-100 text-red-600 px-2 py-0.5 rounded-sm">DRAFT REPLY</span>
+                          </div>
+                          <div className="bg-gray-50 p-2 rounded-md border border-gray-200">
+                            <p className="whitespace-pre-line text-gray-700">{email.draftReply}</p>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
@@ -462,7 +508,14 @@ ${email.body}
                               <div>
                                 <span className="font-medium text-sm text-gray-600">{email.sender}</span>
                               </div>
-                              <span className="text-xs px-1.5 py-0.5 bg-gray-200 text-gray-600 rounded-full">Archived</span>
+                              <div className="flex items-center gap-1">
+                                <span className="text-xs px-1.5 py-0.5 bg-gray-200 text-gray-600 rounded-full">Archived</span>
+                                {email.draftReply && (
+                                  <span className="text-xs font-medium text-red-500">
+                                    draft
+                                  </span>
+                                )}
+                              </div>
                             </div>
                             <p className="text-xs text-gray-500">{truncateText(email.subject)}</p>
                           </div>
@@ -481,6 +534,17 @@ ${email.body}
                             <div className="border-t pt-1 mt-1">
                               <p className="whitespace-pre-line">{email.body}</p>
                             </div>
+                            
+                            {email.draftReply && (
+                              <div className="mt-3 pt-3 border-t border-dashed border-gray-300">
+                                <div className="flex items-center mb-1">
+                                  <span className="text-xs font-medium bg-red-100 text-red-600 px-2 py-0.5 rounded-sm">DRAFT REPLY</span>
+                                </div>
+                                <div className="bg-gray-50 p-2 rounded-md border border-gray-200">
+                                  <p className="whitespace-pre-line text-gray-700">{email.draftReply}</p>
+                                </div>
+                              </div>
+                            )}
                           </div>
                         )}
                       </div>
