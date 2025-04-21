@@ -1,14 +1,19 @@
 import React, { useState } from 'react';
 
-const DEFAULT_SYSTEM_PROMPT = `You are an email labeling assistant. For each email, analyze it and categorize it using one of the provided tools.
+const DEFAULT_SYSTEM_PROMPT = `You are an email labeling assistant. For each email, analyze it and take the appropriate action.
 
-Here are the categories of emails you should identify:
-- from family: Personal, red, priority 0
-- from my boss Garry: YC, orange, priority 1
-- from anyone else with an @yc.com addr: YC, orange, priority 2
-- from a founder (NOT @yc.com): Founders, blue, priority 2
-- tech-related, e.g. a forum digest: Tech, gray, priority 3
-- trying to sell me something: Spam, black, priority 5
+If the email is:
+- from family: 
+  label Personal, red, 0
+- from my boss Garry: 
+  label YC, orange, 1
+- from anyone else with an @yc.com addr: 
+  label YC, orange, 2
+- from a founder (NOT @yc.com): 
+  label Founders, blue, 2
+- tech-related, e.g. a forum digest: 
+  label Tech, gray, priority 3
+- trying to sell me something: archive
 `;
 
 const DEFAULT_TOOLS = `You have access to the following tools:
@@ -297,11 +302,12 @@ ${email.body}
             <div className="mb-4 flex-grow">
               <label className="block font-semibold text-sm text-gray-700 mb-2">Email Reading Agent Prompt</label>
               <textarea
-                className="w-full p-3 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all font-mono mb-2 h-80"
+                className="w-full p-3 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all font-mono mb-2"
                 value={systemPrompt}
                 onChange={(e) => setSystemPrompt(e.target.value)}
                 placeholder="Enter your system prompt for the email reading agent..."
                 disabled={isLabeling}
+                style={{ height: '400px' }}
               />
             </div>
             
