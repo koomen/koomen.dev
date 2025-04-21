@@ -424,6 +424,53 @@ ${email.body}
                 </div>
               ))}
             </div>
+            
+            {/* Archived Emails Section - Only shown when there are archived emails */}
+            {emails.filter(email => email.archived).length > 0 && (
+              <div className="mt-4">
+                <label className="block font-semibold text-sm text-gray-700 mb-2">
+                  Archived Emails ({emails.filter(email => email.archived).length})
+                </label>
+                <div className="border border-gray-300 rounded-lg shadow-inner bg-gray-100" style={{ height: 'auto' }}>
+                  {emails
+                    .filter(email => email.archived)
+                    .map((email) => (
+                      <div key={email.id} className="border-b last:border-b-0 bg-gray-50/50">
+                        <div 
+                          className="py-1.5 px-3 cursor-pointer hover:bg-white/70 flex justify-between items-center transition-colors"
+                          onClick={() => handleEmailClick(email.id)}
+                        >
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-0.5">
+                              <div>
+                                <span className="font-medium text-sm text-gray-600">{email.sender}</span>
+                              </div>
+                              <span className="text-xs px-1.5 py-0.5 bg-gray-200 text-gray-600 rounded-full">Archived</span>
+                            </div>
+                            <p className="text-xs text-gray-500">{truncateText(email.subject)}</p>
+                          </div>
+                          <div className="text-gray-400 ml-2 text-xs">
+                            {expandedEmailId === email.id ? '▼' : '▶'}
+                          </div>
+                        </div>
+                        
+                        {expandedEmailId === email.id && (
+                          <div className="py-2 px-3 bg-white border-t text-sm">
+                            <div className="mb-1">
+                              <p><strong>From:</strong> {email.sender} &lt;{email.senderEmail}&gt;</p>
+                              <p><strong>To:</strong> {email.receiver}</p>
+                              <p><strong>Subject:</strong> {email.subject}</p>
+                            </div>
+                            <div className="border-t pt-1 mt-1">
+                              <p className="whitespace-pre-line">{email.body}</p>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
