@@ -122,9 +122,9 @@ const SystemPromptAsAFunction: React.FC = () => {
           />
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           {/* System Prompt (function) */}
-          <div>
+          <div className="md:col-span-1">
             <label className="block font-semibold text-sm text-gray-700 mb-2">
               System Prompt (function)
             </label>
@@ -138,7 +138,7 @@ const SystemPromptAsAFunction: React.FC = () => {
           </div>
           
           {/* User Prompt (input) */}
-          <div>
+          <div className="md:col-span-1">
             <label className="block font-semibold text-sm text-gray-700 mb-2">
               User Prompt (input)
             </label>
@@ -152,7 +152,7 @@ const SystemPromptAsAFunction: React.FC = () => {
           </div>
           
           {/* Response (output) */}
-          <div>
+          <div className="md:col-span-2">
             <label className="block font-semibold text-sm text-gray-700 mb-2">
               Response (output)
             </label>
