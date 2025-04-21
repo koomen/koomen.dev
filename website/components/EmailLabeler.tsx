@@ -42,6 +42,7 @@ interface Email {
   body: string;
   type: 'newsletter' | 'sales' | 'boss' | 'colleague' | 'personal';
   label?: Label;
+  archived?: boolean;
 }
 
 const generateEmails = (): Email[] => {
@@ -244,8 +245,12 @@ ${email.body}
                   return updatedEmails;
                 });
               } else if (content.includes('<tool>archiveEmail()</tool>')) {
-                // Handle archived emails - simply don't add a label
-                console.log('Email archived:', email.subject);
+                // Mark the email as archived
+                setEmails(currentEmails => {
+                  const updatedEmails = [...currentEmails];
+                  updatedEmails[i] = { ...updatedEmails[i], archived: true };
+                  return updatedEmails;
+                });
               } else {
                 console.error('Unexpected response format:', content);
               }
@@ -265,56 +270,68 @@ ${email.body}
     setIsLabeling(false);
   };
   
-  // Sort emails by priority (labeled emails first, then by priority value)
-  const sortedEmails = [...emails].sort((a, b) => {
-    // Put labeled emails above unlabeled emails
-    if (a.label && !b.label) return -1;
-    if (!a.label && b.label) return 1;
-    
-    // If both emails have labels, sort by priority (highest first)
-    if (a.label && b.label) {
-      return a.label.priority - b.label.priority;
-    }
-    
-    // If neither have labels, maintain original order
-    return 0;
-  });
+  // Filter out archived emails and sort by priority
+  const sortedEmails = [...emails]
+    .filter(email => !email.archived) // Filter out archived emails
+    .sort((a, b) => {
+      // Put labeled emails above unlabeled emails
+      if (a.label && !b.label) return -1;
+      if (!a.label && b.label) return 1;
+      
+      // If both emails have labels, sort by priority (highest first)
+      if (a.label && b.label) {
+        return a.label.priority - b.label.priority;
+      }
+      
+      // If neither have labels, maintain original order
+      return 0;
+    });
 
   return (
     <div className="mx-auto max-w-6xl p-4">
       <div className="border rounded-lg p-6 shadow-sm bg-white">
-        <div className="flex flex-col gap-6">
-          {/* Top Section: Email Reading Agent Prompt */}
-          <div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-              {/* System Prompt */}
-              <div>
-                <label className="block font-semibold text-sm text-gray-700 mb-2">Email Reading Agent Prompt</label>
-                <textarea
-                  className="w-full h-48 p-3 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all font-mono mb-4"
-                  value={systemPrompt}
-                  onChange={(e) => setSystemPrompt(e.target.value)}
-                  placeholder="Enter your system prompt for the email reading agent..."
-                  disabled={isLabeling}
-                />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Left Side: Email Reading Agent, Tools, and Button */}
+          <div className="flex flex-col h-full">
+            {/* System Prompt */}
+            <div className="mb-4 flex-grow">
+              <label className="block font-semibold text-sm text-gray-700 mb-2">Email Reading Agent Prompt</label>
+              <textarea
+                className="w-full p-3 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all font-mono mb-2 h-[calc(100%-2.5rem)]"
+                value={systemPrompt}
+                onChange={(e) => setSystemPrompt(e.target.value)}
+                placeholder="Enter your system prompt for the email reading agent..."
+                disabled={isLabeling}
+              />
+            </div>
+            
+            {/* Tools Display */}
+            <div className="mb-4">
+              <label className="block font-semibold text-sm text-gray-700 mb-2">Available Tools</label>
+              <div className="space-y-2">
+                <div className="p-3 border border-gray-200 rounded-lg bg-gray-50">
+                  <code className="text-sm text-gray-800 font-mono">labelEmail(label, color, priority)</code>
+                  <p className="text-xs text-gray-600 mt-1">Label an email with a specific category, color, and priority level.</p>
+                </div>
+                <div className="p-3 border border-gray-200 rounded-lg bg-gray-50">
+                  <code className="text-sm text-gray-800 font-mono">archiveEmail()</code>
+                  <p className="text-xs text-gray-600 mt-1">Archive an email that doesn't need to be labeled.</p>
+                </div>
               </div>
-              
-              {/* Tools Configuration */}
-              <div>
-                <label className="block font-semibold text-sm text-gray-700 mb-2">Tool Definitions</label>
+              {/* Hidden Tools Configuration */}
+              <div className="hidden">
                 <textarea
-                  className="w-full h-48 p-3 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all font-mono mb-4"
                   value={tools}
                   onChange={(e) => setTools(e.target.value)}
-                  placeholder="Define the tools that the agent can use..."
                   disabled={isLabeling}
                 />
               </div>
             </div>
             
-            <div className="flex items-center">
+            {/* Read Emails Button */}
+            <div>
               <button
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg disabled:bg-blue-300 text-sm font-medium hover:bg-blue-700 transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 h-12"
+                className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg disabled:bg-blue-300 text-sm font-medium hover:bg-blue-700 transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 h-12"
                 onClick={labelEmails}
                 disabled={isLabeling}
               >
@@ -330,7 +347,7 @@ ${email.body}
               </button>
               
               {isLabeling && (
-                <div className="ml-4 flex-1">
+                <div className="mt-2">
                   <div className="w-full bg-gray-200 rounded-full h-2.5">
                     <div 
                       className="bg-blue-600 h-2.5 rounded-full" 
@@ -345,10 +362,12 @@ ${email.body}
             </div>
           </div>
           
-          {/* Bottom Section: Email Inbox */}
-          <div>
-            <label className="block font-semibold text-sm text-gray-700 mb-2">Email Inbox (12)</label>
-            <div className="border border-gray-300 rounded-lg overflow-hidden shadow-inner bg-gray-50">
+          {/* Right Side: Email Inbox */}
+          <div className="flex flex-col h-full">
+            <label className="block font-semibold text-sm text-gray-700 mb-2">
+              Email Inbox ({sortedEmails.length})
+            </label>
+            <div className="border border-gray-300 rounded-lg overflow-hidden shadow-inner bg-gray-50 flex-grow">
               {sortedEmails.map((email) => (
                 <div key={email.id} className="border-b last:border-b-0">
                   <div 
