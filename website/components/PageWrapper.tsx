@@ -9,9 +9,35 @@ export default function PageWrapper({
   children: React.ReactNode;
   title?: string;
 }) {
+  // Handle title change
   React.useEffect(() => {
     document.title = title;
   }, [title]);
+
+  // Handle hash scrolling after page has rendered
+  React.useEffect(() => {
+    // Function to scroll to hash
+    const scrollToHash = () => {
+      const { hash } = window.location;
+      if (hash) {
+        // Give the DOM time to render fully
+        setTimeout(() => {
+          const id = hash.replace('#', '');
+          const element = document.getElementById(id);
+          if (element) {
+            element.scrollIntoView({ behavior: 'smooth' });
+          }
+        }, 100);
+      }
+    };
+
+    // Scroll on initial load
+    scrollToHash();
+
+    // Also attach to hashchange event
+    window.addEventListener('hashchange', scrollToHash);
+    return () => window.removeEventListener('hashchange', scrollToHash);
+  }, []);
 
   return (
     <div className="flex flex-col min-h-screen font-sans text-gray-800 antialiased">
