@@ -297,7 +297,7 @@ ${email.body}
             <div className="mb-4 flex-grow">
               <label className="block font-semibold text-sm text-gray-700 mb-2">Email Reading Agent Prompt</label>
               <textarea
-                className="w-full p-3 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all font-mono mb-2 h-[calc(100%-2.5rem)]"
+                className="w-full p-3 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all font-mono mb-2 h-80"
                 value={systemPrompt}
                 onChange={(e) => setSystemPrompt(e.target.value)}
                 placeholder="Enter your system prompt for the email reading agent..."
@@ -367,7 +367,7 @@ ${email.body}
             <label className="block font-semibold text-sm text-gray-700 mb-2">
               Email Inbox ({sortedEmails.length})
             </label>
-            <div className="border border-gray-300 rounded-lg overflow-hidden shadow-inner bg-gray-50 flex-grow">
+            <div className="border border-gray-300 rounded-lg overflow-y-auto shadow-inner bg-gray-50 flex-grow min-h-[400px]">
               {sortedEmails.map((email) => (
                 <div key={email.id} className="border-b last:border-b-0">
                   <div 
