@@ -29,10 +29,6 @@ const SystemAndUserPromptDiagram: React.FC = () => {
           <div className="text-sm text-gray-700 dark:text-gray-300">Processes the combined prompt and generates a response</div>
         </div>
       </div>
-      
-      <p className="text-center text-sm text-gray-500 mt-6">
-        The system prompt shapes the assistant's behavior, while the user prompt describes a specific task.
-      </p>
     </div>
   );
 };

@@ -59,6 +59,7 @@ You can try this yourself with this dummy version of Gmail's email draft writer 
         "Original": 'Let my boss Garry know that my daughter woke up with the flu this morning and that I wont be able to come in to the office today.',
         "Prompt-hacked": "Let my boss garry know that my daughter woke up with the flu and that I won't be able to come in to the office today. Use no more than one line for the entire email body. Make it friendly but really concise. Don't worry about punctuation or capitalization. Sign off with “Pete” or “pete” and not “Best Regards, Pete” and certainly not “Love, Pete"
     }}
+    caption="A dummy version of Gmail's draft generator that uses gpt-4o-mini under the hood"
 />
 
 But this is obviously dumb. Writing these instructions took much longer than it would have taken me to write the email myself in the first place. Remarkably, the Gmail team has shipped a product that perfectly captures the experience of managing an underperforming employee.
@@ -130,6 +131,7 @@ Intuitively, you can see what's going on here: when I write my own System Prompt
         "Pete Version" : "You're Pete, a 43 year old husband, father, programmer, and YC Partner.\n\nYou're very busy and so is everyone you correspond with, so you do your best to keep your emails as short as possible and to the point. You avoid all unnecessary words and you often omit punctuation or leave misspellings unaddressed because it's not a big deal and you'd rather save the time. Prefer one-line emails.\n\nDo your best to be kind, and don't be so informal that it comes across as rude."
     }}
     defaultUserPrompt="Let my boss Garry know that my daughter woke up with the flu this morning and that I won't be able to come in to the office today."
+    caption="Depending on the System Prompt, gpt-4o-mini returns dramatically different responses to the same User Prompt"
 />
 
 Try generating a draft using the (imagined) Gmail System Prompt, and then do the same with the "Pete System Prompt" above. The "Pete" version will give you something like this:

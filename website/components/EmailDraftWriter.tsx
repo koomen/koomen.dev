@@ -13,12 +13,14 @@ interface EmailDraftWriterProps {
   defaultSystemPrompt?: string | SystemPromptMap;
   defaultUserPrompt?: string | SystemPromptMap;
   showSystemPrompt?: boolean;
+  caption?: string;
 }
 
 const EmailDraftWriter: React.FC<EmailDraftWriterProps> = ({
   defaultSystemPrompt = 'You are an expert email writer. Write a professional, concise, and effective email based on the user\'s request.',
   defaultUserPrompt = '',
-  showSystemPrompt = true
+  showSystemPrompt = true,
+  caption
 }) => {
   // Process system prompts
   const [systemPromptOptions, setSystemPromptOptions] = useState<SystemPromptOption[]>([]);
@@ -195,7 +197,7 @@ const EmailDraftWriter: React.FC<EmailDraftWriterProps> = ({
   };
 
   return (
-    <div className="mx-auto max-w-6xl p-4">
+    <figure className="mx-auto max-w-6xl p-4">
       <div className="border rounded-lg p-6 shadow-sm bg-white">
         {showSystemPrompt ? (
           /* Two-column layout with system prompt */
@@ -371,7 +373,12 @@ const EmailDraftWriter: React.FC<EmailDraftWriterProps> = ({
           </div>
         )}
       </div>
-    </div>
+      {caption && (
+        <figcaption className="text-center text-sm text-gray-500 mt-2">
+          {caption}
+        </figcaption>
+      )}
+    </figure>
   );
 };
 
