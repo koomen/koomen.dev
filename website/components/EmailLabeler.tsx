@@ -5,12 +5,12 @@ const DEFAULT_PROMPT = `You are an email labeling assistant. For each email, ana
 Here are the labels, colors &priorities I'd like you to use. Use ONLY these labels, don't invent your own:
 
 If it's:
-- from family: Personal, red, 5
-- from my boss Garry: YC, orange, 4
-- from anyone else with an @yc.com addr: YC, orange, 3
-- from a founder (NOT @yc.com): Founders, blue, 3
-- tech-related, e.g. a forum digest: Tech, gray, 2
-- trying to sell me something: Spam, black, 1
+- from family: Personal, red, 0
+- from my boss Garry: YC, orange, 1
+- from anyone else with an @yc.com addr: YC, orange, 2
+- from a founder (NOT @yc.com): Founders, blue, 2
+- tech-related, e.g. a forum digest: Tech, gray, 3
+- trying to sell me something: Spam, black, 5
 
 Your response must be valid JSON and contain nothing else - no explanations, no additional text.
 
@@ -252,7 +252,7 @@ ${email.body}
     
     // If both emails have labels, sort by priority (highest first)
     if (a.label && b.label) {
-      return b.label.priority - a.label.priority;
+      return a.label.priority - b.label.priority;
     }
     
     // If neither have labels, maintain original order
