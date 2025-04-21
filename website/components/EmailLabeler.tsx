@@ -2,21 +2,15 @@ import React, { useState } from 'react';
 
 const DEFAULT_PROMPT = `You are an email labeling assistant. For each email, analyze it and respond ONLY with a JSON object containing: 1. "label", 2. "color", 3. "priority"
 
-Here are the labels & priorities I'd like you to use. Use ONLY these labels, don't invent your own:
+Here are the labels, colors &priorities I'd like you to use. Use ONLY these labels, don't invent your own:
 
 If it's:
-- from my wife Sumana: 
-  Personal, red, priority 5
-- from my boss Garry: 
-  YC, orange, priority 4
-- from anyone else with a @yc.com address: 
-  YC, orange, priority 3
-- from a startup founder (NOT @yc.com) asking for advice: 
-  Founder, blue, priority 3
-- a tech-related email, e.g. a forum digest: 
-  Tech, gray, priority 2
-- someone trying to sell me something: 
-  Spam, black, priority 1
+- from family: Personal, red, 5
+- from my boss Garry: YC, orange, 4
+- from anyone else with an @yc.com addr: YC, orange, 3
+- from a founder (NOT @yc.com): Founders, blue, 3
+- tech-related, e.g. a forum digest: Tech, gray, 2
+- trying to sell me something: Spam, black, 1
 
 Your response must be valid JSON and contain nothing else - no explanations, no additional text.
 
