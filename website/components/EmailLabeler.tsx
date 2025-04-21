@@ -1,21 +1,30 @@
 import React, { useState } from 'react';
 
-const DEFAULT_PROMPT = `You are an email labeling assistant. For each email, analyze it and respond ONLY with a JSON object containing: 1. "label", 2. "color", 3. "priority"
+const DEFAULT_SYSTEM_PROMPT = `You are an email labeling assistant. For each email, analyze it and categorize it using one of the provided tools.
 
-Here are the labels, colors &priorities I'd like you to use. Use ONLY these labels, don't invent your own:
+Here are the categories of emails you should identify:
+- from family: Personal, red, priority 0
+- from my boss Garry: YC, orange, priority 1
+- from anyone else with an @yc.com addr: YC, orange, priority 2
+- from a founder (NOT @yc.com): Founders, blue, priority 2
+- tech-related, e.g. a forum digest: Tech, gray, priority 3
+- trying to sell me something: Spam, black, priority 5
+`;
 
-If it's:
-- from family: Personal, red, 0
-- from my boss Garry: YC, orange, 1
-- from anyone else with an @yc.com addr: YC, orange, 2
-- from a founder (NOT @yc.com): Founders, blue, 2
-- tech-related, e.g. a forum digest: Tech, gray, 3
-- trying to sell me something: Spam, black, 5
+const DEFAULT_TOOLS = `You have access to the following tools:
 
-Your response must be valid JSON and contain nothing else - no explanations, no additional text.
+labelEmail: Use this tool to label an email with a specific category, color, and priority level.
+Arguments: { "label": string, "color": string, "priority": number }
 
-Example response: 
-{"label": "urgent", "color": "red", "priority": 5}
+archiveEmail: Use this tool to archive an email that doesn't need to be labeled.
+Arguments: None
+
+You MUST respond using only these tools. Do not respond with plain text or explanations.
+
+Example usage:
+<tool>labelEmail({"label": "Personal", "color": "red", "priority": 0})</tool>
+OR
+<tool>archiveEmail()</tool>
 `;
 
 interface Label {
@@ -151,7 +160,8 @@ const generateEmails = (): Email[] => {
 };
 
 const EmailLabeler: React.FC = () => {
-  const [prompt, setPrompt] = useState<string>(DEFAULT_PROMPT);
+  const [systemPrompt, setSystemPrompt] = useState<string>(DEFAULT_SYSTEM_PROMPT);
+  const [tools, setTools] = useState<string>(DEFAULT_TOOLS);
   const [emails, setEmails] = useState<Email[]>(generateEmails());
   const [expandedEmailId, setExpandedEmailId] = useState<number | null>(null);
   const [isLabeling, setIsLabeling] = useState<boolean>(false);
@@ -166,14 +176,14 @@ const EmailLabeler: React.FC = () => {
   };
   
   const labelEmails = async () => {
-    if (!prompt.trim()) {
-      alert('Please enter a prompt for the email reading agent.');
+    if (!systemPrompt.trim()) {
+      alert('Please enter a system prompt for the email reading agent.');
       return;
     }
     
     setIsLabeling(true);
     setLabelingProgress(0);
-    // Clear existing labels from inbox view when labeling starts
+    // Clear existing labels from inbox view when reading starts
     setEmails(currentEmails => currentEmails.map(email => ({ ...email, label: undefined })));
     
     // Process emails one by one and update the UI immediately when each receives its label
@@ -201,7 +211,7 @@ ${email.body}
             messages: [
               { 
                 role: 'system', 
-                content: prompt
+                content: `${systemPrompt}\n\n${tools}`
               },
               { 
                 role: 'user', 
@@ -219,17 +229,28 @@ ${email.body}
           
           if (content) {
             try {
-              // Parse the content as JSON
-              const labelData: Label = JSON.parse(content);
+              // Parse the tool response
+              const toolRegex = /<tool>labelEmail\((.*?)\)<\/tool>/;
+              const match = content.match(toolRegex);
               
-              // Update this specific email with its label immediately
-              setEmails(currentEmails => {
-                const updatedEmails = [...currentEmails];
-                updatedEmails[i] = { ...updatedEmails[i], label: labelData };
-                return updatedEmails;
-              });
-            } catch (jsonError) {
-              console.error('Error parsing JSON response:', jsonError);
+              if (match && match[1]) {
+                // Parse the JSON from the tool call
+                const labelData: Label = JSON.parse(match[1]);
+                
+                // Update this specific email with its label immediately
+                setEmails(currentEmails => {
+                  const updatedEmails = [...currentEmails];
+                  updatedEmails[i] = { ...updatedEmails[i], label: labelData };
+                  return updatedEmails;
+                });
+              } else if (content.includes('<tool>archiveEmail()</tool>')) {
+                // Handle archived emails - simply don't add a label
+                console.log('Email archived:', email.subject);
+              } else {
+                console.error('Unexpected response format:', content);
+              }
+            } catch (parseError) {
+              console.error('Error parsing tool response:', parseError);
             }
           }
         }
@@ -262,39 +283,54 @@ ${email.body}
   return (
     <div className="mx-auto max-w-6xl p-4">
       <div className="border rounded-lg p-6 shadow-sm bg-white">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Left Column: Email Reading Agent Prompt */}
-          <div className="flex flex-col h-full">
-            <div className="flex flex-col flex-grow mb-4">
-              <label className="block font-semibold text-sm text-gray-700 mb-2">Email Reading Agent Prompt</label>
-              <textarea
-                className="w-full flex-grow p-3 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all font-mono"
-                value={prompt}
-                onChange={(e) => setPrompt(e.target.value)}
-                placeholder="Enter your prompt for the email reading agent..."
-                disabled={isLabeling}
-              />
+        <div className="flex flex-col gap-6">
+          {/* Top Section: Email Reading Agent Prompt */}
+          <div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              {/* System Prompt */}
+              <div>
+                <label className="block font-semibold text-sm text-gray-700 mb-2">Email Reading Agent Prompt</label>
+                <textarea
+                  className="w-full h-48 p-3 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all font-mono mb-4"
+                  value={systemPrompt}
+                  onChange={(e) => setSystemPrompt(e.target.value)}
+                  placeholder="Enter your system prompt for the email reading agent..."
+                  disabled={isLabeling}
+                />
+              </div>
+              
+              {/* Tools Configuration */}
+              <div>
+                <label className="block font-semibold text-sm text-gray-700 mb-2">Tool Definitions</label>
+                <textarea
+                  className="w-full h-48 p-3 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all font-mono mb-4"
+                  value={tools}
+                  onChange={(e) => setTools(e.target.value)}
+                  placeholder="Define the tools that the agent can use..."
+                  disabled={isLabeling}
+                />
+              </div>
             </div>
             
-            <div className="mb-2">
+            <div className="flex items-center">
               <button
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg disabled:bg-blue-300 text-sm font-medium hover:bg-blue-700 transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg disabled:bg-blue-300 text-sm font-medium hover:bg-blue-700 transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 h-12"
                 onClick={labelEmails}
                 disabled={isLabeling}
               >
                 {isLabeling ? (
-                  <span className="flex items-center">
+                  <span className="flex items-center justify-center">
                     <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                     </svg>
-                    Labeling Emails...
+                    Reading Emails...
                   </span>
-                ) : 'Label Emails'}
+                ) : 'Read Emails'}
               </button>
               
               {isLabeling && (
-                <div className="mt-2">
+                <div className="ml-4 flex-1">
                   <div className="w-full bg-gray-200 rounded-full h-2.5">
                     <div 
                       className="bg-blue-600 h-2.5 rounded-full" 
@@ -309,10 +345,10 @@ ${email.body}
             </div>
           </div>
           
-          {/* Right Column: Email Inbox */}
-          <div className="flex flex-col h-full">
+          {/* Bottom Section: Email Inbox */}
+          <div>
             <label className="block font-semibold text-sm text-gray-700 mb-2">Email Inbox (12)</label>
-            <div className="flex-grow border border-gray-300 rounded-lg overflow-hidden shadow-inner bg-gray-50">
+            <div className="border border-gray-300 rounded-lg overflow-hidden shadow-inner bg-gray-50">
               {sortedEmails.map((email) => (
                 <div key={email.id} className="border-b last:border-b-0">
                   <div 
