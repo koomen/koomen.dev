@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 const SystemPromptAsAFunction: React.FC = () => {
-  const [systemPrompt, setSystemPrompt] = useState('triple this number:');
+  const [systemPrompt, setSystemPrompt] = useState('triple this number');
   const [userPrompt, setUserPrompt] = useState('eighty-six');
   const [response, setResponse] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
@@ -26,7 +26,7 @@ const SystemPromptAsAFunction: React.FC = () => {
         body: JSON.stringify({
           model: 'gpt-4o-mini',
           messages: [
-            { role: 'system', content: `${systemPrompt}\nreturn ONLY the result; omit any unnecessary words.`},
+            { role: 'system', content: systemPrompt},
             { role: 'user', content: userPrompt }
           ],
           stream: true,
