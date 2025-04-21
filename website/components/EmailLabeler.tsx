@@ -25,10 +25,15 @@ archiveEmail: Use this tool to archive an email that doesn't need to be labeled.
 Arguments: None
 
 You MUST respond using only these tools. Do not respond with plain text or explanations.
+You can use one or both tools in your response.
 
-Example usage:
+Example usage for a single tool:
 <tool>labelEmail({"label": "Personal", "color": "red", "priority": 0})</tool>
 OR
+<tool>archiveEmail()</tool>
+
+Example usage for multiple tools:
+<tool>labelEmail({"label": "YC", "color": "orange", "priority": 1})</tool>
 <tool>archiveEmail()</tool>
 `;
 
@@ -235,29 +240,43 @@ ${email.body}
           
           if (content) {
             try {
-              // Parse the tool response
-              const toolRegex = /<tool>labelEmail\((.*?)\)<\/tool>/;
-              const match = content.match(toolRegex);
+              // Find all tool calls in the response
+              const labelEmailRegex = /<tool>labelEmail\((.*?)\)<\/tool>/g;
+              const archiveEmailRegex = /<tool>archiveEmail\(\)<\/tool>/g;
               
-              if (match && match[1]) {
-                // Parse the JSON from the tool call
-                const labelData: Label = JSON.parse(match[1]);
+              // Extract all label email tool calls
+              const labelMatches = [...content.matchAll(labelEmailRegex)];
+              // Check for archive email tool call
+              const archiveMatch = content.match(archiveEmailRegex);
+              
+              // Handle multiple tool calls
+              if (labelMatches.length > 0 || archiveMatch) {
+                // Start with the email as is
+                let updatedEmail = { ...emails[i] };
                 
-                // Update this specific email with its label immediately
+                // Apply label if present (use the first label if multiple are provided)
+                if (labelMatches.length > 0 && labelMatches[0][1]) {
+                  try {
+                    const labelData: Label = JSON.parse(labelMatches[0][1]);
+                    updatedEmail = { ...updatedEmail, label: labelData };
+                  } catch (labelError) {
+                    console.error('Error parsing label data:', labelError);
+                  }
+                }
+                
+                // Apply archive if present
+                if (archiveMatch) {
+                  updatedEmail = { ...updatedEmail, archived: true };
+                }
+                
+                // Update the email with all changes
                 setEmails(currentEmails => {
                   const updatedEmails = [...currentEmails];
-                  updatedEmails[i] = { ...updatedEmails[i], label: labelData };
-                  return updatedEmails;
-                });
-              } else if (content.includes('<tool>archiveEmail()</tool>')) {
-                // Mark the email as archived
-                setEmails(currentEmails => {
-                  const updatedEmails = [...currentEmails];
-                  updatedEmails[i] = { ...updatedEmails[i], archived: true };
+                  updatedEmails[i] = updatedEmail;
                   return updatedEmails;
                 });
               } else {
-                console.error('Unexpected response format:', content);
+                console.error('No valid tool calls found in response:', content);
               }
             } catch (parseError) {
               console.error('Error parsing tool response:', parseError);
@@ -317,11 +336,9 @@ ${email.body}
               <div className="space-y-2">
                 <div className="p-3 border border-gray-200 rounded-lg bg-gray-50">
                   <code className="text-sm text-gray-800 font-mono">labelEmail(label, color, priority)</code>
-                  <p className="text-xs text-gray-600 mt-1">Label an email with a specific category, color, and priority level.</p>
                 </div>
                 <div className="p-3 border border-gray-200 rounded-lg bg-gray-50">
                   <code className="text-sm text-gray-800 font-mono">archiveEmail()</code>
-                  <p className="text-xs text-gray-600 mt-1">Archive an email that doesn't need to be labeled.</p>
                 </div>
               </div>
               {/* Hidden Tools Configuration */}
