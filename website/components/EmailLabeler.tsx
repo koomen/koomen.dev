@@ -295,7 +295,7 @@ ${email.body}
   return (
     <div className="mx-auto max-w-6xl p-4">
       <div className="border rounded-lg p-6 shadow-sm bg-white">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:items-start">
           {/* Left Side: Email Reading Agent, Tools, and Button */}
           <div className="flex flex-col h-full">
             {/* System Prompt */}
@@ -369,11 +369,11 @@ ${email.body}
           </div>
           
           {/* Right Side: Email Inbox */}
-          <div className="flex flex-col h-full">
+          <div className="flex flex-col">
             <label className="block font-semibold text-sm text-gray-700 mb-2">
               Email Inbox ({sortedEmails.length})
             </label>
-            <div className="border border-gray-300 rounded-lg overflow-y-auto shadow-inner bg-gray-50 flex-grow min-h-[400px]">
+            <div className="border border-gray-300 rounded-lg shadow-inner bg-gray-50" style={{ height: 'auto', minHeight: sortedEmails.length === 0 ? '100px' : 'auto' }}>
               {sortedEmails.map((email) => (
                 <div key={email.id} className="border-b last:border-b-0">
                   <div 
