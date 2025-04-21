@@ -206,10 +206,10 @@ const EmailDraftWriter: React.FC<EmailDraftWriterProps> = ({
             <div className="flex flex-col h-full">
               {/* System Prompt */}
               <div className="mb-4 flex-grow">
-                <div className="flex items-center mb-2">
-                  <label className="font-semibold text-sm text-gray-700 mr-2">System Prompt</label>
+                <div className="mb-2">
+                  <label className="font-semibold text-sm text-gray-700 block mb-1">System Prompt</label>
                   {systemPromptOptions.length > 1 && (
-                    <div className="flex gap-1 text-xs">
+                    <div className="flex flex-wrap gap-1 text-xs mb-2">
                       {systemPromptOptions.map((option) => (
                         <button
                           key={option.label}
@@ -237,10 +237,10 @@ const EmailDraftWriter: React.FC<EmailDraftWriterProps> = ({
               
               {/* User Prompt */}
               <div className="mb-4">
-                <div className="flex items-center mb-2">
-                  <label className="font-semibold text-sm text-gray-700 mr-2">User Prompt</label>
+                <div className="mb-2">
+                  <label className="font-semibold text-sm text-gray-700 block mb-1">User Prompt</label>
                   {userPromptOptions.length > 1 && (
-                    <div className="flex gap-1 text-xs">
+                    <div className="flex flex-wrap gap-1 text-xs mb-2">
                       {userPromptOptions.map((option) => (
                         <button
                           key={option.label}
@@ -306,10 +306,10 @@ const EmailDraftWriter: React.FC<EmailDraftWriterProps> = ({
           <div className="flex flex-col w-full max-w-3xl mx-auto">
             <div className="mb-5">
               {/* User Prompt Header */}
-              <div className="flex items-center mb-2">
-                <label className="font-semibold text-sm text-gray-700 mr-2">Your Request</label>
+              <div className="mb-2">
+                <label className="font-semibold text-sm text-gray-700 block mb-1">Your Request</label>
                 {userPromptOptions.length > 1 && (
-                  <div className="flex gap-1 text-xs">
+                  <div className="flex flex-wrap gap-1 text-xs mb-2">
                     {userPromptOptions.map((option) => (
                       <button
                         key={option.label}
