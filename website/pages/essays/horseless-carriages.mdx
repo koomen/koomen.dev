@@ -32,12 +32,14 @@ Here I've added a prompt to the interface requesting a draft for an email to my 
   size="large"
 />
 
-As you can see, Gemini has produced a plausible sounding draft that fits the prompt I submitted perfectly. Mission accomplished, right? No, of course not: this doesn’t sound anything like an email that I would actually write. If I'd written this email myself, it would have sounded something like this:
+As you can see, Gemini has produced a plausible sounding draft that fits the prompt I submitted perfectly. The problem is that this doesn’t sound anything like an email that I would actually write. If I'd written this email myself, it would have sounded something like this:
 
 <CaptionedText
   size="large"
   caption="The email I would have written"
 >Hi garry, my daughter woke up with the flu. won't make it in today</CaptionedText>
+
+I'll pause here to address an obvious objection: the email I would have written is actually shorter than my original prompt. This is a contrived example chosen to make a point about the tone of Gmail's assistant. I'll address the fact that LLMs aren't actually that helpful for writing emails from scratch [later on in this essay](#an-agent-for-reading-my-email).
 
 When you compare it with mine, Gemini's draft is wordy and weirdly formal and so un-Pete that if I actually sent this to Garry, he’d probably mistake it for some kind of phishing attack. It’s AI Slop.
 
@@ -59,7 +61,7 @@ You can try this yourself with this dummy version of Gmail's email draft writer 
     }}
 />
 
-But this is obviously dumb. Writing these instructions took longer than it would have taken me to write the email myself in the first place. Remarkably, the Gmail team has shipped a product that perfectly captures the experience of managing an underperforming employee. The AI in Gmail is braindead.
+But this is obviously dumb. Writing these instructions took much longer than it would have taken me to write the email myself in the first place. Remarkably, the Gmail team has shipped a product that perfectly captures the experience of managing an underperforming employee.
 
 Millions of Gmail users have had this experience and I'm sure many of them have concluded that AI just isn't smart enough to write good emails yet. 
 
@@ -83,9 +85,7 @@ The System Prompt explains to the model how to accomplish a particular set of ta
 
 You can think of the System Prompt as a _function_, the User Prompt as its _input_, and the model's response as its output:
 
-
 <SystemPromptAsAFunction />
-
 
 In my original example, the User Prompt was 
 
@@ -94,20 +94,20 @@ In my original example, the User Prompt was
     caption="My original User Prompt"
 >Let my boss Garry know that my daughter woke up with the flu this morning and that I won't be able to come in to the office today.</CaptionedText>
 
-Google keeps the System Prompt a secret, but judging by the output we've all gotten from these things we can guess what it looks like:
+Google keeps the System Prompt a secret, but judging by the output we can guess what it looks like:
 
 <CaptionedText
     size="large"
     caption="Gmail's email-draft-writer System Prompt (presumably)"
 >
-You are a helpful email-writing assistant responsible for writing emails on behalf of a Gmail user. Follow the user’s instructions and use a formal, businessy tone and correct punctuation so that it’s obvious the user is really smart and serious.
+You are a helpful email-writing assistant responsible for writing emails on behalf of a Gmail user. Follow the user’s instructions and use a formal, businessy tone and correct punctuation so that it’s obvious the user is smart and serious.
 </CaptionedText>
 
-And here we have our answer: Gmail's AI is braindead because they taught it to be braindead. It is braindead by design.
+Of course I'm being glib here, but the problem is not just that the Gmail team wrote a bad system prompt. The problem is that I'm not allowed to change it.
 
 ## The Pete System Prompt
 
-If, instead of forcing me to use their one-size-fits-all System Prompt, Gmail allowed me to write my own, it would look something like this:
+If, instead of forcing me to use their one-size-fits-all System Prompt, Gmail let me to write my own, it would look something like this:
 
 <CaptionedText
     caption="The Pete System Prompt"s
@@ -197,7 +197,7 @@ Programming is hard, so most of us choose option 2 most of the time. It's why I'
 
 The modern software industry is built on the assumption that we need developers to act as middlemen between us and computers. They translate our desires into code and abstract it away from us behind simple interfaces we can understand. 
 
-And of course in most cases the only way for developers to do this profitably is to build one piece of software for a large group of users. Developers are used to building one-size-fits-all software, and we're used to using one-size-fits-all software.
+And of course in most cases the only way for developers to do this profitably is to build one piece of software for a large group of users. Developers are used to building one-size-fits-all software, and we're used to using it.
 
 In the old world, the division of responsibility between developers and users was clear. The developer writes code, which governs how software behaves in the general case. The user provides input, which determines how the software behaves in the specific case.
 
