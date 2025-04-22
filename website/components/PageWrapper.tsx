@@ -5,44 +5,15 @@ import Footer from "./Footer";
 export default function PageWrapper({
   children,
   title = "Pete Koomen",
-  description = "Pete Koomen's website and blog",
-  image = "/images/favicon.ico",
-  url,
 }: {
   children: React.ReactNode;
   title?: string;
-  description?: string;
-  image?: string;
-  url?: string;
 }) {
-  // Handle title and meta changes
+  // Handle title change
   React.useEffect(() => {
     // Update document title
     document.title = title;
-    
-    // Set Open Graph meta tags
-    const metaTags = {
-      'og:title': title,
-      'og:description': description,
-      'og:image': image,
-      'og:url': url || window.location.href,
-      'og:type': 'website',
-      'twitter:card': 'summary_large_image'
-    };
-    
-    // Create or update meta tags
-    Object.entries(metaTags).forEach(([property, content]) => {
-      let meta = document.querySelector(`meta[property="${property}"]`);
-      
-      if (!meta) {
-        meta = document.createElement('meta');
-        meta.setAttribute('property', property);
-        document.head.appendChild(meta);
-      }
-      
-      meta.setAttribute('content', content);
-    });
-  }, [title, description, image, url]);
+  }, [title]);
 
   // Handle hash scrolling after page has rendered
   React.useEffect(() => {

@@ -6,11 +6,13 @@ import path from "path";
 import fs from "fs";
 import Inspect from "vite-plugin-inspect";
 import { createMpaPlugin, createPages } from "vite-plugin-virtual-mpa";
+import matter from "gray-matter";
 
 interface MdxFile {
   relativePath: string;
   fullPath: string;
   outputPath: string;
+  frontMatter: Record<string, any>;
 }
 
 function findMdxFiles(dir, baseDir?): MdxFile[] {
@@ -26,12 +28,18 @@ function findMdxFiles(dir, baseDir?): MdxFile[] {
         .replace(/\.mdx$/, "")
         .replace(/index$/, "");
       const outputPath = path.join(routePath, "index.html");
+      
+      // Parse frontmatter from the MDX file
+      const fileContent = fs.readFileSync(fullPath, "utf-8");
+      const { data: frontMatter } = matter(fileContent);
+      
       entries.push({
         fullPath,
         relativePath,
         outputPath,
+        frontMatter,
       });
-      console.log(relativePath, routePath, outputPath);
+      console.log(relativePath, routePath, outputPath, frontMatter);
     }
   }
 
@@ -39,12 +47,16 @@ function findMdxFiles(dir, baseDir?): MdxFile[] {
 }
 
 const mdxFiles = findMdxFiles(path.resolve(__dirname, "../website/pages"));
-const pages = mdxFiles.map(({ relativePath, fullPath, outputPath }) => ({
+const pages = mdxFiles.map(({ relativePath, fullPath, outputPath, frontMatter }) => ({
   name: relativePath.replace("/", "-").replace(".mdx", ""),
   filename: outputPath as `${string}.html`,
   entry: "/main.tsx" as `/${string}`,
   data: {
-    title: "Title", // TODO: can we make this dynamic off mdx frontmatter?
+    title: frontMatter.title || relativePath.replace(".mdx", ""),
+    description: frontMatter.description || "",
+    keywords: frontMatter.keywords || "",
+    author: frontMatter.author || "",
+    ...frontMatter, // Pass all frontmatter to the template
   },
 }));
 
@@ -54,7 +66,14 @@ export default defineConfig({
   appType: "custom",
   publicDir: "../website/public",
   plugins: [
-    { enforce: "pre", ...mdx() },
+    { 
+      enforce: "pre", 
+      ...mdx({
+        // You can add MDX-specific options here if needed
+        remarkPlugins: [],
+        rehypePlugins: [],
+      }) 
+    },
     react({ include: /\.(mdx|js|jsx|ts|tsx)$/ }),
     tailwindcss(),
     createMpaPlugin({
