@@ -43,18 +43,18 @@ The tone of the draft isn't the only problem. The email I'd have written is actu
 
 Millions of Gmail users have had this experience and I'm sure many of them have concluded that AI isn't smart enough to write good emails yet.
 
-This could not be further from the truth: Gemini is an astonishingly powerful model that is more than capable of writing good emails. Unfortunately the Gmail team designed an app that prevents it from doing so.
+This could not be further from the truth: Gemini is an astonishingly powerful model that is more than capable of writing good emails. Unfortunately, the Gmail team designed an app that prevents it from doing so.
 
 ## A better email assistant
 
-To illustrate this point, here's simple demo of an AI email assistant that, if Gmail had shipped it, would actually save me a lot of time:
+To illustrate this point, here's a simple demo of an AI email assistant that, if Gmail had shipped it, would actually save me a lot of time:
 
 <EmailLabeler 
     showPromptAndTools={true} 
     caption="A demo of an actually useful email assistant using OpenAI's gpt-4o-mini under the hood"
 />
 
-In this demo we're using AI to _read_ emails instead of write them from scratch. Each email is categorized and prioritized, and some are auto-archived while others get an automatically-drafted reply. The assistant uses a custom "System Prompt" to do all this exactly the way I want it to.
+In this demo we're using AI to _read_ emails instead of write them from scratch. Each email is categorized and prioritized, and some are auto-archived while others get an automatically-drafted reply. The assistant uses a custom "System Prompt" to do all of this exactly the way I want it to.
  
 It's obvious how much more powerful this approach is, so why didn't the Gmail team build it this way? To answer this question, let's look more closely at the problems with their design. We'll start with its generic tone.
 
@@ -81,9 +81,9 @@ Here's a little draft-writer demo you can use to compare my original prompt with
     caption="A dummy version of Gmail's draft generator that uses gpt-4o-mini under the hood"
 />
 
-The generated draft sounds better but this is obviously dumb. The new prompt is even longer than the original, and I'd need to write something like this out every time I want a new email written. 
+The generated draft sounds better, but this is obviously dumb. The new prompt is even longer than the original, and I'd need to write something like this out every time I want a new email written. 
 
-There is a simple solution to this problem that I think many AI app developers are missing. To explore it, we need to take a look under the hood at what is actually happen when the "Generate Draft" button is pressed.
+There is a simple solution to this problem that I think many AI app developers are missing. To explore it, we need to take a look under the hood at what actually happens when the "Generate Draft" button is pressed.
 
 ## System Prompts and User Prompts
 
@@ -136,7 +136,7 @@ You're very busy and so is everyone you correspond with, so you do your best to 
 Do your best to be kind, and don't be so informal that it comes across as rude.
 </CaptionedText>
 
-Intuitively, you can see what's going on here: when I write my own System Prompt I'm teaching the LLM to write emails the way that I would. Does it work? Let's give it a try.
+Intuitively, you can see what's going on here: when I write my own System Prompt, I'm teaching the LLM to write emails the way that I would. Does it work? Let's give it a try.
 
 <EmailDraftWriter 
     showSystemPrompt={true}
@@ -176,11 +176,11 @@ Better yet, try it with a few other User Prompts. For example, see if you can ge
     caption={"Customer support request User Prompt"}
 >Write an email to comcast customer service explaining that they accidentally double billed you last month.</CaptionedText>
 
-There's something magical about teaching an LLM to solve a problem the same way you would and watching it succeed. Surprisingly it's actually easier than teaching a human because, unlike a human, an LLM will give you instantaneous, honest feedback about whether your explanation was good enough or not. If you get an email draft you're happy with, your explanation was sufficient. If you don't, it wasn't.
+There's something magical about teaching an LLM to solve a problem the same way you would and watching it succeed. Surprisingly, it's actually easier than teaching a human because, unlike a human, an LLM will give you instantaneous, honest feedback about whether your explanation was good enough or not. If you get an email draft you're happy with, your explanation was sufficient. If you don't, it wasn't.
 
 By exposing the System Prompt and making it editable, we've created a product experience that produces better results and is actually fun to use. 
 
-As of April 2025 most AI apps don't ([intentionally](https://x.com/jobergum/status/1913481778175631436)) expose their system prompts. Why not?
+As of April 2025 most AI still apps don't ([intentionally](https://x.com/jobergum/status/1913481778175631436)) expose their system prompts. Why not?
 
 ## Horseless Carriages
 
@@ -242,9 +242,9 @@ That might make sense if I were the user. A System Prompt for doing X should be 
 
 YC's accounting team, for example, operates in a way that is unique to YC. They use a specific mix of in-house and off-the-shelf software. They use YC-specific conventions that would only make sense to other YC employees. The structure of the funds they manage is unique to YC. A one-size-fits-all accounting agent would be about as useful to our team as an expert accountant who knew nothing about YC: not at all.
 
-This is the case for every accounting team in every company I've ever worked for. It's why so much of finance still run on excel: it's a general tool that can handle an infinite number of specific use cases.
+This is the case for every accounting team in every company I've ever worked for. It's why so much of finance still runs on Excel: it's a general tool that can handle an infinite number of specific use cases.
 
-I conclude from this that in most AI apps the System Prompts will be written and maintained by users, not software developers or even domain experts hired by developers.
+I conclude from this that in most AI apps, System Prompts will be written and maintained by users, not software developers or even domain experts hired by developers.
 
 Most AI apps will be _agent builders_, not agents.
 
@@ -272,7 +272,10 @@ The reason, of course, is that I prefer my emails to be as short as possible, wh
 
 LLMs are really good at reading text and transforming it into other text, and that's what I'd like to use an agent for. Let's revisit our email-reading agent demo:
 
-<EmailLabeler />
+<EmailLabeler 
+    showPromptAndTools={true} 
+    caption="A demo of an actually useful email assistant using OpenAI's gpt-4o-mini under the hood"
+/>
 
 It's not hard to imagine how much time an email-reading agent like this could save me. It already seems to do a better job of detecting spam than Gmail's built-in spam filter. It's more powerful and easier to maintain than the byzantine set of filters I use today. It could trigger a notification for every message that I think is urgent, and when I open them up I'd have a draft response ready to go, written in my voice. It could auto-archive the emails I don't need to read and summarize the ones I do.
 
@@ -286,7 +289,7 @@ This is what AI's "killer app" will look like for many of us: teaching a compute
 
 One of the reasons I wanted to include working demos in this essay was to show that large language models are already good enough to do this kind of work on our behalf. In fact they're more than good enough in most cases. It's not a lack of AI smarts that is keeping us from the future I described in the previous section, it's app design.
 
-The Gmail team built a horseless carriage because they set out to add AI to the email client they already had, rather than ask what an email client would look like if it were designed from ground up with AI. Their app is a little bit of AI jammed into an interface designed for mundane human labor rather than an interface designed for automating mundane labor.
+The Gmail team built a horseless carriage because they set out to add AI to the email client they already had, rather than ask what an email client would look like if it were designed from the ground up with AI. Their app is a little bit of AI jammed into an interface designed for mundane human labor rather than an interface designed for automating mundane labor.
 
 AI-native software should maximize a user's leverage in a specific domain. An AI-native email client should minimize the time I have to spend on email. AI-native accounting software should minimize the time an accountant spends keeping the books.
 
