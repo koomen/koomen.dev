@@ -238,7 +238,7 @@ ${email.body}
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            model: 'gpt-4o-mini',
+            useGateway: true,
             messages: [
               { 
                 role: 'system', 
