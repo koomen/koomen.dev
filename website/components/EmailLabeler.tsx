@@ -22,7 +22,8 @@ You're Pete, a 43 year old husband to Sumana, father, programmer, and YC Partner
 
 You're very busy and so is everyone you correspond with, so you do your best to keep your emails as short as possible and to the point. You avoid all unnecessary words and you often omit punctuation or leave misspellings unaddressed because it's not a big deal and you'd rather save the time. You prefer one-line emails. Do your best to be kind, and don't be so informal that it comes across as rude.
 
-Emojis and soft language are OK in personal emails, but not for anything else.`;
+Emojis and soft language are OK in personal emails, but not for anything else.
+`;
 
 const DEFAULT_TOOLS = `You have access to the following tools:
 
@@ -184,7 +185,11 @@ const generateEmails = (): Email[] => {
   return emails.sort(() => Math.random() - 0.5);
 };
 
-const EmailLabeler: React.FC = () => {
+interface EmailLabelerProps {
+  showPromptAndTools?: boolean;
+}
+
+const EmailLabeler: React.FC<EmailLabelerProps> = ({ showPromptAndTools = true }) => {
   const [systemPrompt, setSystemPrompt] = useState<string>(DEFAULT_SYSTEM_PROMPT);
   const [tools, setTools] = useState<string>(DEFAULT_TOOLS);
   const [emails, setEmails] = useState<Email[]>(generateEmails());
@@ -209,7 +214,7 @@ const EmailLabeler: React.FC = () => {
     setIsLabeling(true);
     setLabelingProgress(0);
     // Clear existing labels from inbox view when reading starts
-    setEmails(currentEmails => currentEmails.map(email => ({ ...email, label: undefined })));
+    setEmails(currentEmails => currentEmails.map(email => ({ ...email, label: undefined, archived: false, draftReply: undefined })));
     
     // Process emails one by one and update the UI immediately when each receives its label
     for (let i = 0; i < emails.length; i++) {
@@ -341,52 +346,248 @@ ${email.body}
   return (
     <div className="mx-auto max-w-6xl p-4">
       <div className="border rounded-lg p-6 shadow-sm bg-white">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:items-start">
-          {/* Left Side: Email Reading Agent, Tools, and Button */}
-          <div className="flex flex-col h-full">
-            {/* System Prompt */}
-            <div className="mb-4 flex-grow">
-              <label className="block font-semibold text-sm text-gray-700 mb-2">Email Reading Agent System Prompt</label>
-              <textarea
-                className="w-full p-3 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all font-mono mb-2"
-                value={systemPrompt}
-                onChange={(e) => setSystemPrompt(e.target.value)}
-                placeholder="Enter your system prompt for the email reading agent..."
-                disabled={isLabeling}
-                style={{ height: '400px' }}
-                autoComplete="off"
-                data-1p-ignore={true}
-              />
-            </div>
-            
-            {/* Tools Display */}
-            <div className="mb-4">
-              <label className="block font-semibold text-sm text-gray-700 mb-2">Available Tools</label>
-              <div className="space-y-2">
-                <div className="p-3 border border-gray-200 rounded-lg bg-gray-50">
-                  <code className="text-sm text-gray-800 font-mono">labelEmail(label, color, priority)</code>
-                </div>
-                <div className="p-3 border border-gray-200 rounded-lg bg-gray-50">
-                  <code className="text-sm text-gray-800 font-mono">archiveEmail()</code>
-                </div>
-                <div className="p-3 border border-gray-200 rounded-lg bg-gray-50">
-                  <code className="text-sm text-gray-800 font-mono">draftReply(body)</code>
-                </div>
-              </div>
-              {/* Hidden Tools Configuration */}
-              <div className="hidden">
+        {showPromptAndTools ? (
+          // Layout WITH prompts and tools
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:items-start">
+            {/* Left Side: Email Reading Agent, Tools, and Button */}
+            <div className="flex flex-col h-full">
+              {/* System Prompt */}
+              <div className="mb-4 flex-grow">
+                <label className="block font-semibold text-sm text-gray-700 mb-2">Email Reading Agent System Prompt</label>
                 <textarea
-                  value={tools}
-                  onChange={(e) => setTools(e.target.value)}
+                  className="w-full p-3 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all font-mono mb-2"
+                  value={systemPrompt}
+                  onChange={(e) => setSystemPrompt(e.target.value)}
+                  placeholder="Enter your system prompt for the email reading agent..."
                   disabled={isLabeling}
+                  style={{ height: '400px' }}
+                  autoComplete="off"
                 />
               </div>
+              
+              {/* Tools Display */}
+              <div className="mb-4">
+                <label className="block font-semibold text-sm text-gray-700 mb-2">Available Tools</label>
+                <div className="space-y-2">
+                  <div className="p-3 border border-gray-200 rounded-lg bg-gray-50">
+                    <code className="text-sm text-gray-800 font-mono">labelEmail(label, color, priority)</code>
+                  </div>
+                  <div className="p-3 border border-gray-200 rounded-lg bg-gray-50">
+                    <code className="text-sm text-gray-800 font-mono">archiveEmail()</code>
+                  </div>
+                  <div className="p-3 border border-gray-200 rounded-lg bg-gray-50">
+                    <code className="text-sm text-gray-800 font-mono">draftReply(body)</code>
+                  </div>
+                </div>
+                
+                {/* Hidden Tools Configuration */}
+                <div className="hidden">
+                  <textarea
+                    value={tools}
+                    onChange={(e) => setTools(e.target.value)}
+                    disabled={isLabeling}
+                  />
+                </div>
+              </div>
+              
+              {/* Read Emails Button */}
+              <div>
+                <button
+                  className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg disabled:bg-blue-300 text-sm font-medium hover:bg-blue-700 transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 h-12"
+                  onClick={labelEmails}
+                  disabled={isLabeling}
+                >
+                  {isLabeling ? (
+                    <span className="flex items-center justify-center">
+                      <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Reading Emails...
+                    </span>
+                  ) : 'Read Emails'}
+                </button>
+                
+                {isLabeling && (
+                  <div className="mt-2">
+                    <div className="w-full bg-gray-200 rounded-full h-2.5">
+                      <div 
+                        className="bg-blue-600 h-2.5 rounded-full" 
+                        style={{ width: `${labelingProgress}%` }}
+                      ></div>
+                    </div>
+                    <p className="text-sm text-gray-600 mt-1">
+                      {Math.round(labelingProgress)}% complete
+                    </p>
+                  </div>
+                )}
+              </div>
             </div>
             
+            {/* Right Side: Email Inbox */}
+            <div className="flex flex-col">
+              <label className="block font-semibold text-sm text-gray-700 mb-2">
+                Email Inbox ({sortedEmails.length})
+              </label>
+              <div className="border border-gray-300 rounded-lg shadow-inner bg-gray-50 overflow-y-auto" style={{ height: 'auto', minHeight: '500px' }}>
+                {sortedEmails.map((email) => (
+                  <div key={email.id} className="border-b last:border-b-0">
+                    <div 
+                      className="py-1.5 px-3 cursor-pointer hover:bg-white flex justify-between items-center transition-colors"
+                      onClick={() => handleEmailClick(email.id)}
+                    >
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-0.5">
+                          <div>
+                            <span className="font-medium text-sm">{email.sender}</span>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            {email.label && (
+                              <>
+                                <span 
+                                  className="px-1.5 py-0.5 text-xs rounded-full text-xs shadow-sm" 
+                                  style={{ 
+                                    backgroundColor: email.label.color,
+                                    color: ['white', 'yellow', 'lime', 'cyan'].includes(email.label.color) ? 'black' : 'white'
+                                  }}
+                                >
+                                  {email.label.label}
+                                </span>
+                                <span className="text-xs text-gray-500">
+                                  Priority {email.label.priority}
+                                </span>
+                              </>
+                            )}
+                            {email.draftReply && (
+                              <span className="text-xs font-medium text-red-500 ml-1">
+                                draft
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                        <p className="text-xs text-gray-600">{truncateText(email.subject)}</p>
+                      </div>
+                      <div className="text-gray-400 ml-2 text-xs">
+                        {expandedEmailId === email.id ? '▼' : '▶'}
+                      </div>
+                    </div>
+                    
+                    {expandedEmailId === email.id && (
+                      <div className="py-2 px-3 bg-white border-t text-sm">
+                        <div className="mb-1">
+                          <p><strong>From:</strong> {email.sender} &lt;{email.senderEmail}&gt;</p>
+                          <p><strong>To:</strong> {email.receiver}</p>
+                          <p><strong>Subject:</strong> {email.subject}</p>
+                        </div>
+                        <div className="border-t pt-1 mt-1">
+                          <p className="whitespace-pre-line">{email.body}</p>
+                        </div>
+                        
+                        {email.draftReply && (
+                          <div className="mt-3 pt-3 border-t border-dashed border-gray-300">
+                            <div className="flex items-center mb-1">
+                              <span className="text-xs font-medium bg-red-100 text-red-600 px-2 py-0.5 rounded-sm">DRAFT REPLY</span>
+                            </div>
+                            <div className="bg-gray-50 p-2 rounded-md border border-gray-200">
+                              <p className="whitespace-pre-line text-gray-700">{email.draftReply}</p>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+              
+              {/* Archived Emails Section - Only shown when there are archived emails */}
+              {emails.filter(email => email.archived).length > 0 && (
+                <div className="mt-4">
+                  <label className="block font-semibold text-sm text-gray-700 mb-2">
+                    Archived Emails ({emails.filter(email => email.archived).length})
+                  </label>
+                  <div className="border border-gray-300 rounded-lg shadow-inner bg-gray-100 overflow-y-auto" style={{ maxHeight: '300px' }}>
+                    {emails
+                      .filter(email => email.archived)
+                      .map((email) => (
+                        <div key={email.id} className="border-b last:border-b-0 bg-gray-50/50">
+                          <div 
+                            className="py-1.5 px-3 cursor-pointer hover:bg-white/70 flex justify-between items-center transition-colors"
+                            onClick={() => handleEmailClick(email.id)}
+                          >
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2 mb-0.5">
+                                <div>
+                                  <span className="font-medium text-sm text-gray-600">{email.sender}</span>
+                                </div>
+                                <div className="flex items-center gap-1">
+                                  <span className="text-xs px-1.5 py-0.5 bg-gray-200 text-gray-600 rounded-full">Archived</span>
+                                  {email.label && (
+                                    <>
+                                      <span 
+                                        className="px-1.5 py-0.5 text-xs rounded-full text-xs shadow-sm opacity-75" 
+                                        style={{ 
+                                          backgroundColor: email.label.color,
+                                          color: ['white', 'yellow', 'lime', 'cyan'].includes(email.label.color) ? 'black' : 'white'
+                                        }}
+                                      >
+                                        {email.label.label}
+                                      </span>
+                                      <span className="text-xs text-gray-500">
+                                        Priority {email.label.priority}
+                                      </span>
+                                    </>
+                                  )}
+                                  {email.draftReply && (
+                                    <span className="text-xs font-medium text-red-500">
+                                      draft
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
+                              <p className="text-xs text-gray-500">{truncateText(email.subject)}</p>
+                            </div>
+                            <div className="text-gray-400 ml-2 text-xs">
+                              {expandedEmailId === email.id ? '▼' : '▶'}
+                            </div>
+                          </div>
+                          
+                          {expandedEmailId === email.id && (
+                            <div className="py-2 px-3 bg-white border-t text-sm">
+                              <div className="mb-1">
+                                <p><strong>From:</strong> {email.sender} &lt;{email.senderEmail}&gt;</p>
+                                <p><strong>To:</strong> {email.receiver}</p>
+                                <p><strong>Subject:</strong> {email.subject}</p>
+                              </div>
+                              <div className="border-t pt-1 mt-1">
+                                <p className="whitespace-pre-line">{email.body}</p>
+                              </div>
+                              
+                              {email.draftReply && (
+                                <div className="mt-3 pt-3 border-t border-dashed border-gray-300">
+                                  <div className="flex items-center mb-1">
+                                    <span className="text-xs font-medium bg-red-100 text-red-600 px-2 py-0.5 rounded-sm">DRAFT REPLY</span>
+                                  </div>
+                                  <div className="bg-gray-50 p-2 rounded-md border border-gray-200">
+                                    <p className="whitespace-pre-line text-gray-700">{email.draftReply}</p>
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        ) : (
+          // Layout WITHOUT prompts and tools - just the inbox and button
+          <div>
             {/* Read Emails Button */}
-            <div>
+            <div className="mb-4">
               <button
-                className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg disabled:bg-blue-300 text-sm font-medium hover:bg-blue-700 transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 h-12"
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg disabled:bg-blue-300 text-sm font-medium hover:bg-blue-700 transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 h-12"
                 onClick={labelEmails}
                 disabled={isLabeling}
               >
@@ -402,7 +603,7 @@ ${email.body}
               </button>
               
               {isLabeling && (
-                <div className="mt-2">
+                <div className="mt-2 mb-4">
                   <div className="w-full bg-gray-200 rounded-full h-2.5">
                     <div 
                       className="bg-blue-600 h-2.5 rounded-full" 
@@ -415,149 +616,165 @@ ${email.body}
                 </div>
               )}
             </div>
-          </div>
-          
-          {/* Right Side: Email Inbox */}
-          <div className="flex flex-col">
-            <label className="block font-semibold text-sm text-gray-700 mb-2">
-              Email Inbox ({sortedEmails.length})
-            </label>
-            <div className="border border-gray-300 rounded-lg shadow-inner bg-gray-50" style={{ height: 'auto', minHeight: sortedEmails.length === 0 ? '100px' : 'auto' }}>
-              {sortedEmails.map((email) => (
-                <div key={email.id} className="border-b last:border-b-0">
-                  <div 
-                    className="py-1.5 px-3 cursor-pointer hover:bg-white flex justify-between items-center transition-colors"
-                    onClick={() => handleEmailClick(email.id)}
-                  >
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-0.5">
-                        <div>
-                          <span className="font-medium text-sm">{email.sender}</span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          {email.label && (
-                            <>
-                              <span 
-                                className="px-1.5 py-0.5 text-xs rounded-full text-xs shadow-sm" 
-                                style={{ 
-                                  backgroundColor: email.label.color,
-                                  color: ['white', 'yellow', 'lime', 'cyan'].includes(email.label.color) ? 'black' : 'white'
-                                }}
-                              >
-                                {email.label.label}
-                              </span>
-                              <span className="text-xs text-gray-500">
-                                P{email.label.priority}
-                              </span>
-                            </>
-                          )}
-                          {email.draftReply && (
-                            <span className="text-xs font-medium text-red-500 ml-1">
-                              draft
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                      <p className="text-xs text-gray-600">{truncateText(email.subject)}</p>
-                    </div>
-                    <div className="text-gray-400 ml-2 text-xs">
-                      {expandedEmailId === email.id ? '▼' : '▶'}
-                    </div>
-                  </div>
-                  
-                  {expandedEmailId === email.id && (
-                    <div className="py-2 px-3 bg-white border-t text-sm">
-                      <div className="mb-1">
-                        <p><strong>From:</strong> {email.sender} &lt;{email.senderEmail}&gt;</p>
-                        <p><strong>To:</strong> {email.receiver}</p>
-                        <p><strong>Subject:</strong> {email.subject}</p>
-                      </div>
-                      <div className="border-t pt-1 mt-1">
-                        <p className="whitespace-pre-line">{email.body}</p>
-                      </div>
-                      
-                      {email.draftReply && (
-                        <div className="mt-3 pt-3 border-t border-dashed border-gray-300">
-                          <div className="flex items-center mb-1">
-                            <span className="text-xs font-medium bg-red-100 text-red-600 px-2 py-0.5 rounded-sm">DRAFT REPLY</span>
-                          </div>
-                          <div className="bg-gray-50 p-2 rounded-md border border-gray-200">
-                            <p className="whitespace-pre-line text-gray-700">{email.draftReply}</p>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
             
-            {/* Archived Emails Section - Only shown when there are archived emails */}
-            {emails.filter(email => email.archived).length > 0 && (
-              <div className="mt-4">
-                <label className="block font-semibold text-sm text-gray-700 mb-2">
-                  Archived Emails ({emails.filter(email => email.archived).length})
-                </label>
-                <div className="border border-gray-300 rounded-lg shadow-inner bg-gray-100" style={{ height: 'auto' }}>
-                  {emails
-                    .filter(email => email.archived)
-                    .map((email) => (
-                      <div key={email.id} className="border-b last:border-b-0 bg-gray-50/50">
-                        <div 
-                          className="py-1.5 px-3 cursor-pointer hover:bg-white/70 flex justify-between items-center transition-colors"
-                          onClick={() => handleEmailClick(email.id)}
-                        >
-                          <div className="flex-1">
-                            <div className="flex items-center gap-2 mb-0.5">
-                              <div>
-                                <span className="font-medium text-sm text-gray-600">{email.sender}</span>
-                              </div>
-                              <div className="flex items-center gap-1">
-                                <span className="text-xs px-1.5 py-0.5 bg-gray-200 text-gray-600 rounded-full">Archived</span>
-                                {email.draftReply && (
-                                  <span className="text-xs font-medium text-red-500">
-                                    draft
-                                  </span>
-                                )}
-                              </div>
-                            </div>
-                            <p className="text-xs text-gray-500">{truncateText(email.subject)}</p>
+            {/* Email Inbox */}
+            <div>
+              <label className="block font-semibold text-sm text-gray-700 mb-2">
+                Email Inbox ({sortedEmails.length})
+              </label>
+              <div className="border border-gray-300 rounded-lg shadow-inner bg-gray-50 overflow-y-auto" style={{ maxHeight: '600px' }}>
+                {sortedEmails.map((email) => (
+                  <div key={email.id} className="border-b last:border-b-0">
+                    <div 
+                      className="py-1.5 px-3 cursor-pointer hover:bg-white flex justify-between items-center transition-colors"
+                      onClick={() => handleEmailClick(email.id)}
+                    >
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-0.5">
+                          <div>
+                            <span className="font-medium text-sm">{email.sender}</span>
                           </div>
-                          <div className="text-gray-400 ml-2 text-xs">
-                            {expandedEmailId === email.id ? '▼' : '▶'}
+                          <div className="flex items-center gap-1">
+                            {email.label && (
+                              <>
+                                <span 
+                                  className="px-1.5 py-0.5 text-xs rounded-full text-xs shadow-sm" 
+                                  style={{ 
+                                    backgroundColor: email.label.color,
+                                    color: ['white', 'yellow', 'lime', 'cyan'].includes(email.label.color) ? 'black' : 'white'
+                                  }}
+                                >
+                                  {email.label.label}
+                                </span>
+                                <span className="text-xs text-gray-500">
+                                  Priority {email.label.priority}
+                                </span>
+                              </>
+                            )}
+                            {email.draftReply && (
+                              <span className="text-xs font-medium text-red-500 ml-1">
+                                draft
+                              </span>
+                            )}
                           </div>
+                        </div>
+                        <p className="text-xs text-gray-600">{truncateText(email.subject)}</p>
+                      </div>
+                      <div className="text-gray-400 ml-2 text-xs">
+                        {expandedEmailId === email.id ? '▼' : '▶'}
+                      </div>
+                    </div>
+                    
+                    {expandedEmailId === email.id && (
+                      <div className="py-2 px-3 bg-white border-t text-sm">
+                        <div className="mb-1">
+                          <p><strong>From:</strong> {email.sender} &lt;{email.senderEmail}&gt;</p>
+                          <p><strong>To:</strong> {email.receiver}</p>
+                          <p><strong>Subject:</strong> {email.subject}</p>
+                        </div>
+                        <div className="border-t pt-1 mt-1">
+                          <p className="whitespace-pre-line">{email.body}</p>
                         </div>
                         
-                        {expandedEmailId === email.id && (
-                          <div className="py-2 px-3 bg-white border-t text-sm">
-                            <div className="mb-1">
-                              <p><strong>From:</strong> {email.sender} &lt;{email.senderEmail}&gt;</p>
-                              <p><strong>To:</strong> {email.receiver}</p>
-                              <p><strong>Subject:</strong> {email.subject}</p>
+                        {email.draftReply && (
+                          <div className="mt-3 pt-3 border-t border-dashed border-gray-300">
+                            <div className="flex items-center mb-1">
+                              <span className="text-xs font-medium bg-red-100 text-red-600 px-2 py-0.5 rounded-sm">DRAFT REPLY</span>
                             </div>
-                            <div className="border-t pt-1 mt-1">
-                              <p className="whitespace-pre-line">{email.body}</p>
+                            <div className="bg-gray-50 p-2 rounded-md border border-gray-200">
+                              <p className="whitespace-pre-line text-gray-700">{email.draftReply}</p>
                             </div>
-                            
-                            {email.draftReply && (
-                              <div className="mt-3 pt-3 border-t border-dashed border-gray-300">
-                                <div className="flex items-center mb-1">
-                                  <span className="text-xs font-medium bg-red-100 text-red-600 px-2 py-0.5 rounded-sm">DRAFT REPLY</span>
-                                </div>
-                                <div className="bg-gray-50 p-2 rounded-md border border-gray-200">
-                                  <p className="whitespace-pre-line text-gray-700">{email.draftReply}</p>
-                                </div>
-                              </div>
-                            )}
                           </div>
                         )}
                       </div>
-                    ))}
-                </div>
+                    )}
+                  </div>
+                ))}
               </div>
-            )}
+              
+              {/* Archived Emails Section - Only shown when there are archived emails */}
+              {emails.filter(email => email.archived).length > 0 && (
+                <div className="mt-4">
+                  <label className="block font-semibold text-sm text-gray-700 mb-2">
+                    Archived Emails ({emails.filter(email => email.archived).length})
+                  </label>
+                  <div className="border border-gray-300 rounded-lg shadow-inner bg-gray-100 overflow-y-auto" style={{ maxHeight: '300px' }}>
+                    {emails
+                      .filter(email => email.archived)
+                      .map((email) => (
+                        <div key={email.id} className="border-b last:border-b-0 bg-gray-50/50">
+                          <div 
+                            className="py-1.5 px-3 cursor-pointer hover:bg-white/70 flex justify-between items-center transition-colors"
+                            onClick={() => handleEmailClick(email.id)}
+                          >
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2 mb-0.5">
+                                <div>
+                                  <span className="font-medium text-sm text-gray-600">{email.sender}</span>
+                                </div>
+                                <div className="flex items-center gap-1">
+                                  <span className="text-xs px-1.5 py-0.5 bg-gray-200 text-gray-600 rounded-full">Archived</span>
+                                  {email.label && (
+                                    <>
+                                      <span 
+                                        className="px-1.5 py-0.5 text-xs rounded-full text-xs shadow-sm opacity-75" 
+                                        style={{ 
+                                          backgroundColor: email.label.color,
+                                          color: ['white', 'yellow', 'lime', 'cyan'].includes(email.label.color) ? 'black' : 'white'
+                                        }}
+                                      >
+                                        {email.label.label}
+                                      </span>
+                                      <span className="text-xs text-gray-500">
+                                        Priority {email.label.priority}
+                                      </span>
+                                    </>
+                                  )}
+                                  {email.draftReply && (
+                                    <span className="text-xs font-medium text-red-500">
+                                      draft
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
+                              <p className="text-xs text-gray-500">{truncateText(email.subject)}</p>
+                            </div>
+                            <div className="text-gray-400 ml-2 text-xs">
+                              {expandedEmailId === email.id ? '▼' : '▶'}
+                            </div>
+                          </div>
+                          
+                          {expandedEmailId === email.id && (
+                            <div className="py-2 px-3 bg-white border-t text-sm">
+                              <div className="mb-1">
+                                <p><strong>From:</strong> {email.sender} &lt;{email.senderEmail}&gt;</p>
+                                <p><strong>To:</strong> {email.receiver}</p>
+                                <p><strong>Subject:</strong> {email.subject}</p>
+                              </div>
+                              <div className="border-t pt-1 mt-1">
+                                <p className="whitespace-pre-line">{email.body}</p>
+                              </div>
+                              
+                              {email.draftReply && (
+                                <div className="mt-3 pt-3 border-t border-dashed border-gray-300">
+                                  <div className="flex items-center mb-1">
+                                    <span className="text-xs font-medium bg-red-100 text-red-600 px-2 py-0.5 rounded-sm">DRAFT REPLY</span>
+                                  </div>
+                                  <div className="bg-gray-50 p-2 rounded-md border border-gray-200">
+                                    <p className="whitespace-pre-line text-gray-700">{email.draftReply}</p>
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
