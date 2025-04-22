@@ -4,13 +4,13 @@ const DEFAULT_SYSTEM_PROMPT = `You are an email labeling assistant. Analyze the 
 
 If the email is...
 
-...from my family: draft reply & label: Personal, red, 0
+...from my wife Sumana: draft a reply & label: Personal, red, priority 0
 
-...from my boss Garry: draft reply & label: YC, orange, 1
+...from my boss Garry: draft a reply & label: YC, orange, 1
 
-...from anyone else with an @yc.com addr: draft reply & label: YC, orange, 2
+...from anyone else with an @yc.com addr: draft a reply & label: YC, orange, 2
 
-...from a founder (NOT @yc.com): draft reply & label: Founders, blue, 2
+...from a founder (NOT @yc.com): draft a reply & label: Founders, blue, 2
 
 ...tech-related, e.g. a forum digest: label: Tech, gray, 3
 
@@ -187,9 +187,10 @@ const generateEmails = (): Email[] => {
 
 interface EmailLabelerProps {
   showPromptAndTools?: boolean;
+  caption?: string;
 }
 
-const EmailLabeler: React.FC<EmailLabelerProps> = ({ showPromptAndTools = true }) => {
+const EmailLabeler: React.FC<EmailLabelerProps> = ({ showPromptAndTools = true, caption = "A demo of an actually useful email assistant, using gpt-4o-mini under the hood" }) => {
   const [systemPrompt, setSystemPrompt] = useState<string>(DEFAULT_SYSTEM_PROMPT);
   const [tools, setTools] = useState<string>(DEFAULT_TOOLS);
   const [emails, setEmails] = useState<Email[]>(generateEmails());
@@ -344,7 +345,7 @@ ${email.body}
     });
 
   return (
-    <div className="mx-auto max-w-6xl p-4">
+    <figure className="mx-auto max-w-6xl p-4">
       <div className="border rounded-lg p-6 shadow-sm bg-white">
         {showPromptAndTools ? (
           // Layout WITH prompts and tools
@@ -405,7 +406,7 @@ ${email.body}
                       </svg>
                       Reading Emails...
                     </span>
-                  ) : 'Read Emails'}
+                  ) : 'Process Emails'}
                 </button>
                 
                 {isLabeling && (
@@ -776,7 +777,8 @@ ${email.body}
           </div>
         )}
       </div>
-    </div>
+      <figcaption className="text-center text-gray-500 mt-4 text-sm">{caption}</figcaption>
+    </figure>
   );
 };
 
