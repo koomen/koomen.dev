@@ -7,6 +7,8 @@ import fs from "fs";
 import Inspect from "vite-plugin-inspect";
 import { createMpaPlugin, createPages } from "vite-plugin-virtual-mpa";
 import matter from "gray-matter";
+import remarkFrontmatter from "remark-frontmatter";
+import remarkMdxFrontmatter from "remark-mdx-frontmatter";
 
 interface MdxFile {
   relativePath: string;
@@ -69,8 +71,11 @@ export default defineConfig({
     { 
       enforce: "pre", 
       ...mdx({
-        // You can add MDX-specific options here if needed
-        remarkPlugins: [],
+        // Configure the MDX plugin to properly handle frontmatter
+        remarkPlugins: [
+          remarkFrontmatter, // Parse the frontmatter
+          [remarkMdxFrontmatter, { name: "frontMatter" }] // Make it available as frontMatter in MDX
+        ],
         rehypePlugins: [],
       }) 
     },
