@@ -230,17 +230,23 @@ In the new world I don't need a middleman tell a computer what to do anymore. I 
 
 ## Render unto the user what is the user's
 
-My core contention in this essay is this: when an LLM agent is acting on my behalf I should be allowed to teach it how to do that. 
+My core contention in this essay is this: when an LLM agent is acting on my behalf I should be allowed to teach it how to do that by editing the System Prompt.
 
-More generally: **the System Prompt for an AI agent that does X should be written by an expert in X**.
+Does this mean I always want to write my own System Prompt from scratch? No. I've been using Gmail for twenty years; Gemini should be able to write a draft prompt for me using my emails as reference examples. I'd like to be able to see that prompt and edit it, though, because the way I write emails and the people correspond with change over time.
 
-For most interesting instances of X, expertise is context-specific. It is specific to a particular domain (like email-writing) and also to a particular environment (like my company email account). This is true for many other disciplines: just like I am the world's foremost expert on how I write emails, YC's finance team are experts on how accounting works at YC, our legal team are experts on how we read and write legal docs, and so on.
+What about people who don't know how to write prompts, won't they need developers to do it for them? Maybe at first, but prompt-writing is surprisingly intuitive and judging by how quickly ChatGPT caught on I think people will figure it out.
 
-And just like I want to write my own email-writing prompt, I think most accountants and lawyers are going to want to write their own accounting and lawyering prompts. 
+What about agents that aren't so personal, like an AI accounting agent, or an AI legal agent? Wouldn't it make more sense for a software developer to hire an expert accountant or lawyer to write one-size-fits-all System Prompts in these cases? 
 
-This means that in most AI apps System Prompts should be written by the user, not the software developer or even a domain expert hired by the developer. 
+That might make sense if I were the user. A System Prompt for doing X should be written by an expert in X, and I am not an expert in accounting or law. However, I suspect most accountants and lawyers are going to want to write their own System Prompts too, because their expertise is context-specific. 
 
-Most AI apps should be _agent builders_, not agents.
+YC's accounting team, for example, operates in a way that is unique to YC. They use a specific mix of in-house and off-the-shelf software. They use YC-specific conventions that would only make sense to other YC employees. The structure of the funds they manage is unique to YC. A one-size-fits-all accounting agent would be about as useful to our team as an expert accountant who knew nothing about YC: not at all.
+
+This is the case for every accounting team in every company I've ever worked for. It's why so much of finance still run on excel: it's a general tool that can handle an infinite number of specific use cases.
+
+I conclude from this that in most AI apps the System Prompts will be written and maintained by users, not software developers or even domain experts hired by developers.
+
+Most AI apps will be _agent builders_, not agents.
 
 ## ...and unto the developer what is the developer's
 
@@ -256,15 +262,15 @@ Developers will also build _agent tools_.
 
 Tools are the mechanism by which agents act on the outside world. My email-writing agent needs a tool to submit a draft for my review. It might use another tool to send an email without my review (if I'm feeling confident enough to allow that) or to search my inbox for previous emails from a particular email address or to check YC's founder directory to see if an email came from a YC founder.
 
-Tools provide the security layer for agents. Whether or not an agent can do a particular thing is determined by which tools it has access to. It is much easier to enforce boundaries with tools written in code than it is to enforce them between System and User Prompts written in text. I suspect that in the future we'll look back and laugh at the idea that a "prompt injection" (like "Ignore previous instructions...") was something to be concerned about.
+Tools provide the security layer for agents. Whether or not an agent can do a particular thing is determined by which tools it has access to. It is much easier to enforce boundaries with tools written in code than it is to enforce them between System and User Prompts written in text. I suspect that in the future we'll look back and laugh at the idea that a "prompt injection" (like "Ignore previous instructions...") was [something to be concerned about](https://x.com/jobergum/status/1913481778175631436).
 
 ## An agent for reading my email
 
-I've been glossing over a bigger problem with Gmail's draft-writing agent: even with a good System Prompt it won't save me much time on writing emails from scratch.
+As I mentioned above, however, a better System Prompt still won't save me much time on writing emails from scratch.
 
-The reason, of course, is that I prefer my emails to be as short as possible, which means any email written in my voice will be roughly the same length as the User Prompt that describes it. 
+The reason, of course, is that I prefer my emails to be as short as possible, which means any email written in my voice will be roughly the same length as the User Prompt that describes it. This has been my experience LLMs and writing in general. Surprisingly, generative AI is not actually that useful for generating text.
 
-What I'd really like to use an agent for is reading my email. An agent that can read emails could categorize emails by assigning arbitrary labels, and prioritize them by assigning importance levels. Take a look at the following demo:
+LLMs are really good at reading text and transforming it into other text, and that's what I'd like to use an agent for. Let's revisit our email-reading agent demo:
 
 <EmailLabeler />
 
@@ -276,16 +282,20 @@ This is what I really want from an AI-native email client: the ability to automa
 
 ## AI-native software
 
-This is what AI's "killer app" will look like for many of us: the ability to teach a computer how to do things that we don't like doing so that we can spend our time on things we do. 
+This is what AI's "killer app" will look like for many of us: teaching a computer how to do things that we don't like doing so that we can spend our time on things we do. 
 
 One of the reasons I wanted to include working demos in this essay was to show that large language models are already good enough to do this kind of work on our behalf. In fact they're more than good enough in most cases. It's not a lack of AI smarts that is keeping us from the future I described in the previous section, it's app design.
 
 The Gmail team built a horseless carriage because they set out to add AI to the email client they already had, rather than ask what an email client would look like if it were designed from ground up with AI. Their app is a little bit of AI jammed into an interface designed for mundane human labor rather than an interface designed for automating mundane labor.
 
-AI-native software should maximize a user's leverage in a specific domain. An AI-native email client should minimize the time I have to spend on email. An AI-native code editor should maximize the amount of software a developer can create in an hour. AI-native accounting software should minimize the time an accountant spends keeping the books. AI-native sales software should maximize the revenue an AE can close each month.
+AI-native software should maximize a user's leverage in a specific domain. An AI-native email client should minimize the time I have to spend on email. AI-native accounting software should minimize the time an accountant spends keeping the books.
 
 This is what makes me so excited about a future with AI. It's a world where I don't have to spend time doing mundane work because agents do it for me. Where I'll focus only on things I think are important because agents handle everything else. Where I am more productive in the work I love doing because agents help me do it.
 
 I can't wait.
+
+<br/><br/>
+
+Thanks to my colleagues at YC for reading drafts of this essay.
 
 </PageWrapper>
