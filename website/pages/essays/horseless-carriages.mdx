@@ -2,13 +2,13 @@
 
 # AI Horseless Carriages
 
-I noticed something interesting the other day: I enjoy building software with AI a lot more than I enjoy using most of the software that other people have built with AI. 
+I noticed something interesting the other day: I enjoy building software with AI a lot more than I enjoy using a lot of the software that other people have built with AI. 
 
-When I build with AI I feel like I can accomplish almost anything I can imagine very quickly. AI feels like a power tool. It's a lot of fun.
+When I use AI to build software I feel like I can accomplish almost anything I can imagine very quickly. AI feels like a power tool. It's a lot of fun.
 
-Most AI apps don't feel like that, though. They rarely do things the way that I want them done, and fixing that is often more work than just doing the thing myself.
+Many AI apps don't feel like that. Their AI features feel tacked-on and useless, even counter-productive.
 
-I am beginning to suspect that many of these apps are the ["horseless carriages"](#horseless-carriages) of the AI era. They're bad because they mimic old ways of building software that unnecessarily constrain the AI models they're built with.
+I am beginning to suspect that these apps are the ["horseless carriages"](#horseless-carriages) of the AI era. They're bad because they mimic old ways of building software that unnecessarily constrain the AI models they're built with.
 
 To illustrate what I mean by that, I'll start with an example of a badly designed AI app.
 
@@ -39,9 +39,46 @@ As you can see, Gemini has produced a plausible sounding draft that fits the pro
   caption="The email I would have written"
 >Hi garry, my daughter woke up with the flu. won't make it in today</CaptionedText>
 
+When you compare it with mine, Gemini's draft is wordy and weirdly formal and so un-Pete that if I actually sent this to Garry, he’d probably mistake it for some kind of phishing attack. It’s AI Slop.
+
+The tone of the draft isn't the only problem. The email I'd have written is actually shorter than the original prompt, which means I spent more time asking Gemini for help than I would have if I'd just written the draft myself. Remarkably, the Gmail team has shipped a product that perfectly captures the experience of managing an underperforming employee.
+
+Millions of Gmail users have had this experience and I'm sure many of them have concluded that AI isn't smart enough to help them with their email yet.
+
+This could not be further from the truth: Gemini is an astonishingly powerful model. The problem is that the Gmail team designed an app that prevents it . 
+
+
+
+
+
+
+
+
+
+
+
+
+## next section
+
+
+Why would they do this? To understand this we need to look under the hood to understand what happens when that "Generate Draft" button is pressed.
+
+
+
+
+
+
+
+
+
+Of course, this is a contrived example chosen to make a point.
+
+
+
+
 I'll pause here to address an obvious objection: the email I would have written is actually shorter than my original prompt. This is a contrived example chosen to make a point about the tone of Gmail's assistant. I'll address the fact that LLMs aren't actually that helpful for writing emails from scratch [later on in this essay](#an-agent-for-reading-my-email).
 
-When you compare it with mine, Gemini's draft is wordy and weirdly formal and so un-Pete that if I actually sent this to Garry, he’d probably mistake it for some kind of phishing attack. It’s AI Slop.
+
 
 Everyone who has used an LLM app to do any writing has had this experience. It’s so common that most of us have unconsciously adopted strategies for avoiding it when writing prompts. The simplest such strategy is just writing more detailed instructions that steer the LLM in the right direction, like this:
 
