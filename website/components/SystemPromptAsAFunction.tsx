@@ -1,7 +1,17 @@
 import React, { useState } from 'react';
 
 const SystemPromptAsAFunction: React.FC = () => {
-  const [systemPrompt, setSystemPrompt] = useState('triple this number:');
+  const [systemPrompt, setSystemPrompt] = useState('quadruple this number:');
+  // A tool for rendering the response. Didn't end up using this.
+  const [tools, setTools] = useState(`
+    You have access to the following tool. Use ONLY this tool to return your response.
+
+    computeAnswer: { "answer" : "numerical answer to the question" }
+
+    Example responses:
+    { "answer" : "250" }
+    { "answer" : "two hundred and fifty" }
+  `);
   const [userPrompt, setUserPrompt] = useState('eighty-six');
   const [response, setResponse] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
@@ -26,7 +36,8 @@ const SystemPromptAsAFunction: React.FC = () => {
         body: JSON.stringify({
           model: 'gpt-4o-mini',
           messages: [
-            { role: 'system', content: `${systemPrompt}\nreturn ONLY the result; omit any unnecessary words.`},
+            /*{ role: 'system', content: `${systemPrompt}\n\n${tools}`},*/
+            { role: 'system', content: `${systemPrompt}`},
             { role: 'user', content: userPrompt }
           ],
           stream: true,
@@ -65,7 +76,24 @@ const SystemPromptAsAFunction: React.FC = () => {
             const content = data.choices[0]?.delta?.content || '';
             if (content) {
               responseText += content;
-              setResponse(responseText);
+              
+              // Try to parse JSON from the response
+              try {
+                // Look for complete JSON objects in the response
+                const jsonRegex = /\{.*"answer"\s*:\s*"([^"]+)".*\}/s;
+                const match = responseText.match(jsonRegex);
+                
+                if (match && match[1]) {
+                  // Show only the answer value from the JSON
+                  setResponse(match[1]);
+                } else {
+                  // Show raw response if no valid JSON is detected yet
+                  setResponse(responseText);
+                }
+              } catch (jsonParseError) {
+                // If JSON parsing fails, just show the raw response
+                setResponse(responseText);
+              }
             }
           } catch (e) {
             // Skip json parse errors for non-data lines
@@ -83,12 +111,20 @@ const SystemPromptAsAFunction: React.FC = () => {
   };
 
   return (
-    <div className="mx-auto max-w-6xl p-4">
+    <figure className="mx-auto max-w-6xl p-4">
       <div className="border rounded-lg p-6 shadow-sm bg-white">
         {/* Responsive grid - 3 columns on desktop, 1 column on mobile */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {/* Hidden Tool Definition field - not shown in UI but still used */}
+        <div className="hidden">
+          <textarea
+            value={tools}
+            onChange={(e) => setTools(e.target.value)}
+          />
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           {/* System Prompt (function) */}
-          <div>
+          <div className="md:col-span-1">
             <label className="block font-semibold text-sm text-gray-700 mb-2">
               System Prompt (function)
             </label>
@@ -102,7 +138,7 @@ const SystemPromptAsAFunction: React.FC = () => {
           </div>
           
           {/* User Prompt (input) */}
-          <div>
+          <div className="md:col-span-1">
             <label className="block font-semibold text-sm text-gray-700 mb-2">
               User Prompt (input)
             </label>
@@ -116,7 +152,7 @@ const SystemPromptAsAFunction: React.FC = () => {
           </div>
           
           {/* Response (output) */}
-          <div>
+          <div className="md:col-span-2">
             <label className="block font-semibold text-sm text-gray-700 mb-2">
               Response (output)
             </label>
@@ -156,7 +192,10 @@ const SystemPromptAsAFunction: React.FC = () => {
           </div>
         )}
       </div>
-    </div>
+      <figcaption className="text-center text-sm text-gray-500 mt-2">
+        A simple demonstration of the system/user prompt relationship using gpt-4o-mini
+      </figcaption>
+    </figure>
   );
 };
 
