@@ -3,17 +3,19 @@ import React, { useState } from 'react';
 const DEFAULT_SYSTEM_PROMPT = `You are an email labeling assistant. For each email, analyze it and take the appropriate action.
 
 If the email is:
-- from family: 
-  label Personal, red, 0
-- from my boss Garry: 
-  label YC, orange, 1
-- from anyone else with an @yc.com addr: 
-  label YC, orange, 2
-- from a founder (NOT @yc.com): 
-  label Founders, blue, 2
-- tech-related, e.g. a forum digest: 
-  label Tech, gray, priority 3
-- trying to sell me something: archive
+from family: 
+  label: Personal, red, 0
+from my boss Garry: 
+  label: YC, orange, 1
+from anyone else with an @yc.com addr: 
+  label: YC, orange, 2
+from a founder (NOT @yc.com): 
+  label: Founders, blue, 2
+tech-related, e.g. a forum digest: 
+  label: Tech, gray, 3
+trying to sell me something:
+  label: Spam, black, 5
+  archive
 `;
 
 const DEFAULT_TOOLS = `You have access to the following tools:
@@ -338,7 +340,7 @@ ${email.body}
           <div className="flex flex-col h-full">
             {/* System Prompt */}
             <div className="mb-4 flex-grow">
-              <label className="block font-semibold text-sm text-gray-700 mb-2">Email Reading Agent Prompt</label>
+              <label className="block font-semibold text-sm text-gray-700 mb-2">Email Reading Agent System Prompt</label>
               <textarea
                 className="w-full p-3 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all font-mono mb-2"
                 value={systemPrompt}
@@ -346,6 +348,7 @@ ${email.body}
                 placeholder="Enter your system prompt for the email reading agent..."
                 disabled={isLabeling}
                 style={{ height: '400px' }}
+                autoComplete="off"
               />
             </div>
             
@@ -355,18 +358,12 @@ ${email.body}
               <div className="space-y-2">
                 <div className="p-3 border border-gray-200 rounded-lg bg-gray-50">
                   <code className="text-sm text-gray-800 font-mono">labelEmail(label, color, priority)</code>
-                  <p className="text-xs text-gray-600 mt-1">Label an email with a specific category, color, and priority level.</p>
                 </div>
                 <div className="p-3 border border-gray-200 rounded-lg bg-gray-50">
                   <code className="text-sm text-gray-800 font-mono">archiveEmail()</code>
-                  <p className="text-xs text-gray-600 mt-1">Archive an email that doesn't need to be labeled.</p>
                 </div>
                 <div className="p-3 border border-gray-200 rounded-lg bg-gray-50">
                   <code className="text-sm text-gray-800 font-mono">draftReply(body)</code>
-                  <p className="text-xs text-gray-600 mt-1">Create a draft reply to the email.</p>
-                </div>
-                <div className="p-2 border border-gray-200 rounded-lg bg-gray-50/50">
-                  <p className="text-xs text-gray-600">You can use any combination of these tools in your response.</p>
                 </div>
               </div>
               {/* Hidden Tools Configuration */}
