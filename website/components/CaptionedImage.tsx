@@ -20,7 +20,7 @@ const CaptionedImage: React.FC<CaptionedImageProps> = ({ src, alt, caption, size
       <img 
         src={src} 
         alt={alt} 
-        className={`${sizeClasses[size]} rounded-lg mx-auto`}
+        className={`${sizeClasses[size]} rounded-lg mx-auto shadow-md`}
       />
       <figcaption className="text-center text-sm text-gray-500 mt-2">
         {caption}

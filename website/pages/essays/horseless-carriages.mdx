@@ -11,9 +11,9 @@ twitterCard: summary_large_image
 
 # AI Horseless Carriages
 
-I noticed something interesting the other day: I enjoy building software with AI a lot more than I enjoy using a lot of the software that other people have built with AI. 
+I noticed something interesting the other day: I enjoy using AI to build software more than I enjoy using most AI applications--software built on AI. 
 
-When I use AI to build software I feel like I can accomplish almost anything I can imagine very quickly. AI feels like a power tool. It's a lot of fun.
+When I use AI to build software I feel like I can create almost anything I can imagine very quickly. AI feels like a power tool. It's a lot of fun.
 
 Many AI apps don't feel like that. Their AI features feel tacked-on and useless, even counter-productive.
 
@@ -41,12 +41,12 @@ Here I've added a prompt to the interface requesting a draft for an email to my 
   size="large"
 />
 
-As you can see, Gemini has produced a plausible sounding draft that fits the prompt I submitted perfectly. The problem is that this doesn’t sound anything like an email that I would actually write. If I'd written this email myself, it would have sounded something like this:
+As you can see, Gemini has produced perfectly reasonable draft that unfortunately doesn’t sound anything like an email that I would actually write. If I'd written this email myself, it would have sounded something like this:
 
 <CaptionedText
   size="large"
   caption="The email I would have written"
->Hi garry, my daughter woke up with the flu. won't make it in today</CaptionedText>
+>Hey garry, my daughter woke up with the flu so I won't make it in today</CaptionedText>
 
 The tone of the draft isn't the only problem. The email I'd have written is actually shorter than the original prompt, which means I spent more time asking Gemini for help than I would have if I'd just written the draft myself. Remarkably, the Gmail team has shipped a product that perfectly captures the experience of managing an underperforming employee.
 
@@ -63,7 +63,7 @@ To illustrate this point, here's a simple demo of an AI email assistant that, if
     caption="A demo of an actually useful email assistant using OpenAI's gpt-4o-mini under the hood"
 />
 
-In this demo we're using AI to _read_ emails instead of write them from scratch. Each email is categorized and prioritized, and some are auto-archived while others get an automatically-drafted reply. The assistant uses a custom "System Prompt" to do all of this exactly the way I want it to.
+This demo uses AI to _read_ emails instead of write them from scratch. Each email is categorized and prioritized, and some are auto-archived while others get an automatically-drafted reply. The assistant uses a custom "System Prompt" to do all of this exactly the way I want it to.
  
 It's obvious how much more powerful this approach is, so why didn't the Gmail team build it this way? To answer this question, let's look more closely at the problems with their design. We'll start with its generic tone.
 
@@ -92,15 +92,13 @@ Here's a little draft-writer demo you can use to compare my original prompt with
 
 The generated draft sounds better, but this is obviously dumb. The new prompt is even longer than the original, and I'd need to write something like this out every time I want a new email written. 
 
-There is a simple solution to this problem that I think many AI app developers are missing. To explore it, we need to take a look under the hood at what actually happens when the "Generate Draft" button is pressed.
+There is a simple solution to this problem that many AI app developers seem to be missing: let me write my own "System Prompt".
 
 ## System Prompts and User Prompts
 
 Viewed from the outside, large language models are actually really simple. They read in a stream of words, the “prompt”, and then start predicting the words, one after another, that are likely to come next, the “response”.
 
-The important thing to note here is that all of the input and all of the output is text. The LLM's user interface is just text. 
-
-As an aside: I'm leaving some details out and of course today's models can input and output sound and video, too. For our purposes we can ignore that.
+The important thing to note here is that all of the input and all of the output is text. The LLM's user interface is just text<sup>1</sup>. 
 
 LLM providers like OpenAI and Anthropic have adopted a convention to help make prompt writing easier: they split the prompt into two components: a **System Prompt** and a **User Prompt**, so named because in many API applications the app developers write the System Prompt and the user writes the User Prompt.
 
@@ -128,7 +126,7 @@ Google keeps the System Prompt a secret, but judging by the output we can guess 
 You are a helpful email-writing assistant responsible for writing emails on behalf of a Gmail user. Follow the user’s instructions and use a formal, businessy tone and correct punctuation so that it’s obvious the user is smart and serious.
 </CaptionedText>
 
-Of course I'm being glib here, but the problem is not just that the Gmail team wrote a bad system prompt. The real problem is that I'm not allowed to change it.
+Of course I'm being glib here, but the problem is not just that the Gmail team wrote a bad system prompt. The problem is that I'm not allowed to change it.
 
 ## The Pete System Prompt
 
@@ -210,9 +208,7 @@ You'd probably think "there's no way I'd choose an engine over a horse". And you
 
 I suspect we are living through a similar period with AI applications. Many of them are infuriatingly useless in the same way that Gmail's Gemini integration is. 
 
-The "old world thinking" that gave us the original horseless carriage was swapping a horse out for an engine without redesigning the vehicle to handle higher speeds.
-
-What is the old world thinking constraining these AI apps?
+The "old world thinking" that gave us the original horseless carriage was swapping a horse out for an engine without redesigning the vehicle to handle higher speeds. What is the old world thinking constraining these AI apps?
 
 ## Old world thinking
 
@@ -253,9 +249,9 @@ YC's accounting team, for example, operates in a way that is unique to YC. They 
 
 This is the case for every accounting team in every company I've ever worked for. It's why so much of finance still runs on Excel: it's a general tool that can handle an infinite number of specific use cases.
 
-I conclude from this that in most AI apps, System Prompts will be written and maintained by users, not software developers or even domain experts hired by developers.
+In most AI apps, System Prompts should be written and maintained by users, not software developers or even domain experts hired by developers.
 
-Most AI apps will be _agent builders_, not agents.
+Most AI apps should be _agent builders_, not agents.
 
 ## ...and unto the developer what is the developer's
 
@@ -265,7 +261,7 @@ For one, they'll create UIs for building agents that operate in a particular dom
 
 Most people probably won't want to write every prompt from scratch, and good agent builders won't force them to. Developers will provide templates and prompt-writing agents that help users bootstrap their own agents.
 
-Users also need an interface for reviewing an agent's work and iterating on their prompts, similar to the little dummy email agent builder I included above. This interface gives the user the fast feedback loop they need to train an agent to perform a task reliably. 
+Users also need an interface for reviewing an agent's work and iterating on their prompts, similar to the little dummy email agent builder I included above. This interface gives them a fast feedback loop for teaching an agent to perform a task reliably. 
 
 Developers will also build _agent tools_. 
 
@@ -277,9 +273,9 @@ Tools provide the security layer for agents. Whether or not an agent can do a pa
 
 As I mentioned above, however, a better System Prompt still won't save me much time on writing emails from scratch.
 
-The reason, of course, is that I prefer my emails to be as short as possible, which means any email written in my voice will be roughly the same length as the User Prompt that describes it. This has been my experience LLMs and writing in general. Surprisingly, generative AI is not actually that useful for generating text.
+The reason, of course, is that I prefer my emails to be as short as possible, which means any email written in my voice will be roughly the same length as the User Prompt that describes it. I've had a similar experience every time I've tried to use an LLM to write something. Surprisingly, generative AI models are not actually that useful for generating text.
 
-LLMs are really good at reading text and transforming it into other text, and that's what I'd like to use an agent for. Let's revisit our email-reading agent demo:
+The thing that LLMs are great at is reading text and transforming it, and that's what I'd like to use an agent for. Let's revisit our email-reading agent demo:
 
 <EmailLabeler 
     showPromptAndTools={true} 
@@ -290,7 +286,7 @@ It's not hard to imagine how much time an email-reading agent like this could sa
 
 Hell, with access to a few additional tools it could unsubscribe from lists, schedule appointments, and pay my bills too, all without my having to lift a finger.
 
-This is what I really want from an AI-native email client: the ability to automate mundane work so that I can spend less time doing email.
+This is what I really want from an AI-native email client: the ability to automate mundane work so that I can spend less time doing email<sup>2</sup>.
 
 ## AI-native software
 
@@ -308,6 +304,13 @@ I can't wait.
 
 <br/><br/>
 
-Thanks to my Dad, PG and my colleages at YC for reading drafts of this essay.
+Thanks to my Dad and my colleages at YC for reading drafts of this essay.
+
+### Footnotes:
+
+1: I'm leaving some details out and of course today's models can input and output sound and video, too. For our purposes we can ignore that.
+
+2: There are email clients out there that are already working on this, notably [Superhuman](https://superhuman.com/) and [Zero](https://0.email/)
+
 
 </PageWrapper>
