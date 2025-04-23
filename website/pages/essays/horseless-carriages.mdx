@@ -267,7 +267,10 @@ Developers will also build _agent tools_.
 
 Tools are the mechanism by which agents act on the outside world. My email-writing agent needs a tool to submit a draft for my review. It might use another tool to send an email without my review (if I'm feeling confident enough to allow that) or to search my inbox for previous emails from a particular email address or to check YC's founder directory to see if an email came from a YC founder.
 
-Tools provide the security layer for agents. Whether or not an agent can do a particular thing is determined by which tools it has access to. It is much easier to enforce boundaries with tools written in code than it is to enforce them between System and User Prompts written in text. I suspect that in the future we'll look back and laugh at the idea that a "prompt injection" (like "Ignore previous instructions...") was [something to be concerned about](https://x.com/jobergum/status/1913481778175631436).
+Tools provide the security layer for agents. Whether or not an agent can do a particular thing is determined by which tools it has access to. It is much easier to enforce boundaries with tools written in code than it is to enforce them between System and User Prompts written in text. 
+
+I suspect that in the future we'll look back and laugh at the idea that a "prompt injection" (like "Ignore previous instructions...") was something to be concerned about. The whole idea that developers should secure one part of the prompt from another part of the prompt is silly, and a strong signal that the abstractions we're using are broken. As [this post](https://x.com/jobergum/status/1913481778175631436) makes clear: if any part of the prompt is in user space then the whole thing is in user space.
+
 
 ## An agent for reading my email
 
