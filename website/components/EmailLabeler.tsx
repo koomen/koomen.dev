@@ -240,6 +240,7 @@ ${email.body}
           body: JSON.stringify({
             useGateway: true,
             model: 'gpt-4o-mini',
+            type: 'label',
             messages: [
               { 
                 role: 'system', 

@@ -139,6 +139,7 @@ const EmailDraftWriter: React.FC<EmailDraftWriterProps> = ({
         },
         body: JSON.stringify({
           model: 'gpt-4o-mini',
+          type: 'draft',
           messages: [
             { role: 'system', content: systemPrompt },
             { role: 'user', content: userPrompt }

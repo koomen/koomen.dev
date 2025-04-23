@@ -35,6 +35,7 @@ const SystemPromptAsAFunction: React.FC = () => {
         },
         body: JSON.stringify({
           model: 'gpt-4o-mini',
+          type: 'function',
           messages: [
             /*{ role: 'system', content: `${systemPrompt}\n\n${tools}`},*/
             { role: 'system', content: `${systemPrompt}`},
