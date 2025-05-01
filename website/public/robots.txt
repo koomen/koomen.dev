@@ -1,0 +1,13 @@
+# robots.txt for koomen.dev
+
+# Allow all crawlers for main domains
+User-agent: *
+Allow: /
+
+# Disallow crawling of staging subdomain
+User-agent: *
+Disallow: /
+Host: staging.koomen.dev
+
+# Specify primary domain for search engines
+Host: koomen.dev
