@@ -4,6 +4,8 @@
 User-agent: *
 Allow: /
 
+Sitemap: https://koomen.dev/sitemap.xml
+
 # Disallow crawling of staging subdomain
 User-agent: *
 Disallow: /
