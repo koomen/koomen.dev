@@ -61,29 +61,29 @@ const SystemPromptAsAFunction: React.FC = () => {
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
-        
+
         const chunk = decoder.decode(value, { stream: true });
         const lines = chunk.split('\n').filter(line => line.trim() !== '');
-        
+
         for (const line of lines) {
           // Skip the initial "data: [DONE]" message
           if (line === 'data: [DONE]') continue;
-          
+
           // Remove the "data: " prefix
           const jsonData = line.replace(/^data: /, '');
-          
+
           try {
             const data = JSON.parse(jsonData);
             const content = data.choices[0]?.delta?.content || '';
             if (content) {
               responseText += content;
-              
+
               // Try to parse JSON from the response
               try {
                 // Look for complete JSON objects in the response
                 const jsonRegex = /\{.*"answer"\s*:\s*"([^"]+)".*\}/s;
                 const match = responseText.match(jsonRegex);
-                
+
                 if (match && match[1]) {
                   // Show only the answer value from the JSON
                   setResponse(match[1]);
@@ -102,7 +102,7 @@ const SystemPromptAsAFunction: React.FC = () => {
           }
         }
       }
-      
+
       setIsGenerating(false);
     } catch (err) {
       console.error('Error generating response:', err);
@@ -122,11 +122,11 @@ const SystemPromptAsAFunction: React.FC = () => {
             onChange={(e) => setTools(e.target.value)}
           />
         </div>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           {/* System Prompt (function) */}
-          <div className="md:col-span-1">
-            <label className="block font-semibold text-sm text-gray-700 mb-2">
+          <div className="md:col-span-1 flex flex-col">
+            <label className="block font-semibold text-sm text-gray-700 mb-2 flex-grow">
               System Prompt (function)
             </label>
             <input
@@ -137,10 +137,10 @@ const SystemPromptAsAFunction: React.FC = () => {
               placeholder="Enter system prompt..."
             />
           </div>
-          
+
           {/* User Prompt (input) */}
-          <div className="md:col-span-1">
-            <label className="block font-semibold text-sm text-gray-700 mb-2">
+          <div className="md:col-span-1 flex flex-col">
+            <label className="block font-semibold text-sm text-gray-700 mb-2 flex-grow">
               User Prompt (input)
             </label>
             <input
@@ -151,10 +151,10 @@ const SystemPromptAsAFunction: React.FC = () => {
               placeholder="Enter user prompt..."
             />
           </div>
-          
+
           {/* Response (output) */}
-          <div className="md:col-span-2">
-            <label className="block font-semibold text-sm text-gray-700 mb-2">
+          <div className="md:col-span-2 flex flex-col">
+            <label className="block font-semibold text-sm text-gray-700 mb-2 flex-grow">
               Response (output)
             </label>
             <input
@@ -166,7 +166,7 @@ const SystemPromptAsAFunction: React.FC = () => {
             />
           </div>
         </div>
-        
+
         {/* Generate Button */}
         <div className="mt-4 flex justify-center">
           <button
@@ -185,7 +185,7 @@ const SystemPromptAsAFunction: React.FC = () => {
             ) : 'Generate Output'}
           </button>
         </div>
-        
+
         {/* Error message */}
         {error && (
           <div className="mt-2 text-center">
