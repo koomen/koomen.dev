@@ -125,8 +125,8 @@ const SystemPromptAsAFunction: React.FC = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           {/* System Prompt (function) */}
-          <div className="md:col-span-1">
-            <label className="block font-semibold text-sm text-gray-700 mb-2">
+          <div className="md:col-span-1 flex flex-col">
+            <label className="block font-semibold text-sm text-gray-700 mb-2 flex-grow">
               System Prompt (function)
             </label>
             <input
@@ -139,8 +139,8 @@ const SystemPromptAsAFunction: React.FC = () => {
           </div>
 
           {/* User Prompt (input) */}
-          <div className="md:col-span-1">
-            <label className="block font-semibold text-sm text-gray-700 mb-2">
+          <div className="md:col-span-1 flex flex-col">
+            <label className="block font-semibold text-sm text-gray-700 mb-2 flex-grow">
               User Prompt (input)
             </label>
             <input
@@ -153,8 +153,8 @@ const SystemPromptAsAFunction: React.FC = () => {
           </div>
 
           {/* Response (output) */}
-          <div className="md:col-span-2">
-            <label className="block font-semibold text-sm text-gray-700 mb-2">
+          <div className="md:col-span-2 flex flex-col">
+            <label className="block font-semibold text-sm text-gray-700 mb-2 flex-grow">
               Response (output)
             </label>
             <input
