@@ -5,78 +5,31 @@
  * Prose styling for markdown content is provided by @tailwindcss/typography.
  * The 'prose' class is applied via PageWrapper component.
  * See: https://github.com/tailwindlabs/tailwindcss-typography
- *
- * Custom overrides below match the styling from old-content/components/markdown
  */
 
 /*
- * Headings
+ * Custom prose overrides for elements not fully styled by @tailwindcss/typography
  */
-.prose :where(h1):not(:where([class~='not-prose'] *)) {
-  @apply text-3xl font-bold mb-4;
+
+/* Inline code - add background and padding, remove backticks */
+.prose :where(code):not(:where([class~='not-prose'], pre *)) {
+  @apply text-gray-900 font-medium text-[0.9em] bg-gray-100 px-1.5 py-0.5 rounded;
 }
 
-.prose :where(h2):not(:where([class~='not-prose'] *)) {
-  @apply text-2xl font-semibold mb-2;
+.prose :where(code):not(:where([class~='not-prose'], pre *))::before,
+.prose :where(code):not(:where([class~='not-prose'], pre *))::after {
+  content: none;
 }
 
-.prose :where(h3):not(:where([class~='not-prose'] *)) {
-  @apply text-xl font-semibold mt-6 mb-3;
+/* Reset code styling inside pre blocks (Shiki handles this) */
+.prose :where(pre code):not(:where([class~='not-prose'] *)) {
+  @apply bg-transparent border-0 rounded-none p-0 font-normal;
+  font-size: inherit;
 }
 
-.prose :where(h4):not(:where([class~='not-prose'] *)) {
-  @apply text-lg font-semibold mt-5 mb-2;
-}
-
-.prose :where(h5):not(:where([class~='not-prose'] *)) {
-  @apply text-base font-semibold mt-4 mb-2;
-}
-
-.prose :where(h6):not(:where([class~='not-prose'] *)) {
-  @apply text-sm font-semibold mt-4 mb-2;
-}
-
-/*
- * Paragraph
- */
-.prose :where(p):not(:where([class~='not-prose'] *)) {
-  @apply mb-4 font-light leading-relaxed;
-}
-
-/*
- * Blockquote
- */
-.prose :where(blockquote):not(:where([class~='not-prose'] *)) {
-  @apply pl-4 border-l-4 border-gray-300 italic my-4 text-gray-700;
-}
-
-/*
- * Horizontal rule
- */
-.prose :where(hr):not(:where([class~='not-prose'] *)) {
-  @apply my-6 border-t border-gray-300;
-}
-
-/*
- * Links
- */
-.prose :where(a):not(:where([class~='not-prose'] *)) {
-  @apply text-blue-600 hover:text-blue-800 hover:no-underline transition-colors;
-}
-
-/*
- * Lists
- */
-.prose :where(ul):not(:where([class~='not-prose'] *)) {
-  @apply list-disc pl-6 mb-4 mt-2;
-}
-
-.prose :where(ol):not(:where([class~='not-prose'] *)) {
-  @apply list-decimal pl-6 mb-4 mt-2;
-}
-
-.prose :where(li):not(:where([class~='not-prose'] *)) {
-  @apply mb-1;
+/* Keyboard keys */
+.prose :where(kbd):not(:where([class~='not-prose'] *)) {
+  @apply text-gray-900 font-semibold text-sm bg-gray-100 rounded px-1.5 py-0.5 border border-gray-300 shadow-sm;
 }
 
 /* Task lists (GFM checkboxes) - align checkboxes with bullet points */
@@ -91,29 +44,9 @@
   @apply mr-2 align-middle ml-1;
 }
 
-/*
- * Inline code
- */
-.prose :where(code):not(:where([class~='not-prose'], pre *)) {
-  @apply bg-gray-100 px-1.5 py-0.5 rounded text-sm font-mono;
-}
-
-.prose :where(code):not(:where([class~='not-prose'], pre *))::before,
-.prose :where(code):not(:where([class~='not-prose'], pre *))::after {
-  content: none;
-}
-
-/* Reset code styling inside pre blocks (Shiki handles this) */
-.prose :where(pre code):not(:where([class~='not-prose'] *)) {
-  @apply bg-transparent border-0 rounded-none p-0 font-normal;
-  font-size: inherit;
-}
-
-/*
- * Code blocks (pre)
- */
-.prose :where(pre):not(:where([class~='not-prose'] *)) {
-  @apply bg-gray-100 p-4 rounded-md overflow-x-auto my-4 text-sm font-mono;
+/* Tables - center by default, prevent overflow */
+.prose :where(table):not(:where([class~='not-prose'] *)) {
+  @apply mx-auto w-auto max-w-full;
 }
 
 /*
@@ -129,50 +62,7 @@ pre > code {
   color: #24292e;
 }
 
-/*
- * Keyboard keys
- */
-.prose :where(kbd):not(:where([class~='not-prose'] *)) {
-  @apply text-gray-900 font-semibold text-sm bg-gray-100 rounded px-1.5 py-0.5 border border-gray-300 shadow-sm;
-}
-
-/*
- * Images
- */
-.prose :where(img):not(:where([class~='not-prose'] *)) {
-  @apply max-w-full h-auto rounded-md;
-}
-
-.prose :where(figcaption):not(:where([class~='not-prose'] *)) {
-  @apply text-sm text-gray-500 mt-1 text-center;
-}
-
-/*
- * Tables
- */
-.prose :where(table):not(:where([class~='not-prose'] *)) {
-  @apply min-w-full divide-y divide-gray-300 border-collapse;
-}
-
-.prose :where(thead):not(:where([class~='not-prose'] *)) {
-  @apply bg-gray-50;
-}
-
-.prose :where(tbody):not(:where([class~='not-prose'] *)) {
-  @apply divide-y divide-gray-200;
-}
-
-.prose :where(th):not(:where([class~='not-prose'] *)) {
-  @apply px-4 py-3 text-left text-sm font-semibold text-gray-900;
-}
-
-.prose :where(td):not(:where([class~='not-prose'] *)) {
-  @apply px-4 py-3 text-sm;
-}
-
-/*
- * Custom interactive elements
- */
+/* Custom interactive elements */
 .copy-button {
   @apply absolute top-2 right-2 px-2 py-1 text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity;
   @apply text-gray-500 hover:text-gray-700 bg-gray-200;
