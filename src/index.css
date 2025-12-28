@@ -62,6 +62,11 @@ pre > code {
   color: #24292e;
 }
 
+/* Links - no underline by default, underline on hover */
+.prose :where(a):not(:where([class~='not-prose'] *)) {
+  @apply no-underline hover:underline;
+}
+
 /* Custom interactive elements */
 .copy-button {
   @apply absolute top-2 right-2 px-2 py-1 text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity;

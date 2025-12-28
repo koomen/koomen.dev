@@ -12,7 +12,7 @@ export default function PageWrapper({ children }) {
     <div className="flex flex-col min-h-screen bg-white font-sans text-gray-800 antialiased">
       <div className="max-w-2xl mx-auto w-full px-6 flex flex-col flex-grow">
         <Header />
-        <div className="flex-grow py-4 prose prose-lg max-w-none">
+        <div className="flex-grow py-4 prose max-w-none">
           {children}
         </div>
         <Footer />
