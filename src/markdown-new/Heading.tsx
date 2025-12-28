@@ -2,7 +2,7 @@ import React from 'react';
 
 interface HeadingProps {
   children?: React.ReactNode;
-  level: 1 | 2 | 3 | 4 | 5 | 6;
+  level: 2 | 3;
 }
 
 function slugify(text: string): string {
@@ -11,7 +11,6 @@ function slugify(text: string): string {
     .toLowerCase()
     .trim()
     .replace(/\s+/g, '-')
-    .replace(/&/g, '-and-')
     .replace(/[^\w\-]+/g, '')
     .replace(/\-\-+/g, '-');
 }
@@ -28,7 +27,7 @@ function getTextContent(children: React.ReactNode): string {
 export function Heading({ children, level }: HeadingProps) {
   const text = getTextContent(children);
   const id = slugify(text);
-  const Tag = `h${level}` as keyof JSX.IntrinsicElements;
+  const Tag = `h${level}` as const;
 
   return (
     <Tag id={id} className="group relative">
@@ -44,26 +43,10 @@ export function Heading({ children, level }: HeadingProps) {
   );
 }
 
-export function H1(props: Omit<HeadingProps, 'level'>) {
-  return <Heading {...props} level={1} />;
-}
-
 export function H2(props: Omit<HeadingProps, 'level'>) {
   return <Heading {...props} level={2} />;
 }
 
 export function H3(props: Omit<HeadingProps, 'level'>) {
   return <Heading {...props} level={3} />;
-}
-
-export function H4(props: Omit<HeadingProps, 'level'>) {
-  return <Heading {...props} level={4} />;
-}
-
-export function H5(props: Omit<HeadingProps, 'level'>) {
-  return <Heading {...props} level={5} />;
-}
-
-export function H6(props: Omit<HeadingProps, 'level'>) {
-  return <Heading {...props} level={6} />;
 }
